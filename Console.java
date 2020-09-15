@@ -83,7 +83,7 @@ public class Console {
     public static void main(String[] args)
     {
         try {
-            fr = new FileReader ("C:\\Users\\Jeremy\\Documents\\420\\HelpDocument.txt");
+            fr = new FileReader ("HelpDocument.txt");
         }
         catch (Exception FileNotFoundException) {
             helpfilePresent = false;
