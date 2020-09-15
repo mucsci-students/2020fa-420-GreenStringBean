@@ -1,0 +1,13 @@
+quit, q -- Exits the program
+help, h -- Prints help message
+save, s -- Saves the workspace into a save file
+load, l -- Loads a workspace provided by the user
+
+addClass 	-- Creates a new UML class
+deleteClass	-- Deletes the class with the provided name
+open 		-- Opens the provided class for editing.
+close		-- Closes the provided class from being edited
+
+addAttribute 	-- Adds an attribute to the currently opened class
+deleteAttribute	-- Deletes the attribute from the currently opened class
+editAttribute	-- Modifies the attribute in the currently opened class
