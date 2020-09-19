@@ -6,15 +6,15 @@ public class WorkingProject {
 
     public WorkingProject()
     {
-        classes = new ArrayList<ClassObject>;
-        relationships = new ArrayList<Relationship>;
+        classes = new ArrayList<ClassObject>();
+        relationships = new ArrayList<Relationship>();
     }
 
     public void addClass(String className)
     {
         if (getClassIndex(className) == -1)
         {
-            classes.add(new Class(className));
+            classes.add(new ClassObject(className));
         }
         else
         {
@@ -27,6 +27,7 @@ public class WorkingProject {
         int index = getClassIndex(className);
         if (index != -1)
         {
+            removeRelationshipsByClass(classes.get(index));
             classes.remove(index);
         }
         else
@@ -37,10 +38,18 @@ public class WorkingProject {
 
     public void renameClass(String oldName, String newName)
     {
-        int index = getClassIndex(oldName);
-        if (index != -1)
+        int oldNameIndex = getClassIndex(oldName);
+        if (oldNameIndex != -1)
         {
-            classes.get(index).setName(newName);
+            int newNameIndex = getClassIndex(newName);
+            if (newNameIndex == -1)
+            {
+                classes.get(oldNameIndex).setName(newName);
+            }
+            else
+            {
+                System.out.println("error, class with new name already exists");
+            }
         }
         else
         {
@@ -119,9 +128,11 @@ public class WorkingProject {
         int classIndex2 = getClassIndex(className2);
         if (classIndex1 != -1 && classIndex2 != -1)
         {
+            ClassObject class1 = classes.get(classIndex1);
+            ClassObject class2 = classes.get(classIndex2); 
             if (getRelationshipIndex(class1, class2) == -1)
             {
-                relationships.add(new Relationship(classes.get(classIndex1), classes.get(classIndex2)));
+                relationships.add(new Relationship(class1, class2));
             }
             else
             {
@@ -156,11 +167,40 @@ public class WorkingProject {
         }
     }
 
+    public void printClasses()
+    {
+        for (ClassObject classObj : classes)
+        {
+            System.out.println(classObj.getName());
+        }
+    }
+
+    public void printRelationships()
+    {
+        for (Relationship relation : relationships)
+        {
+            System.out.println(relation.getClassOne().getName() + " -> " + relation.getClassTwo().getName());
+        }
+    }
+
+    public void printAttributes(String className)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).printAttributes();
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
     private int getClassIndex(String className)
     {
-        for(int i = 0; i < classes.size(); ++i)
+        for (int i = 0; i < classes.size(); ++i)
         {
-            if (classes.get(i).getName.equals(className))
+            if (classes.get(i).getName().equals(className))
             {
                 return i;
             }
@@ -170,7 +210,7 @@ public class WorkingProject {
 
     private int getRelationshipIndex(ClassObject class1, ClassObject class2)
     {
-        for(int i = 0; i < relationships.size(); ++i)
+        for (int i = 0; i < relationships.size(); ++i)
         {
             if (relationships.get(i).getClassOne() == class1 && relationships.get(i).getClassTwo() == class2)
             {
@@ -178,5 +218,21 @@ public class WorkingProject {
             }
         }
         return -1;
+    }
+
+    private void removeRelationshipsByClass(ClassObject classObj)
+    {
+        int i = 0;
+        while (i < relationships.size())
+        {
+            if (relationships.get(i).getClassOne() == classObj || relationships.get(i).getClassTwo() == classObj)
+            {
+                relationships.remove(i);
+            }
+            else
+            {
+                ++i;
+            }
+        }
     }
 }
