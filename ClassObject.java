@@ -4,7 +4,7 @@ public class ClassObject
 {   
     private String name;
     private boolean isOpen;
-    private ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+    private ArrayList<Attribute> attributes;
     
     public ClassObject()
     {
@@ -14,6 +14,7 @@ public class ClassObject
     {
         name = giveName;
         isOpen = false;
+        attributes = new ArrayList<Attribute>();
     }
     public String getName()
     {
@@ -43,7 +44,7 @@ public class ClassObject
     }
     public void addAttribute(String attrName)
     {
-        if(getAttrIndex(attrName) == -1)
+        if (getAttrIndex(attrName) == -1)
         {
             attributes.add(new Attribute(attrName));
         }
@@ -62,11 +63,23 @@ public class ClassObject
     }
     public void renameAttribute(String oldName, String newName)
     {
-        int index = getAttrIndex(oldName);
-        if(index != -1)
-            attributes.get(index).setName(newName);
+        int oldNameIndex = getAttrIndex(oldName);
+        if (oldNameIndex != -1)
+        {
+            int newNameIndex = getAttrIndex(newName);
+            if (newNameIndex == -1)
+            {
+                attributes.get(oldNameIndex).setName(newName);
+            }
+            else
+            {
+                System.out.println("error, attribute with new name already exists");
+            }
+        }
         else
+        {
             System.out.println("error, attribute doesn't exist");
+        }
     }
     public boolean hasAttribute(String attrName)
     {
@@ -76,6 +89,13 @@ public class ClassObject
                 return true;
         }
         return false;
+    }
+    public void printAttributes()
+    {
+        for (Attribute attr : attributes)
+        {
+            System.out.println(attr.getName());
+        }
     }
     private int getAttrIndex(String attrName)
     {
