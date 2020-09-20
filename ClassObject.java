@@ -5,7 +5,7 @@ public class ClassObject
     private String name;
     private boolean isOpen;
     private ArrayList<Attribute> attributes;
-    
+  
     public ClassObject()
     {
         System.out.println("error, no name");
