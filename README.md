@@ -5,3 +5,4 @@ If this doesn't work, then explicitly compile all the .java files with "javac Co
 2. Make sure "HelpDocument.txt" is in the same directory as Console.java (this is needed for the help command to function).
 3. Run the Console application with "java Console"
 4. Enjoy!
+
