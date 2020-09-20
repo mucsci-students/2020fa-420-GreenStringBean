@@ -1,16 +1,16 @@
 import java.util.ArrayList;
 
-public class ClassObjectMain
+public class ClassObject
 {   
     private String name;
     private boolean isOpen;
     private ArrayList<Attribute> attributes = new ArrayList<Attribute>();
     
-    public ClassObjectMain()
+    public ClassObject()
     {
         System.out.println("error, no name");
     }
-    public ClassObjectMain(String giveName)
+    public ClassObject(String giveName)
     {
         name = giveName;
         isOpen = false;
@@ -57,7 +57,7 @@ public class ClassObjectMain
     {
         int index = getAttrIndex(oldName);
         if(index!=-1)
-            attributes[index].setName(newName);
+            attributes.get(index).setName(newName);
         else
             System.out.println("error, attribute doesn't exist");
     }
@@ -65,7 +65,7 @@ public class ClassObjectMain
     {
         for (Attribute attr : attributes)
         {
-            if(attributes.getName.equals(attrName)
+            if(attr.getName().equals(attrName))
                 return true;
         }
         return false;
@@ -74,13 +74,9 @@ public class ClassObjectMain
     {
         for(int i = 0; i < attributes.size(); i++)
         {
-            if(Attributes[i].getName().equals(attrName))
+            if(attributes.get(i).getName().equals(attrName))
                 return i;
         }
         return -1;
-    }
-    public static void main(String[]args)
-    {
-        new ClassObjectMain();
     }
 }
