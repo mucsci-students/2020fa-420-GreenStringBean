@@ -4,12 +4,15 @@ public class WorkingProject {
     private ArrayList<ClassObject> classes;
     private ArrayList<Relationship> relationships;
 
+    // Create a new Working Project with empty ClassObject/Relationship lists
     public WorkingProject()
     {
         classes = new ArrayList<ClassObject>();
         relationships = new ArrayList<Relationship>();
     }
 
+    // Add a new ClassObject called className to the end of the list
+    // Print an error if there is already a ClassObject with that name in the list
     public void addClass(String className)
     {
         if (getClassIndex(className) == -1)
@@ -22,6 +25,8 @@ public class WorkingProject {
         }
     }
 
+    // Remove the ClassObject called className from the list
+    // Print an error if there is no ClassObject with that name in the list
     public void removeClass(String className)
     {
         int index = getClassIndex(className);
@@ -36,6 +41,9 @@ public class WorkingProject {
         }
     }
 
+    // Rename the ClassObject called oldName to newName
+    // Print an error if there is no ClassObject called oldName in the list
+    // Print an error if there is already a ClassObject called newName in the list
     public void renameClass(String oldName, String newName)
     {
         int oldNameIndex = getClassIndex(oldName);
@@ -57,6 +65,8 @@ public class WorkingProject {
         }
     }
 
+    // Open ClassObject called className
+    // Print an error if there is no ClassObject with that name in the lsit
     public void openClass(String className)
     {
         int index = getClassIndex(className);
@@ -70,6 +80,8 @@ public class WorkingProject {
         }
     }
 
+    // Close ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
     public void closeClass(String className)
     {
         int index = getClassIndex(className);
@@ -83,6 +95,8 @@ public class WorkingProject {
         }
     }
 
+    // Add a new Attribute called attrName to the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
     public void addAttribute(String className, String attrName)
     {
         int index = getClassIndex(className);
@@ -96,6 +110,8 @@ public class WorkingProject {
         }
     }
 
+    // Remove the Attribute called attrName from the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
     public void removeAttribute(String className, String attrName)
     {
         int index = getClassIndex(className);
@@ -109,6 +125,8 @@ public class WorkingProject {
         }
     }
 
+    // Rename the Attribute called oldAttrName to newAttrName in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
     public void renameAttribute(String className, String oldAttrName, String newAttrName)
     {
         int index = getClassIndex(className);
@@ -122,6 +140,9 @@ public class WorkingProject {
         }
     }
 
+    // Add a new ordered Relationship between the ClassObjects called className1 and className2 to the end of the list
+    // Print an error if either of those names are not found in the ClassObject list
+    // Print an error if there is already a Relationship between those classes in the list
     public void addRelationship(String className1, String className2)
     {
         int classIndex1 = getClassIndex(className1);
@@ -145,6 +166,9 @@ public class WorkingProject {
         }
     }
 
+    // Remove the relationship between the ClassObjects called className1 and className2 from the list
+    // Print an error if either of those names are not found in the ClassObject list
+    // Print an error if there is no Relationship between those classes in the list
     public void removeRelationship(String className1, String className2)
     {
         int index1 = getClassIndex(className1);
@@ -167,6 +191,7 @@ public class WorkingProject {
         }
     }
 
+    // Print the name of each ClassObject in the list
     public void printClasses()
     {
         for (ClassObject classObj : classes)
@@ -175,6 +200,8 @@ public class WorkingProject {
         }
     }
 
+    // Print the names of the ClassObjects in each Relationship in the list
+    // Print in the format className1 -> className2
     public void printRelationships()
     {
         for (Relationship relation : relationships)
@@ -183,6 +210,8 @@ public class WorkingProject {
         }
     }
 
+    // Print the name of each Attribute in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
     public void printAttributes(String className)
     {
         int index = getClassIndex(className);
@@ -196,6 +225,8 @@ public class WorkingProject {
         }
     }
 
+    // Return the index of the first ClassObject called className in the list
+    // Return -1 if no ClassObject is found
     private int getClassIndex(String className)
     {
         for (int i = 0; i < classes.size(); ++i)
@@ -208,11 +239,13 @@ public class WorkingProject {
         return -1;
     }
 
-    private int getRelationshipIndex(ClassObject class1, ClassObject class2)
+    // Return the index of the first ordered Relationship between classObj1 and classObj2 in the list
+    // Return -1 if no Relationship is found
+    private int getRelationshipIndex(ClassObject classObj1, ClassObject classObj2)
     {
         for (int i = 0; i < relationships.size(); ++i)
         {
-            if (relationships.get(i).getClassOne() == class1 && relationships.get(i).getClassTwo() == class2)
+            if (relationships.get(i).getClassOne() == classObj1 && relationships.get(i).getClassTwo() == classObj2)
             {
                 return i;
             }
@@ -220,6 +253,7 @@ public class WorkingProject {
         return -1;
     }
 
+    // Remove any relationships which contain classObj from the list
     private void removeRelationshipsByClass(ClassObject classObj)
     {
         int i = 0;
