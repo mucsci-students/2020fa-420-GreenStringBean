@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class ClassObject
 {   
     private String name;
+    private boolean isOpen;
     private ArrayList<Attribute> attributes;
 
     public ClassObject()
