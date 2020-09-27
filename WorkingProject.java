@@ -143,28 +143,33 @@ public class WorkingProject {
     // Add a new ordered Relationship between the ClassObjects called className1 and className2 to the end of the list
     // Print an error if either of those names are not found in the ClassObject list
     // Print an error if there is already a Relationship between those classes in the list
-    public void addRelationship(String className1, String className2)
+    public void addRelationship(String className1, String className2, String typeName)
     {
         int classIndex1 = getClassIndex(className1);
         int classIndex2 = getClassIndex(className2);
-        if (classIndex1 != -1 && classIndex2 != -1)
+        Relationship.relationshipType type = stringToRelationshipType(typeName);
+        if(type != null)
         {
-            ClassObject class1 = classes.get(classIndex1);
-            ClassObject class2 = classes.get(classIndex2); 
-            if (getRelationshipIndex(class1, class2) == -1)
+            if (classIndex1 != -1 && classIndex2 != -1)
             {
-                relationships.add(new Relationship(class1, class2));
+                ClassObject class1 = classes.get(classIndex1);
+                ClassObject class2 = classes.get(classIndex2); 
+                if (getRelationshipIndex(class1, class2) == -1)
+                {
+                    relationships.add(new Relationship(class1, class2, type));
+                }
+                else
+                {
+                    System.out.println("error, relationship already exists");
+                }
             }
             else
             {
-                System.out.println("error, relationship already exists");
+                System.out.println("error, one or both classes don't exist");
             }
         }
-        else
-        {
-            System.out.println("error, one or both classes don't exist");
-        }
     }
+
 
     // Remove the relationship between the ClassObjects called className1 and className2 from the list
     // Print an error if either of those names are not found in the ClassObject list
@@ -191,6 +196,35 @@ public class WorkingProject {
         }
     }
 
+    // Change the relationship type
+    // print an error if the relationship type doesn't exist
+    public void changeRelationshipType(String className1, String className2, String newTypeName)
+    {
+        int index1 = getClassIndex(className1);
+        int index2 = getClassIndex(className2);
+        Relationship.relationshipType newType = stringToRelationshipType(newTypeName);
+        if(newType != null)
+        {
+            if (index1 != -1 && index2 != -1)
+            {
+                int relIndex = getRelationshipIndex(classes.get(index1), classes.get(index2));
+                if (relIndex != -1)
+                {
+                    relationships.get(relIndex).setRelationshipType(newType);
+                }
+                else
+                {
+                    System.out.println("error, relationship doesn't exist");
+                }
+            }
+            else
+            {
+                System.out.println("error, one or both classes don't exist");
+            }
+        }
+        
+    }
+
     // Print the name of each ClassObject in the list
     public void printClasses()
     {
@@ -206,7 +240,7 @@ public class WorkingProject {
     {
         for (Relationship relation : relationships)
         {
-            System.out.println(relation.getClassOne().getName() + " -> " + relation.getClassTwo().getName());
+            System.out.println(relation.getClassOne().getName() + " -> " + relation.getClassTwo().getName() + " type = " + relation.getRelationshipType());
         }
     }
 
@@ -267,6 +301,23 @@ public class WorkingProject {
             {
                 ++i;
             }
+        }
+    }
+
+    private Relationship.relationshipType stringToRelationshipType(String str)
+    {
+        switch(str){
+            case "C":
+                return Relationship.relationshipType.COMPOSITION;
+            case "A":
+                return Relationship.relationshipType.AGGREGATION;
+            case "G":
+                return Relationship.relationshipType.GENERALIZATION;
+            case "I":
+                return Relationship.relationshipType.INHERITANCE;
+            default :
+                System.out.println("error: not a valid relationship type");
+                return null;
         }
     }
 }
