@@ -4,30 +4,37 @@ public class ClassObject
 {   
     private String name;
     private boolean isOpen;
-    private ArrayList<Attribute> attributes;
+    private ArrayList<Field> fields;
+    private ArrayList<Method> methods;
 
     public ClassObject()
     {
         System.out.println("error, no name");
     }
+
     public ClassObject(String giveName)
     {
         name = giveName;
         isOpen = false;
-        attributes = new ArrayList<Attribute>();
+        fields = new ArrayList<>();
+        methods = new ArrayList<>();
     }
+
     public String getName()
     {
         return name;
     }
+
     public void setName(String newName)
     {
         name = newName;
     }
+
     public boolean isOpen()
     {
         return isOpen;
     }
+
     public void close()
     {
         if(isOpen)
@@ -35,6 +42,7 @@ public class ClassObject
         else
             System.out.println("it's already closed");
     }
+
     public void open()
     {
         if(isOpen)
@@ -42,45 +50,193 @@ public class ClassObject
         else
             isOpen = true;
     }
-    public void addAttribute(String attrName)
+
+    public void addField(String fieldName, String fieldType)
     {
-        if (getAttrIndex(attrName) == -1)
+        if (getFieldIndex(fieldName) == -1)
         {
-            attributes.add(new Attribute(attrName));
+            fields.add(new Field(fieldName, fieldType));
         }
         else
         {
-            System.out.println("error, attribute already exists");
+            System.out.println("error, field already exists");
         }
     }
-    public void removeAttribute(String attrName)
+
+    public void removeField(String fieldName)
     {
-        int index = getAttrIndex(attrName);
-        if(index!=-1)
-            attributes.remove(index);
+        int index = getFieldIndex(fieldName);
+        if(index != -1)
+        {
+            fields.remove(index);
+        }
         else
-            System.out.println("error, attribute doesn't exist");
+        {
+            System.out.println("error, field doesn't exist");
+        }
     }
-    public void renameAttribute(String oldName, String newName)
+
+    public void renameField(String oldName, String newName)
     {
-        int oldNameIndex = getAttrIndex(oldName);
+        int oldNameIndex = getFieldIndex(oldName);
         if (oldNameIndex != -1)
         {
-            int newNameIndex = getAttrIndex(newName);
+            int newNameIndex = getFieldIndex(newName);
             if (newNameIndex == -1)
             {
-                attributes.get(oldNameIndex).setName(newName);
+                fields.get(oldNameIndex).setName(newName);
             }
             else
             {
-                System.out.println("error, attribute with new name already exists");
+                System.out.println("error, field with new name already exists");
             }
         }
         else
         {
-            System.out.println("error, attribute doesn't exist");
+            System.out.println("error, field doesn't exist");
         }
     }
+
+    public void changeFieldType(String fieldName, String newType)
+    {
+        int index = getFieldIndex(fieldName);
+        if (index != -1)
+        {
+            Field field = fields.get(index);
+            if (!field.getType().equals(newType))
+            {
+                field.setType(newType);
+            }
+            else
+            {
+                System.out.println("error, field already has that type");
+            }
+        }
+        else
+        {
+            System.out.println("error, field doesn't exist");
+        }
+    }
+
+    public void addMethod(String methodName, String methodType)
+    {
+        if (getMethodIndex(methodName) == -1)
+        {
+            methods.add(new Method(methodName, methodType));
+        }
+        else
+        {
+            System.out.println("error, method already exists");
+        }
+    }
+
+    public void removeMethod(String methodName)
+    {
+        int index = getMethodIndex(methodName);
+        if(index != -1)
+        {
+            methods.remove(index);
+        }
+        else
+        {
+            System.out.println("error, method doesn't exist");
+        }
+    }
+
+    public void renameMethod(String oldName, String newName)
+    {
+        int oldNameIndex = getMethodIndex(oldName);
+        if (oldNameIndex != -1)
+        {
+            int newNameIndex = getMethodIndex(newName);
+            if (newNameIndex == -1)
+            {
+                methods.get(oldNameIndex).setName(newName);
+            }
+            else
+            {
+                System.out.println("error, method with new name already exists");
+            }
+        }
+        else
+        {
+            System.out.println("error, method doesn't exist");
+        }
+    }
+
+    public void changeMethodType(String methodName, String newType)
+    {
+        int index = getMethodIndex(methodName);
+        if (index != -1)
+        {
+            Method method = methods.get(index);
+            if (!method.getType().equals(newType))
+            {
+                method.setType(newType);
+            }
+            else
+            {
+                System.out.println("error, method already has that type");
+            }
+        }
+        else
+        {
+            System.out.println("error, method doesn't exist");
+        }
+    }
+
+    public void addParameter(String methodName, String paramName, String paramType)
+    {
+        int index = getMethodIndex(methodName);
+        if (index != -1)
+        {
+            methods.get(index).addParameter(paramName, paramType);
+        }
+        else
+        {
+            System.out.println("error, method doesn't exist");
+        }
+    }
+
+    public void removeParameter(String methodName, String paramName)
+    {
+        int index = getMethodIndex(methodName);
+        if (index != -1)
+        {
+            parameters.get(index).removeParameter(paramName);
+        }
+        else
+        {
+            System.out.println("error, method doesn't exist");
+        }
+    }
+
+    public void renameParameter(String methodName, String oldParamName, String newParamName)
+    {
+        int index = getMethodIndex(methodName);
+        if (index != -1)
+        {
+            parameters.get(index).renameParameter(oldParamName, newParamName);
+        }
+        else
+        {
+            System.out.println("error, method doesn't exist");
+        }
+    }
+
+    public void changeParameterType(String methodName, String paramName, String newParamType)
+    {
+        int index = getMethodIndex(methodName);
+        if (index != -1)
+        {
+            parameters.get(index).changeParameterType(paramName, newParamType);
+        }
+        else
+        {
+            System.out.println("error, method doesn't exist");
+        }
+    }
+
     public boolean hasAttribute(String attrName)
     {
         for (Attribute attr : attributes)
@@ -90,18 +246,40 @@ public class ClassObject
         }
         return false;
     }
-    public void printAttributes()
+
+    public void printFields()
     {
-        for (Attribute attr : attributes)
+        for (Field field : fields)
         {
-            System.out.println(attr.getName());
+            System.out.println(field.getType() + " " + field.getName());
         }
     }
-    private int getAttrIndex(String attrName)
+
+    public void printMethods()
     {
-        for(int i = 0; i < attributes.size(); i++)
+        for (Method method : methods)
         {
-            if(attributes.get(i).getName().equals(attrName))
+            System.out.print(method.getType() + " " + method.getName() + "(");
+            method.printParameters();
+            System.out.println(")");
+        }
+    }
+
+    private int getFieldIndex(String fieldName)
+    {
+        for(int i = 0; i < fields.size(); i++)
+        {
+            if(fields.get(i).getName().equals(fieldName))
+                return i;
+        }
+        return -1;
+    }
+
+    private int getMethodIndex(String methodName)
+    {
+        for(int i = 0; i < methods.size(); i++)
+        {
+            if(methods.get(i).getName().equals(methodName))
                 return i;
         }
         return -1;

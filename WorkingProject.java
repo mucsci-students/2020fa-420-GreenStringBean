@@ -97,12 +97,12 @@ public class WorkingProject {
 
     // Add a new Attribute called attrName to the ClassObject called className
     // Print an error if there is no ClassObject with that name in the list
-    public void addAttribute(String className, String attrName)
+    public void addField(String className, String fieldName, String fieldType)
     {
         int index = getClassIndex(className);
         if (index != -1)
         {
-            classes.get(index).addAttribute(attrName);
+            classes.get(index).addField(fieldName, fieldType);
         }
         else
         {
@@ -112,12 +112,12 @@ public class WorkingProject {
 
     // Remove the Attribute called attrName from the ClassObject called className
     // Print an error if there is no ClassObject with that name in the list
-    public void removeAttribute(String className, String attrName)
+    public void removeField(String className, String fieldName)
     {
         int index = getClassIndex(className);
         if (index != -1)
         {
-            classes.get(index).removeAttribute(attrName);
+            classes.get(index).removeField(fieldName);
         }
         else
         {
@@ -127,12 +127,141 @@ public class WorkingProject {
 
     // Rename the Attribute called oldAttrName to newAttrName in the ClassObject called className
     // Print an error if there is no ClassObject with that name in the list
-    public void renameAttribute(String className, String oldAttrName, String newAttrName)
+    public void renameField(String className, String oldFieldName, String newFieldName)
     {
         int index = getClassIndex(className);
         if (index != -1)
         {
-            classes.get(index).renameAttribute(oldAttrName, newAttrName);
+            classes.get(index).renameField(oldFieldName, newFieldName);
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
+    public void changeFieldType(String className, String fieldName, String newFieldType)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).changeFieldType(fieldName, newFieldType);
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
+    // Add a new Attribute called attrName to the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
+    public void addMethod(String className, String methodName, String methodType)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).addMethod(methodName, methodType);
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
+    // Remove the Attribute called attrName from the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
+    public void removeMethod(String className, String methodName)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).removeMethod(methodName);
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
+    // Rename the Attribute called oldAttrName to newAttrName in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
+    public void renameMethod(String className, String oldMethodName, String newMethodName)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).renameMethod(oldMethodName, newMethodName);
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
+    public void changeMethodType(String className, String methodName, String newMethodType)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).changeMethodType(methodName, newMethodType);
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
+    // Add a new Attribute called attrName to the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
+    public void addParameter(String className, String methodName, String parameterName, String parameterType)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).addParameter(methodName, parameterName, parameterType);
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
+    // Remove the Attribute called attrName from the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
+    public void removeParameter(String className, String methodName, String parameterName)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).removeParameter(methodName, parameterName);
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
+    // Rename the Attribute called oldAttrName to newAttrName in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
+    public void renameParameter(String className, String methodName, String oldParamName, String newParamName)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).renameParameter(methodName, oldParamName, newParamName);
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
+    public void changeParamType(String className, String methodName, String paramName, String newParamType)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).changeParamType(methodName, paramName, newParamType);
         }
         else
         {
@@ -246,12 +375,27 @@ public class WorkingProject {
 
     // Print the name of each Attribute in the ClassObject called className
     // Print an error if there is no ClassObject with that name in the list
-    public void printAttributes(String className)
+    public void printFields(String className)
     {
         int index = getClassIndex(className);
         if (index != -1)
         {
-            classes.get(index).printAttributes();
+            classes.get(index).printFields();
+        }
+        else
+        {
+            System.out.println("error, class doesn't exist");
+        }
+    }
+
+    // Print the name of each Attribute in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the list
+    public void printMethods(String className)
+    {
+        int index = getClassIndex(className);
+        if (index != -1)
+        {
+            classes.get(index).printMethods();
         }
         else
         {
