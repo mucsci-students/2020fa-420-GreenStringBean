@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONAware;
 
 public class ClassObject
 {   
@@ -105,5 +108,31 @@ public class ClassObject
                 return i;
         }
         return -1;
+    }
+
+    public String toJSONString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"" + "Name" + "\"");
+        sb.append(":");
+        sb.append("\"" + this.getName() +  "\"");
+        sb.append(",");
+        sb.append("\"" + "Attributes" + "\"");
+        sb.append(":");
+        sb.append("[");
+        //for (Attribute a : attributes)
+        //{
+        //    sb.append(a.toJSONString());
+        //}
+        for (int i = 0; i < attributes.size() - 1; ++i)
+        {
+            sb.append(attributes.get(i).toJSONString());
+            sb.append(",");
+        }
+        sb.append(attributes.get(attributes.size() - 1).toJSONString());
+        sb.append("]");
+        sb.append("}");
+        return sb.toString();
     }
 }

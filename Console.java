@@ -1,14 +1,22 @@
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.io.BufferedReader;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.JSONArray;
 
 public class Console {
 
     //Fields
     static boolean helpfilePresent = true;
-    static BufferedReader br;
+    static BufferedReader brHelp;
+    static BufferedReader brProject;
     static WorkingProject project;
 
     //Methods
@@ -32,14 +40,34 @@ public class Console {
 
                 //Save the working project into a named file
                 case "save":
-                    //TODO Implement save feature
-                    System.out.println("Saving isn't implemented yet. Sorry!");
+                    if (commands.size() < 2)
+                        System.out.println("error: too few arguments for save<filename>");
+                    else if (commands.size() > 2)
+                        System.out.println("error: too many arguments for save<filename>");
+                    else
+                    {
+                        saveFile(commands.get(1));
+                    }
+                    
                     break;
 
                 //Load a project from a file
                 case "load":
-                    //TODO Implement load feature
-                    System.out.println("Loading isn't implemented yet. Sorry!");
+                    if (commands.size() < 2)
+                        System.out.println("error: too few arguments for load<filename.txt>");
+                    else if (commands.size() > 2)
+                        System.out.println("error: too many arguments for load<filename.txt>");
+                    else
+                    {
+                        try 
+                        {
+                            loadFile(commands.get(1));
+                        }
+                        catch (FileNotFoundException f)
+                        {
+                            System.out.println("error: File could not be found.");
+                        }
+                    }
                     break;
 
                 //Print a help file of commands
@@ -204,20 +232,91 @@ public class Console {
             return;
         }
         int i;
-        while ((i = br.read()) != -1)
+        while ((i = brHelp.read()) != -1)
             System.out.print((char) i);
         
-        br.reset();
+        brHelp.reset();
         System.out.print("\n");
     }
 
-    
+    public static void saveFile (String projectName)
+    {
+        String filename = projectName + ".txt";
+        try {
+            File proj = new File(filename);
+            if (proj.createNewFile())
+            {
+                FileWriter fw = new FileWriter(proj);
+                fw.write(project.toJSONString());
+                fw.close();
+            }
+            else 
+            {
+                System.out.println("For some reason, nothing saved. That's too bad.");
+            }
+        } catch (IOException e) {
+            System.out.println ("It's broke, man.");
+        }
+    }
+
+    public static void loadFile (String filename) throws FileNotFoundException
+    {
+        
+        try {
+            brProject = new BufferedReader(new FileReader(filename));
+            int i;
+            StringBuilder projectString = new StringBuilder();
+            while ((i = brProject.read()) != -1)
+                projectString.append((char) i);
+
+            project = loadProject(projectString.toString());
+        } catch (IOException e)
+        {
+            System.out.println("error: File could not be read.");
+        }
+    }
+
+    public static WorkingProject loadProject(String projectString)
+    {
+        WorkingProject loadedProject = new WorkingProject();
+
+        Object obj = JSONValue.parse(projectString);
+        JSONObject object = (JSONObject)obj;
+        JSONArray classes = (JSONArray)object.get("Classes");
+        JSONArray relationships = (JSONArray)object.get("Relationships");
+        
+        for (int i = 0; i < classes.size(); ++i)
+        {
+            JSONObject c = (JSONObject)classes.get(i);
+            String className = (String)c.get("Name");
+            loadedProject.addClass(className);
+
+            JSONArray attributes = (JSONArray)c.get("Attributes");
+            for (int j = 0; j < attributes.size(); ++j)
+            {
+                JSONObject a = (JSONObject)attributes.get(j);
+                String attributeName = (String)a.get("Name");
+                //String attributeType = a.get("Type");
+                //loadedProject.addAttribute(className, attributeName, attributeType);
+                loadedProject.addAttribute(className, attributeName);
+            }
+        }
+        for (int i = 0; i < relationships.size(); ++i)
+        {
+            JSONObject r = (JSONObject)relationships.get(i);
+            String classOne = (String)r.get("ClassOne");
+            String classTwo = (String)r.get("ClassTwo");
+            loadedProject.addRelationship(classOne, classTwo);
+        }
+
+        return loadedProject;
+    }
 
     public static void main(String[] args)
     {
         try {
-            br = new BufferedReader (new FileReader ("HelpDocument.txt"));
-            br.mark(2000);
+            brHelp = new BufferedReader (new FileReader ("HelpDocument.txt"));
+            brHelp.mark(2000);
         }
         catch (Exception FileNotFoundException) {
             helpfilePresent = false;
