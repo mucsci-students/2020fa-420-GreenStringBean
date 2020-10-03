@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 
 public class WorkingProject {
     private ArrayList<ClassObject> classes;
@@ -234,5 +237,37 @@ public class WorkingProject {
                 ++i;
             }
         }
+    }
+
+    //Encode the project into a JSONArray by encoding the classes and their attributes, and the relationships
+    public String toJSONString ()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"" + "Classes" + "\"");
+        sb.append(":");
+        sb.append("[");
+        
+        for (int i = 0; i < classes.size() - 1; ++i)
+        {
+            sb.append(classes.get(i).toJSONString());
+            sb.append(",");
+        }
+        sb.append(classes.get(classes.size() - 1).toJSONString());
+        sb.append("]");
+        sb.append(",");
+        sb.append("\"" + "Relationships" + "\"");
+        sb.append(":");
+        sb.append("[");
+
+        for (int i = 0; i < relationships.size() - 1; ++i)
+        {
+            sb.append(relationships.get(i).toJSONString());
+            sb.append(",");
+        }
+        sb.append(relationships.get(relationships.size() - 1).toJSONString());
+        sb.append("]");
+        sb.append("}");
+        return sb.toString();
     }
 }
