@@ -5,14 +5,20 @@ import org.json.simple.JSONAware;
 
 public class Relationship
 {
-
+	enum relationshipType
+	{
+		COMPOSITION, AGGREGATION, GENERALIZATION, INHERITANCE;
+	}
 	private ClassObject classOne;
 	private ClassObject classTwo;
+	private relationshipType type;
 	
-	public Relationship(ClassObject classO, ClassObject classT)
+	
+	public Relationship(ClassObject classO, ClassObject classT, relationshipType t)
 	{
 		classOne = classO;
 		classTwo = classT;
+		type = t;
 	}
 	
 	public ClassObject getClassOne()
@@ -23,6 +29,17 @@ public class Relationship
 	public ClassObject getClassTwo()
 	{
 		return classTwo;
+	}
+
+	
+	public relationshipType getRelationshipType()
+	{
+		return type;
+	}
+
+	public void setRelationshipType(relationshipType newType)
+	{
+		type = newType;
 	}
 
 	public String toJSONString()
@@ -36,10 +53,10 @@ public class Relationship
 		sb.append("\"" + "ClassTwo" + "\"");
 		sb.append(":");
 		sb.append("\"" + this.getClassTwo().getName() + "\"");
-		//sb.append(",");
-		//sb.append("\"" + "Type" + "\"");
-		//sb.append(":");
-		//sb.append("\"" + this.getRelationshipType() + "\"");
+		sb.append(",");
+		sb.append("\"" + "RelationshipType" + "\"");
+		sb.append(":");
+		sb.append("\"" + this.getRelationshipType() + "\"");
 		sb.append("}");
 		return sb.toString();
 	}

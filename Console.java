@@ -138,23 +138,22 @@ public class Console {
                         System.out.println("error: too many arguments for addRelation. <class, class, type>");
                     else
                     {
-                        switch (commands.get(4)) {
+                        switch (commands.get(3)) {
                             case "-a" :
-                                //project.addRelationship (commands.get(1), commands.get(2), "aggregation"); 
+                                project.addRelationship (commands.get(1), commands.get(2), "A"); 
                                 break;
                             case "-c" : 
-                                //project.addRelationship (commands.get(1), commands.get(2), "composition"); 
+                                project.addRelationship (commands.get(1), commands.get(2), "C"); 
                                 break;
                             case "-g" : 
-                                //project.addRelationship (commands.get(1), commands.get(2), "generalization"); 
+                                project.addRelationship (commands.get(1), commands.get(2), "G"); 
                                 break;
                             case "-i" : 
-                                //project.addRelationship (commands.get(1), commands.get(2), "inheritance"); 
+                                project.addRelationship (commands.get(1), commands.get(2), "I"); 
                                 break;
                             default :
                                 System.out.println("error: no relationship type given. <class, class, type>");
                         }
-                        project.addRelationship (commands.get(1), commands.get(2));
                     }
                     break;
 
@@ -189,7 +188,7 @@ public class Console {
 
                         //project.addAttribute(commands.get(1), commands.get(2), attr, type);
 
-                        project.addAttribute(commands.get(1), commands.get(2));
+                        //project.addAttribute(commands.get(1), commands.get(2));
                     }
                     break;
 
@@ -200,7 +199,7 @@ public class Console {
                     else if (commands.size() > 4)
                         System.out.println("error: too many arguments for addField class <class, name, data type>");
                     else 
-                        //project.addAttribute(commands.get(1), commands.get(2), commands.get(3));
+                        project.addField(commands.get(1), commands.get(2), commands.get(3));
                     break;
 
                 //Add a new method attribute to named class
@@ -212,34 +211,51 @@ public class Console {
                     else
                     {
                         ArrayList<String> param;
-                        System.out.print ("What are the data types of the parameters for this method, if any?");
-                        String p = keyboard.nextLine();
-                        param = parseLine(p);
-                        //project.addAttribute(commands.get(1), commands.get(2), commands.get(3), param);
+                        project.addMethod(commands.get(1), commands.get(2), commands.get(3));
                     }
                     break;     
 
-                //Delete a named attribute from a named class
-                case "deleteAttribute" :
+                //Delete a named field from a named class
+                case "deleteField" :
                     if (commands.size() < 3)
                         System.out.println("error: too few arguments for deleteAttribute<class, attribute>");
                     else if (commands.size() > 3)
                         System.out.println("error: too many arguments for deleteAttribute<class, attribute>");
                     else
-                        project.removeAttribute(commands.get(1), commands.get(2));
+                        project.removeField(commands.get(1), commands.get(2));
                     break;
 
-                //Rename a named attribute from a named class
-                case "renameAttribute" :
-                    if (commands.size() < 5)
-                        System.out.println("error: too few arguments for renameAttribute<class, attribute, newName, type>");
-                    else if (commands.size() < 5)
-                        System.out.println("error: too many arguments for renameAttribute<class, attribute, newName, type>");
+                //Delete a named method from a named class
+                case "deleteMethod" :
+                if (commands.size() < 3)
+                    System.out.println("error: too few arguments for deleteAttribute<class, attribute>");
+                else if (commands.size() > 3)
+                    System.out.println("error: too many arguments for deleteAttribute<class, attribute>");
+                else
+                    project.removeMethod(commands.get(1), commands.get(2));
+                break;   
+                    
+                //Rename a named field from a named class
+                case "renameField" :
+                    if (commands.size() < 4)
+                        System.out.println("error: too few arguments for renameField<class, oldName, newName>");
+                    else if (commands.size() < 4)
+                        System.out.println("error: too many arguments for renameField<class, oldName, newName>");
                     else
-                        //project.renameAttribute(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
-                        project.renameAttribute(commands.get(1), commands.get(2), commands.get(3));
+                        project.renameField(commands.get(1), commands.get(2), commands.get(3));
                     break;
                 
+
+                //Rename a named method from a named class
+                case "renameMethod" :
+                if (commands.size() < 4)
+                    System.out.println("error: too few arguments for renameMethod<class, oldName, newName>");
+                else if (commands.size() < 4)
+                    System.out.println("error: too many arguments for renameMethod <class, oldName, newName>");
+                else
+                    project.renameMethod(commands.get(1), commands.get(2), commands.get(3));
+                break;
+
                 //Print the names of each class
                 case "printClasses" :
                     project.printClasses();
@@ -252,9 +268,32 @@ public class Console {
                     else if (commands.size() > 2)
                         System.out.println("error: too many arguments for printAttributes<class>");
                     else
-                        project.printAttributes(commands.get(1));
+                    {
+                        project.printFields(commands.get(1));
+                        project.printMethods(commands.get(1));
+                    }
                     break;
 
+                //Print the fields of a named class
+                case "printFields" :
+                    if (commands.size() < 2)
+                        System.out.println("error: too few arguments for printFields<class>");
+                    else if (commands.size() > 2)
+                        System.out.println("error: too many arguments for printFields<class>");
+                    else
+                        project.printFields(commands.get(1));
+                    break;
+                
+                //Print the methods of a named class
+                case "printMethods" :
+                    if (commands.size() < 2)
+                        System.out.println("error: too few arguments for printFields<class>");
+                    else if (commands.size() > 2)
+                        System.out.println("error: too many arguments for printFields<class>");
+                    else
+                        project.printFields(commands.get(1));
+                    break;
+                
                 //Print each relationship
                 case "printRelationships" :
                     project.printRelationships();
@@ -355,9 +394,25 @@ public class Console {
             {
                 JSONObject a = (JSONObject)attributes.get(j);
                 String attributeName = (String)a.get("Name");
-                //String attributeType = a.get("Type");
-                //loadedProject.addAttribute(className, attributeName, attributeType);
-                loadedProject.addAttribute(className, attributeName);
+                String attributeType = (String)a.get("Type");
+                String fieldOrMethod = (String)a.get("FieldOrMethod");
+                if (fieldOrMethod.equals("Method"))
+                {
+                    loadedProject.addMethod(className, attributeName, attributeType);
+
+                    JSONArray parameters = (JSONArray)a.get("Parameters");
+                    for (int k = 0; k < parameters.size(); ++k)
+                    {
+                        JSONObject p = (JSONObject)parameters.get(k);
+                        String parameterName = (String)p.get("Name");
+                        String parameterType = (String)p.get("Type");
+                        loadedProject.addParameter(className, attributeName, parameterName, parameterType);
+                    }
+                }
+                else if (fieldOrMethod.equals("Field"))
+                {
+                    loadedProject.addField(className, attributeName, attributeType);
+                }
             }
         }
         for (int i = 0; i < relationships.size(); ++i)
@@ -365,7 +420,24 @@ public class Console {
             JSONObject r = (JSONObject)relationships.get(i);
             String classOne = (String)r.get("ClassOne");
             String classTwo = (String)r.get("ClassTwo");
-            loadedProject.addRelationship(classOne, classTwo);
+            String relationshipType; 
+            switch ((String)r.get("RelationshipType"))
+            {
+                case "AGGREGATION" : relationshipType = "A";
+                break;
+
+                case "GENERALIZATION" : relationshipType = "G";
+                break;
+
+                case "INHERITANCE" : relationshipType = "I";
+                break;
+
+                case "COMPOSITION" : relationshipType = "C";
+                break;
+
+                default : relationshipType = "Yikes";
+            }
+            loadedProject.addRelationship(classOne, classTwo, relationshipType);
         }
 
         return loadedProject;
