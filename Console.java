@@ -213,7 +213,16 @@ public class Console {
                         ArrayList<String> param;
                         project.addMethod(commands.get(1), commands.get(2), commands.get(3));
                     }
-                    break;     
+                    break;
+
+                case "addParameter" :
+                    if (commands.size() < 5)
+                        System.out.println("error: too few arguments for addParameter<class, method, paramName, paramType>");
+                    else if (commands.size() > 5)
+                        System.out.println("error: too many arguments for addParameter<class, method, paramName, paramType");
+                    else
+                        project.addParameter(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
+                    break;
 
                 //Delete a named field from a named class
                 case "deleteField" :
@@ -291,7 +300,7 @@ public class Console {
                     else if (commands.size() > 2)
                         System.out.println("error: too many arguments for printFields<class>");
                     else
-                        project.printFields(commands.get(1));
+                        project.printMethods(commands.get(1));
                     break;
                 
                 //Print each relationship
@@ -367,80 +376,11 @@ public class Console {
             while ((i = brProject.read()) != -1)
                 projectString.append((char) i);
 
-            project = loadProject(projectString.toString());
+            project.loadFromJSON(projectString.toString());
         } catch (IOException e)
         {
             System.out.println("error: File could not be read.");
         }
-    }
-
-    public static WorkingProject loadProject(String projectString)
-    {
-        WorkingProject loadedProject = new WorkingProject();
-
-        Object obj = JSONValue.parse(projectString);
-        JSONObject object = (JSONObject)obj;
-        JSONArray classes = (JSONArray)object.get("Classes");
-        JSONArray relationships = (JSONArray)object.get("Relationships");
-        
-        for (int i = 0; i < classes.size(); ++i)
-        {
-            JSONObject c = (JSONObject)classes.get(i);
-            String className = (String)c.get("Name");
-            loadedProject.addClass(className);
-
-            JSONArray attributes = (JSONArray)c.get("Attributes");
-            for (int j = 0; j < attributes.size(); ++j)
-            {
-                JSONObject a = (JSONObject)attributes.get(j);
-                String attributeName = (String)a.get("Name");
-                String attributeType = (String)a.get("Type");
-                String fieldOrMethod = (String)a.get("FieldOrMethod");
-                if (fieldOrMethod.equals("Method"))
-                {
-                    loadedProject.addMethod(className, attributeName, attributeType);
-
-                    JSONArray parameters = (JSONArray)a.get("Parameters");
-                    for (int k = 0; k < parameters.size(); ++k)
-                    {
-                        JSONObject p = (JSONObject)parameters.get(k);
-                        String parameterName = (String)p.get("Name");
-                        String parameterType = (String)p.get("Type");
-                        loadedProject.addParameter(className, attributeName, parameterName, parameterType);
-                    }
-                }
-                else if (fieldOrMethod.equals("Field"))
-                {
-                    loadedProject.addField(className, attributeName, attributeType);
-                }
-            }
-        }
-        for (int i = 0; i < relationships.size(); ++i)
-        {
-            JSONObject r = (JSONObject)relationships.get(i);
-            String classOne = (String)r.get("ClassOne");
-            String classTwo = (String)r.get("ClassTwo");
-            String relationshipType; 
-            switch ((String)r.get("RelationshipType"))
-            {
-                case "AGGREGATION" : relationshipType = "A";
-                break;
-
-                case "GENERALIZATION" : relationshipType = "G";
-                break;
-
-                case "INHERITANCE" : relationshipType = "I";
-                break;
-
-                case "COMPOSITION" : relationshipType = "C";
-                break;
-
-                default : relationshipType = "Yikes";
-            }
-            loadedProject.addRelationship(classOne, classTwo, relationshipType);
-        }
-
-        return loadedProject;
     }
 
     public static void main(String[] args)

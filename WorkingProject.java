@@ -468,7 +468,73 @@ public class WorkingProject {
         }
     }
 
-    
+    public void loadFromJSON(String jsonString)
+    {
+        this.classes.clear();
+        this.relationships.clear();
+        
+        Object obj = JSONValue.parse(jsonString);
+        JSONObject object = (JSONObject)obj;
+        JSONArray classes = (JSONArray)object.get("Classes");
+        JSONArray relationships = (JSONArray)object.get("Relationships");
+        
+        for (int i = 0; i < classes.size(); ++i)
+        {
+            JSONObject c = (JSONObject)classes.get(i);
+            String className = (String)c.get("Name");
+            this.addClass(className);
+
+            JSONArray attributes = (JSONArray)c.get("Attributes");
+            for (int j = 0; j < attributes.size(); ++j)
+            {
+                JSONObject a = (JSONObject)attributes.get(j);
+                String attributeName = (String)a.get("Name");
+                String attributeType = (String)a.get("Type");
+                String fieldOrMethod = (String)a.get("FieldOrMethod");
+                if (fieldOrMethod.equals("Method"))
+                {
+                    this.addMethod(className, attributeName, attributeType);
+
+                    JSONArray parameters = (JSONArray)a.get("Parameters");
+                    for (int k = 0; k < parameters.size(); ++k)
+                    {
+                        JSONObject p = (JSONObject)parameters.get(k);
+                        String parameterName = (String)p.get("Name");
+                        String parameterType = (String)p.get("Type");
+                        this.addParameter(className, attributeName, parameterName, parameterType);
+                    }
+                }
+                else if (fieldOrMethod.equals("Field"))
+                {
+                    this.addField(className, attributeName, attributeType);
+                }
+            }
+        }
+        for (int i = 0; i < relationships.size(); ++i)
+        {
+            JSONObject r = (JSONObject)relationships.get(i);
+            String classOne = (String)r.get("ClassOne");
+            String classTwo = (String)r.get("ClassTwo");
+            String relationshipType; 
+            switch ((String)r.get("RelationshipType"))
+            {
+                case "AGGREGATION" : relationshipType = "A";
+                break;
+
+                case "GENERALIZATION" : relationshipType = "G";
+                break;
+
+                case "INHERITANCE" : relationshipType = "I";
+                break;
+
+                case "COMPOSITION" : relationshipType = "C";
+                break;
+
+                default : relationshipType = "Yikes";
+            }
+            this.addRelationship(classOne, classTwo, relationshipType);
+        }
+    }
     //Encode the project into a JSONArray by encoding the classes and their attributes, and the relationships
     public String toJSONString ()
     {
@@ -503,7 +569,7 @@ public class WorkingProject {
             }
             sb.append(relationships.get(relationships.size() - 1).toJSONString());
         }
-        
+
         sb.append("]");
         sb.append("}");
         return sb.toString();

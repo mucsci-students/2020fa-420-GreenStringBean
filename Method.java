@@ -128,9 +128,9 @@ public class Method extends FormalDeclaration {
                 sb.append(parameters.get(i).toJSONString());
                 sb.append(",");
             }
-            sb.append(parameters.get(parameters.size()).toJSONString());
+            sb.append((parameters.get(parameters.size() - 1)).toJSONString());
         }
-        
+
         sb.append("]");
         sb.append("}");
         return sb.toString();
