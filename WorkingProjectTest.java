@@ -1,3 +1,5 @@
+import org.json.simple.*;
+
 public class WorkingProjectTest {
     public static void main(String[] args)
     {
@@ -171,5 +173,61 @@ public class WorkingProjectTest {
         // Test removing a relationship that doesn't exist
         System.out.println("-Remvoing relationship from c to m");
         project.removeRelationship("c", "m");
+
+
+        // TEST JSON ENCODE
+        WorkingProject encodeTest = new WorkingProject();
+        encodeTest.addClass("Apple");
+        encodeTest.addClass("Tomato");
+        encodeTest.addAttribute("Apple", "Seeds");
+        encodeTest.addAttribute("Apple", "Core");
+        encodeTest.addAttribute("Tomato", "Sauce");
+        encodeTest.addRelationship("Apple", "Tomato");
+        String j = encodeTest.toJSONString();
+        System.out.println(j);
+        WorkingProject loadedProject = loadProject(j);
+        System.out.println(loadedProject.toJSONString());
+        encodeTest.printClasses();
+        encodeTest.printAttributes("Apple");
+        encodeTest.printRelationships();
+        loadedProject.printClasses();
+        loadedProject.printAttributes("Apple");
+        loadedProject.printRelationships();
+    }
+
+    public static WorkingProject loadProject(String projectString)
+    {
+        WorkingProject loadedProject = new WorkingProject();
+
+        Object obj = JSONValue.parse(projectString);
+        JSONObject object = (JSONObject)obj;
+        JSONArray classes = (JSONArray)object.get("Classes");
+        JSONArray relationships = (JSONArray)object.get("Relationships");
+        
+        for (int i = 0; i < classes.size(); ++i)
+        {
+            JSONObject c = (JSONObject)classes.get(i);
+            String className = (String)c.get("Name");
+            loadedProject.addClass(className);
+
+            JSONArray attributes = (JSONArray)c.get("Attributes");
+            for (int j = 0; j < attributes.size(); ++j)
+            {
+                JSONObject a = (JSONObject)attributes.get(j);
+                String attributeName = (String)a.get("Name");
+                //String attributeType = a.get("Type");
+                //loadedProject.addAttribute(className, attributeName, attributeType);
+                loadedProject.addAttribute(className, attributeName);
+            }
+        }
+        for (int i = 0; i < relationships.size(); ++i)
+        {
+            JSONObject r = (JSONObject)relationships.get(i);
+            String classOne = (String)r.get("ClassOne");
+            String classTwo = (String)r.get("ClassTwo");
+            loadedProject.addRelationship(classOne, classTwo);
+        }
+
+        return loadedProject;
     }
 }

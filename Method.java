@@ -42,7 +42,7 @@ public class Method extends FormalDeclaration {
             int newIndex = getParamIndex(newParamName);
             if (newIndex == -1)
             {
-                parameters.get(index).setName(newParamName);
+                parameters.get(oldIndex).setName(newParamName);
             }
             else
             {
@@ -100,4 +100,39 @@ public class Method extends FormalDeclaration {
         }
         return -1;
     }
+
+    public String toJSONString ()
+   {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"" + "Name" + "\"");
+        sb.append(":");
+        sb.append("\"" + this.getName() + "\"");
+        sb.append(",");
+        sb.append("\"" + "Type" + "\"");
+        sb.append(":");
+        sb.append("\"" + this.getType() + "\"");
+        sb.append(",");
+        sb.append("\"" + "FieldOrMethod" + "\"");
+        sb.append(":");
+        sb.append("\"" + "Method" + "\"");
+        sb.append(",");
+        sb.append("\"" + "Parameters" + "\"");
+        sb.append(":");
+        sb.append("[");
+
+        if (parameters.size() > 0)
+        {
+            for (int i = 0; i < parameters.size() - 1; ++i)
+            {
+                sb.append(parameters.get(i).toJSONString());
+                sb.append(",");
+            }
+            sb.append((parameters.get(parameters.size() - 1)).toJSONString());
+        }
+
+        sb.append("]");
+        sb.append("}");
+        return sb.toString();
+   }
 }

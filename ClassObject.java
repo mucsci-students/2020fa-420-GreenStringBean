@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONAware;
 
 public class ClassObject
 {   
@@ -203,7 +206,8 @@ public class ClassObject
         int index = getMethodIndex(methodName);
         if (index != -1)
         {
-            parameters.get(index).removeParameter(paramName);
+            //parameters.get(index).removeParameter(paramName);
+            methods.get(index).removeParameter(paramName);
         }
         else
         {
@@ -216,7 +220,8 @@ public class ClassObject
         int index = getMethodIndex(methodName);
         if (index != -1)
         {
-            parameters.get(index).renameParameter(oldParamName, newParamName);
+            //parameters.get(index).renameParameter(oldParamName, newParamName);
+            methods.get(index).renameParameter(oldParamName, newParamName);
         }
         else
         {
@@ -229,7 +234,8 @@ public class ClassObject
         int index = getMethodIndex(methodName);
         if (index != -1)
         {
-            parameters.get(index).changeParameterType(paramName, newParamType);
+            //parameters.get(index).changeParameterType(paramName, newParamType);
+            methods.get(index).changeParameterType(paramName, newParamType);
         }
         else
         {
@@ -237,6 +243,7 @@ public class ClassObject
         }
     }
 
+    /*
     public boolean hasAttribute(String attrName)
     {
         for (Attribute attr : attributes)
@@ -246,6 +253,7 @@ public class ClassObject
         }
         return false;
     }
+    */
 
     public void printFields()
     {
@@ -283,5 +291,41 @@ public class ClassObject
                 return i;
         }
         return -1;
+    }
+
+    public String toJSONString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"" + "Name" + "\"");
+        sb.append(":");
+        sb.append("\"" + this.getName() +  "\"");
+        sb.append(",");
+        sb.append("\"" + "Attributes" + "\"");
+        sb.append(":");
+        sb.append("[");
+        if (fields.size() > 0)
+        {
+            for (int i = 0; i < fields.size() - 1; ++i)
+            {
+                sb.append(fields.get(i).toJSONString());
+                sb.append(",");
+            }
+            sb.append(fields.get(fields.size() - 1).toJSONString());
+            sb.append(",");
+        }
+
+        if (methods.size() > 0)
+        {
+            for (int i = 0; i < methods.size() -1; ++i)
+            {
+                sb.append(methods.get(i).toJSONString());
+                sb.append(",");
+            }
+            sb.append(methods.get(methods.size() - 1).toJSONString());
+        }
+        sb.append("]");
+        sb.append("}");
+        return sb.toString();
     }
 }
