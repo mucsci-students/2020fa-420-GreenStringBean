@@ -3,6 +3,7 @@ import org.json.simple.*;
 public class WorkingProjectTest {
     public static void main(String[] args)
     {
+        /*
         System.out.println("-Testing Working Project Class");
 
         // Test creating a new project
@@ -228,6 +229,6 @@ public class WorkingProjectTest {
             loadedProject.addRelationship(classOne, classTwo);
         }
 
-        return loadedProject;
+        return loadedProject;*/
     }
 }

@@ -3,8 +3,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONAware;
 
 
-public class Relationship
-{
+public class Relationship {
 	enum relationshipType
 	{
 		COMPOSITION, AGGREGATION, GENERALIZATION, INHERITANCE;

@@ -36,7 +36,7 @@ public class Console {
                 //Exit the program
                 case "quit":
                     keyboard.close();
-                    System.exit(0);
+                    return;
 
                 //Save the working project into a named file
                 case "save":

@@ -3,8 +3,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONAware;
 
-public class ClassObject
-{   
+public class ClassObject {   
     private String name;
     private boolean isOpen;
     private ArrayList<Field> fields;
@@ -206,7 +205,6 @@ public class ClassObject
         int index = getMethodIndex(methodName);
         if (index != -1)
         {
-            //parameters.get(index).removeParameter(paramName);
             methods.get(index).removeParameter(paramName);
         }
         else
@@ -220,7 +218,6 @@ public class ClassObject
         int index = getMethodIndex(methodName);
         if (index != -1)
         {
-            //parameters.get(index).renameParameter(oldParamName, newParamName);
             methods.get(index).renameParameter(oldParamName, newParamName);
         }
         else
@@ -234,7 +231,6 @@ public class ClassObject
         int index = getMethodIndex(methodName);
         if (index != -1)
         {
-            //parameters.get(index).changeParameterType(paramName, newParamType);
             methods.get(index).changeParameterType(paramName, newParamType);
         }
         else
