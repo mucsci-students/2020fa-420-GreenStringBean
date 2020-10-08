@@ -2,8 +2,7 @@ import org.json.simple.JSONAware;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class Attribute
-{
+public class Attribute {
    private String name;
    public Attribute(String attrName)
    {
