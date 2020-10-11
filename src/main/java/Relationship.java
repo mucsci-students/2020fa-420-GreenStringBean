@@ -1,62 +1,67 @@
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONAware;
 
 
 public class Relationship {
 	enum relationshipType
 	{
-		COMPOSITION, AGGREGATION, GENERALIZATION, INHERITANCE;
+		AGGREGATION, COMPOSITION, INHERITANCE, REALIZATION;
 	}
-	private ClassObject classOne;
-	private ClassObject classTwo;
+	private ClassObject classFrom;
+	private ClassObject classTo;
 	private relationshipType type;
 	
-	
-	public Relationship(ClassObject classO, ClassObject classT, relationshipType t)
+	// Create a new Relationship with "from" and "to" ClassObject and a type
+	public Relationship(ClassObject classFrom, ClassObject classTo, relationshipType type)
 	{
-		classOne = classO;
-		classTwo = classT;
-		type = t;
+		this.classFrom = classFrom;
+		this.classTo = classTo;
+		this.type = type;
 	}
 	
-	public ClassObject getClassOne()
+	// Return the "from" ClassObject
+	public ClassObject getClassFrom()
 	{
-		return classOne;
+		return classFrom;
 	}
 	
-	public ClassObject getClassTwo()
+	// Return the "to" ClassObject
+	public ClassObject getClassTo()
 	{
-		return classTwo;
+		return classTo;
 	}
 
-	
-	public relationshipType getRelationshipType()
+	// Return the relationship's type
+	public relationshipType getType()
 	{
 		return type;
 	}
 
-	public void setRelationshipType(relationshipType newType)
+	public void setType(relationshipType type)
 	{
-		type = newType;
+		this.type = type;
 	}
 
-	public String toJSONString()
+	// Return true if classObj is part of the relationship
+	public boolean containsClass(ClassObject classObj)
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		sb.append("\"" + "ClassOne" + "\"");
-		sb.append(":");
-		sb.append("\"" + this.getClassOne().getName() + "\"");
-		sb.append(",");
-		sb.append("\"" + "ClassTwo" + "\"");
-		sb.append(":");
-		sb.append("\"" + this.getClassTwo().getName() + "\"");
-		sb.append(",");
-		sb.append("\"" + "RelationshipType" + "\"");
-		sb.append(":");
-		sb.append("\"" + this.getRelationshipType() + "\"");
-		sb.append("}");
-		return sb.toString();
+		return (classObj == classFrom || classObj == classTo);
+	}
+
+    public JSONObject toJSON()
+    {
+		JSONObject jsonRelationship = new JSONObject();
+
+		jsonRelationship.put("from", classFrom.getName());
+		jsonRelationship.put("to", classTo.getName());
+		jsonRelationship.put("type", type.name());
+
+		return jsonRelationship;
+	}
+	
+	// Two Relationships are equivalent if they have the same "from" and "to", even if they have different types
+	// Used by the HashSet in WorkingProject
+	public boolean equals(Object o)
+	{
+		return (o instanceof Relationship && ((Relationship)o).getClassFrom() == classFrom && ((Relationship)o).getClassTo() == classTo);
 	}
 }

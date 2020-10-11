@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONAware;
@@ -6,254 +6,293 @@ import org.json.simple.JSONAware;
 public class ClassObject {   
     private String name;
     private boolean isOpen;
-    private ArrayList<Field> fields;
-    private ArrayList<Method> methods;
+    private HashMap<String, Field> fields;
+    private HashMap<String, Method> methods;
 
-    public ClassObject()
+    // Create a new ClassObject with empty Field/Method lists
+    public ClassObject(String name)
     {
-        System.out.println("error, no name");
-    }
-
-    public ClassObject(String giveName)
-    {
-        name = giveName;
+        this.name = name;
         isOpen = false;
-        fields = new ArrayList<>();
-        methods = new ArrayList<>();
+        fields = new HashMap<>();
+        methods = new HashMap<>();
     }
 
+    // Return the name of the class
     public String getName()
     {
         return name;
     }
 
+    // Change the name of the class to newName
     public void setName(String newName)
     {
         name = newName;
     }
 
+    // Return true if the class is open for editing
     public boolean isOpen()
     {
         return isOpen;
     }
 
+    // Close the class from editing
     public void close()
     {
-        if(isOpen)
-            isOpen = false;
-        else
-            System.out.println("it's already closed");
+        isOpen = false;
     }
 
+    // Open the class for editing
     public void open()
     {
-        if(isOpen)
-            System.out.println("it's already open");
-        else
-            isOpen = true;
+        isOpen = true;
     }
 
+    // Add a new Field called fieldName with the data type fieldType to the class
+    // Print an error if the class is closed from editing
+    // Print an error if there is already a Field with that name in the class
     public void addField(String fieldName, String fieldType)
     {
-        if (getFieldIndex(fieldName) == -1)
+        if (!isOpen)
         {
-            fields.add(new Field(fieldName, fieldType));
+            System.out.println("Error: Class is not open");
+            return;
         }
-        else
+
+        if (fields.containsKey(fieldName))
         {
-            System.out.println("error, field already exists");
+            System.out.println("Error: Name is already in use");
+            return;
         }
+
+        fields.put(fieldName, new Field(fieldName, fieldType));
+        System.out.println("Successfully added");
     }
 
+    // Remove the Field called fieldName from the class
+    // Print an error if the class is closed from editing
+    // Print an error if there is no Field with that name in the class
     public void removeField(String fieldName)
     {
-        int index = getFieldIndex(fieldName);
-        if(index != -1)
+        if (!isOpen)
         {
-            fields.remove(index);
+            System.out.println("Error: Class is not open");
+            return;
         }
-        else
+
+        if (!fields.containsKey(fieldName))
         {
-            System.out.println("error, field doesn't exist");
+            System.out.println("Error: Field does not exist");
+            return;
         }
+
+        fields.remove(fieldName);
+        System.out.println("Successfully removed");
     }
 
-    public void renameField(String oldName, String newName)
+    // Rename the Field called oldFieldName to newFieldName
+    // Print an error if the class is closed from editing
+    // Print an error if there is no Field caled oldFieldName in the class
+    // Print an error if there is already a Field called newFieldName in the class
+    public void renameField(String oldFieldName, String newFieldName)
     {
-        int oldNameIndex = getFieldIndex(oldName);
-        if (oldNameIndex != -1)
+        if (!isOpen)
         {
-            int newNameIndex = getFieldIndex(newName);
-            if (newNameIndex == -1)
-            {
-                fields.get(oldNameIndex).setName(newName);
-            }
-            else
-            {
-                System.out.println("error, field with new name already exists");
-            }
+            System.out.println("Error: Class is not open");
+            return;
         }
-        else
+
+        if (!fields.containsKey(oldFieldName))
         {
-            System.out.println("error, field doesn't exist");
+            System.out.println("Error: Field does not exist");
+            return;
         }
+
+        if (fields.containsKey(newFieldName))
+        {
+            System.out.println("Error: Name is already in use");
+            return;
+        }
+
+        Field renamedField = fields.remove(oldFieldName);
+        renamedField.setName(newFieldName);
+        fields.put(newFieldName, renamedField);
+        System.out.println("Successfully removed");
     }
 
-    public void changeFieldType(String fieldName, String newType)
+    // Change the data type of the Field called fieldName to newFieldType
+    // Print an error if the class is closed from editing
+    // Print an error if there is no Field called fieldName in the class
+    public void changeFieldType(String fieldName, String newFieldType)
     {
-        int index = getFieldIndex(fieldName);
-        if (index != -1)
+        if (!isOpen)
         {
-            Field field = fields.get(index);
-            if (!field.getType().equals(newType))
-            {
-                field.setType(newType);
-            }
-            else
-            {
-                System.out.println("error, field already has that type");
-            }
+            System.out.println("Error: Class is not open");
+            return;
         }
-        else
+
+        if (!fields.containsKey(fieldName))
         {
-            System.out.println("error, field doesn't exist");
+            System.out.println("Error: Field does not exist");
+            return;
         }
+
+        fields.get(fieldName).setType(newFieldType);
+        System.out.println("Successfully changed type");
     }
 
+    // Add a new Method called methodName with the return type methoddType to the class
+    // Print an error if the class is closed from editing
+    // Print an error if there is already a method with that name in the class
     public void addMethod(String methodName, String methodType)
     {
-        if (getMethodIndex(methodName) == -1)
+        if (!isOpen)
         {
-            methods.add(new Method(methodName, methodType));
+            System.out.println("Error: Class is not open");
+            return;
         }
-        else
+
+        if (methods.containsKey(methodName))
         {
-            System.out.println("error, method already exists");
+            System.out.println("Error: Name is already in use");
+            return;
         }
+
+        methods.put(methodName, new Method(methodName, methodType));
+        System.out.println("Successfully added");
     }
 
+    // Remove the Method called methodName from the class
+    // Print an error if the class is closed from editing
+    // Print an error if there is no Method with that name in the class
     public void removeMethod(String methodName)
     {
-        int index = getMethodIndex(methodName);
-        if(index != -1)
+        if (!isOpen)
         {
-            methods.remove(index);
+            System.out.println("Error: Class is not open");
+            return;
         }
-        else
+
+        if (!methods.containsKey(methodName))
         {
-            System.out.println("error, method doesn't exist");
+            System.out.println("Error: Method does not exist");
+            return;
         }
+
+        methods.remove(methodName);
+        System.out.println("Successfully removed");
     }
 
-    public void renameMethod(String oldName, String newName)
+    // Rename the Method called oldMethodName to newMethodName
+    // Print an error if the class is closed from editing
+    // Print an error if there is no Method caled oldMethodName in the class
+    // Print an error if there is already a Method called newMethodName in the class
+    public void renameMethod(String oldMethodName, String newMethodName)
     {
-        int oldNameIndex = getMethodIndex(oldName);
-        if (oldNameIndex != -1)
+        if (!isOpen)
         {
-            int newNameIndex = getMethodIndex(newName);
-            if (newNameIndex == -1)
-            {
-                methods.get(oldNameIndex).setName(newName);
-            }
-            else
-            {
-                System.out.println("error, method with new name already exists");
-            }
+            System.out.println("Error: Class is not open");
+            return;
         }
-        else
+
+        if (!methods.containsKey(oldMethodName))
         {
-            System.out.println("error, method doesn't exist");
+            System.out.println("Error: Method does not exist");
+            return;
         }
+
+        if (methods.containsKey(newMethodName))
+        {
+            System.out.println("Error: Name is already in use");
+            return;
+        }
+
+        Method renamedMethod = methods.remove(oldMethodName);
+        renamedMethod.setName(newMethodName);
+        methods.put(newMethodName, renamedMethod);
+        System.out.println("Successfully removed");
     }
 
-    public void changeMethodType(String methodName, String newType)
+    // Change the return type of the Method called methodName to newMethodType
+    // Print an error if the class is closed from editing
+    // Print an error if there is no Method called methodName in the class
+    public void changeMethodType(String methodName, String newMethodType)
     {
-        int index = getMethodIndex(methodName);
-        if (index != -1)
+        if (!isOpen)
         {
-            Method method = methods.get(index);
-            if (!method.getType().equals(newType))
-            {
-                method.setType(newType);
-            }
-            else
-            {
-                System.out.println("error, method already has that type");
-            }
+            System.out.println("Error: Class is not open");
+            return;
         }
-        else
+
+        if (!methods.containsKey(methodName))
         {
-            System.out.println("error, method doesn't exist");
+            System.out.println("Error: Method does not exist");
+            return;
         }
+
+        methods.get(methodName).setType(newMethodType);
+        System.out.println("Successfully changed type");
     }
 
+    // Add a new Parameter called paramName with the data type paramType to the Method called methodName
+    // Print an error if the class is closed from editing
+    // Print an error if there is no Method with that name in the class
     public void addParameter(String methodName, String paramName, String paramType)
     {
-        int index = getMethodIndex(methodName);
-        if (index != -1)
+        if (!methods.containsKey(methodName))
         {
-            methods.get(index).addParameter(paramName, paramType);
+            System.out.println("Error: Method does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, method doesn't exist");
-        }
+
+        methods.get(methodName).addParameter(paramName, paramType);
     }
 
+    // Remove the Parameter called paramName from the Method called methodName
+    // Print an error if the class is closed from editing
+    // Print an error if there is no Method with that name in the class
     public void removeParameter(String methodName, String paramName)
     {
-        int index = getMethodIndex(methodName);
-        if (index != -1)
+        if (!methods.containsKey(methodName))
         {
-            methods.get(index).removeParameter(paramName);
+            System.out.println("Error: Method does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, method doesn't exist");
-        }
+
+        methods.get(methodName).removeParameter(paramName);
     }
 
+    // Rename the Parameter called oldParamName to newParamName in the Method called methodName
+    // Print an error if the class is closed from editing
+    // Print an error if there is no Method with that name in the class
     public void renameParameter(String methodName, String oldParamName, String newParamName)
     {
-        int index = getMethodIndex(methodName);
-        if (index != -1)
+        if (!methods.containsKey(methodName))
         {
-            methods.get(index).renameParameter(oldParamName, newParamName);
+            System.out.println("Error: Method does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, method doesn't exist");
-        }
+
+        methods.get(methodName).renameParameter(oldParamName, newParamName);
     }
 
+    // Change the data type of the Parameter called paramName to newParamType in the Method called methodName
+    // Print an error if the class is closed from editing
+    // Print an error if there is no Method with that name in the class
     public void changeParameterType(String methodName, String paramName, String newParamType)
     {
-        int index = getMethodIndex(methodName);
-        if (index != -1)
+        if (!methods.containsKey(methodName))
         {
-            methods.get(index).changeParameterType(paramName, newParamType);
+            System.out.println("Error: Method does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, method doesn't exist");
-        }
-    }
 
-    /*
-    public boolean hasAttribute(String attrName)
-    {
-        for (Attribute attr : attributes)
-        {
-            if(attr.getName().equals(attrName))
-                return true;
-        }
-        return false;
+        methods.get(methodName).changeParameterType(paramName, newParamType);
     }
-    */
 
     public void printFields()
     {
-        for (Field field : fields)
+        for (Field field : fields.values())
         {
             System.out.println(field.getType() + " " + field.getName());
         }
@@ -261,7 +300,7 @@ public class ClassObject {
 
     public void printMethods()
     {
-        for (Method method : methods)
+        for (Method method : methods.values())
         {
             System.out.print(method.getType() + " " + method.getName() + "(");
             method.printParameters();
@@ -269,59 +308,48 @@ public class ClassObject {
         }
     }
 
-    private int getFieldIndex(String fieldName)
+    public JSONObject toJSON()
     {
-        for(int i = 0; i < fields.size(); i++)
+        JSONObject jsonClass = new JSONObject();
+
+        JSONObject jsonFields = new JSONObject();
+        for (String fieldName : fields.keySet())
         {
-            if(fields.get(i).getName().equals(fieldName))
-                return i;
+            jsonFields.put(fieldName, fields.get(fieldName).toJSON());
         }
-        return -1;
+
+        JSONObject jsonMethods = new JSONObject();
+        for (String methodName : methods.keySet())
+        {
+            jsonMethods.put(methodName, methods.get(methodName).toJSON());
+        }
+
+        jsonClass.put("name", name);
+        jsonClass.put("fields", jsonFields);
+        jsonClass.put("methods", jsonMethods);
+
+        return jsonClass;
     }
 
-    private int getMethodIndex(String methodName)
+    public static ClassObject loadFromJSON(JSONObject jsonClass)
     {
-        for(int i = 0; i < methods.size(); i++)
-        {
-            if(methods.get(i).getName().equals(methodName))
-                return i;
-        }
-        return -1;
-    }
+        String name = (String)jsonClass.get("name");
+        
+        ClassObject classObj = new ClassObject(name);
+        
+        JSONObject jsonFields = (JSONObject)jsonClass.get("fields");
+        JSONObject jsonMethods = (JSONObject)jsonClass.get("methods");
 
-    public String toJSONString()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("\"" + "Name" + "\"");
-        sb.append(":");
-        sb.append("\"" + this.getName() +  "\"");
-        sb.append(",");
-        sb.append("\"" + "Attributes" + "\"");
-        sb.append(":");
-        sb.append("[");
-        if (fields.size() > 0)
+        for (Object fieldName : jsonFields.keySet())
         {
-            for (int i = 0; i < fields.size() - 1; ++i)
-            {
-                sb.append(fields.get(i).toJSONString());
-                sb.append(",");
-            }
-            sb.append(fields.get(fields.size() - 1).toJSONString());
-            sb.append(",");
+            classObj.fields.put((String)fieldName, Field.loadFromJSON((JSONObject)jsonFields.get(fieldName)));
         }
 
-        if (methods.size() > 0)
+        for (Object methodName : jsonMethods.keySet())
         {
-            for (int i = 0; i < methods.size() -1; ++i)
-            {
-                sb.append(methods.get(i).toJSONString());
-                sb.append(",");
-            }
-            sb.append(methods.get(methods.size() - 1).toJSONString());
+            classObj.methods.put((String)methodName, Method.loadFromJSON((JSONObject)jsonMethods.get(methodName)));
         }
-        sb.append("]");
-        sb.append("}");
-        return sb.toString();
+
+        return classObj;
     }
 }

@@ -1,432 +1,423 @@
+import java.util.HashMap;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
+
 public class WorkingProject {
-    private ArrayList<ClassObject> classes;
+    private HashMap<String, ClassObject> classes;
     private ArrayList<Relationship> relationships;
+    
 
     // Create a new Working Project with empty ClassObject/Relationship lists
     public WorkingProject()
     {
-        classes = new ArrayList<ClassObject>();
-        relationships = new ArrayList<Relationship>();
+        classes = new HashMap<>();
+        relationships = new ArrayList<>();
     }
 
-    // Add a new ClassObject called className to the end of the list
-    // Print an error if there is already a ClassObject with that name in the list
+    // Add a new ClassObject called className to the project
+    // Print an error if there is already a ClassObject with that name in the project
     public void addClass(String className)
     {
-        if (getClassIndex(className) == -1)
+        if (classes.containsKey(className))
         {
-            classes.add(new ClassObject(className));
+            System.out.println("Error: Name is already is use");
+            return;
         }
-        else
-        {
-            System.out.println("error, class already exists");
-        }
+
+        classes.put(className, new ClassObject(className));
+        System.out.println("Successfully added");
     }
 
-    // Remove the ClassObject called className from the list
-    // Print an error if there is no ClassObject with that name in the list
+    // Remove the ClassObject called className from the project
+    // Remove all Relationships which contain the removed ClassObject
+    // Print an error if there is no ClassObject with that name in the project
     public void removeClass(String className)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            removeRelationshipsByClass(classes.get(index));
-            classes.remove(index);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        ClassObject removedClass = classes.remove(className);
+        removeRelationshipsByClass(removedClass);
+        System.out.println("Successfully removed");
     }
 
-    // Rename the ClassObject called oldName to newName
-    // Print an error if there is no ClassObject called oldName in the list
-    // Print an error if there is already a ClassObject called newName in the list
-    public void renameClass(String oldName, String newName)
+    // Rename the ClassObject called oldClassName to newClassName
+    // Print an error if there is no ClassObject called oldClassName in the project
+    // Print an error if there is already a ClassObject called newClassName in the project
+    public void renameClass(String oldClassName, String newClassName)
     {
-        int oldNameIndex = getClassIndex(oldName);
-        if (oldNameIndex != -1)
+        if (!classes.containsKey(oldClassName))
         {
-            int newNameIndex = getClassIndex(newName);
-            if (newNameIndex == -1)
-            {
-                classes.get(oldNameIndex).setName(newName);
-            }
-            else
-            {
-                System.out.println("error, class with new name already exists");
-            }
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
-    }
 
-    // Open ClassObject called className
-    // Print an error if there is no ClassObject with that name in the lsit
-    public void openClass(String className)
-    {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (classes.containsKey(newClassName))
         {
-            classes.get(index).open();
+            System.out.println("Error: Name is already in use");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        ClassObject renamedClass = classes.remove(oldClassName);
+        renamedClass.setName(newClassName);
+        classes.put(newClassName, renamedClass);
+        System.out.println("Successfully renamed");
     }
 
     // Close ClassObject called className
     // Print an error if there is no ClassObject with that name in the list
     public void closeClass(String className)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).close();
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).close();
+        System.out.println("Successfully closed");
     }
 
-    // Add a new Attribute called attrName to the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
+    // Open ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
+    public void openClass(String className)
+    {
+        if (!classes.containsKey(className))
+        {
+            System.out.println("Error: Class does not exist");
+            return;
+        }
+
+        classes.get(className).open();
+        System.out.println("Successfully opened");
+    }
+
+    // Add a new Field called fieldName with data type fieldType to the classObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void addField(String className, String fieldName, String fieldType)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).addField(fieldName, fieldType);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).addField(fieldName, fieldType);
     }
 
-    // Remove the Attribute called attrName from the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
+    // Remove the Field called fieldName from the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void removeField(String className, String fieldName)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).removeField(fieldName);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).removeField(fieldName);
     }
 
-    // Rename the Attribute called oldAttrName to newAttrName in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
+    // Rename the Field called oldFieldName to newFieldName in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void renameField(String className, String oldFieldName, String newFieldName)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).renameField(oldFieldName, newFieldName);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).renameField(oldFieldName, newFieldName);
     }
 
+    // Change the data type of the Field called fieldName to newFieldType in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void changeFieldType(String className, String fieldName, String newFieldType)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).changeFieldType(fieldName, newFieldType);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).changeFieldType(fieldName, newFieldType);
     }
 
-    // Add a new Attribute called attrName to the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
+    // Add a new Method called methodName with the return type methodType to the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void addMethod(String className, String methodName, String methodType)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).addMethod(methodName, methodType);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).addMethod(methodName, methodType);
     }
 
-    // Remove the Attribute called attrName from the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
+    // Remove the Method called methodName from the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void removeMethod(String className, String methodName)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).removeMethod(methodName);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).removeMethod(methodName);
     }
 
-    // Rename the Attribute called oldAttrName to newAttrName in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
+    // Rename the Method called oldMethodName to newMethodName in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void renameMethod(String className, String oldMethodName, String newMethodName)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).renameMethod(oldMethodName, newMethodName);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).renameMethod(oldMethodName, newMethodName);
     }
 
+    // Change the return type of the method called methodName to newMethodType in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void changeMethodType(String className, String methodName, String newMethodType)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).changeMethodType(methodName, newMethodType);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).changeMethodType(methodName, newMethodType);
     }
 
-    // Add a new Attribute called attrName to the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
-    public void addParameter(String className, String methodName, String parameterName, String parameterType)
+    // Add a new Parameter called paramName with the data type paramType to the Method called methodName in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
+    public void addParameter(String className, String methodName, String paramName, String paramType)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).addParameter(methodName, parameterName, parameterType);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).addParameter(methodName, paramName, paramType);
     }
 
-    // Remove the Attribute called attrName from the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
-    public void removeParameter(String className, String methodName, String parameterName)
+    // Remove the Parameter called paramName from the method called methodName in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
+    public void removeParameter(String className, String methodName, String paramName)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).removeParameter(methodName, parameterName);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).removeParameter(methodName, paramName);
     }
 
-    // Rename the Attribute called oldAttrName to newAttrName in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
+    // Rename the Parameter called oldParamName to newParamName in the Method called methodName in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void renameParameter(String className, String methodName, String oldParamName, String newParamName)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).renameParameter(methodName, oldParamName, newParamName);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).renameParameter(methodName, oldParamName, newParamName);
     }
 
-    public void changeParamType(String className, String methodName, String paramName, String newParamType)
+    // Change the data type of the Parameter called paramName to newParamType in the Method called methodName in the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
+    public void changeParameterType(String className, String methodName, String paramName, String newParamType)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).changeParameterType(methodName, paramName, newParamType);
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).changeParameterType(methodName, paramName, newParamType);
     }
 
-    // Add a new ordered Relationship between the ClassObjects called className1 and className2 to the end of the list
-    // Print an error if either of those names are not found in the ClassObject list
-    // Print an error if there is already a Relationship between those classes in the list
-    public void addRelationship(String className1, String className2, String typeName)
+    // Add a new ordered Relationship from the ClassObject called classNameFrom to the ClassObject called classNameTo with the type specified by typeName
+    // Print an error if either of those names are not found in the project
+    // Print an error if there is already a Relationship between those classes in the project
+    // Print an error if typeName does not specify a valid Relationship type
+    public void addRelationship(String classNameFrom, String classNameTo, String typeName)
     {
-        int classIndex1 = getClassIndex(className1);
-        int classIndex2 = getClassIndex(className2);
         Relationship.relationshipType type = stringToRelationshipType(typeName);
-        if(type != null)
+        
+        if (type == null)
         {
-            if (classIndex1 != -1 && classIndex2 != -1)
-            {
-                ClassObject class1 = classes.get(classIndex1);
-                ClassObject class2 = classes.get(classIndex2); 
-                if (getRelationshipIndex(class1, class2) == -1)
-                {
-                    relationships.add(new Relationship(class1, class2, type));
-                }
-                else
-                {
-                    System.out.println("error, relationship already exists");
-                }
-            }
-            else
-            {
-                System.out.println("error, one or both classes don't exist");
-            }
+            System.out.println("Error: Not a valid relationship type");
+            return;
         }
-    }
 
-
-    // Remove the relationship between the ClassObjects called className1 and className2 from the list
-    // Print an error if either of those names are not found in the ClassObject list
-    // Print an error if there is no Relationship between those classes in the list
-    public void removeRelationship(String className1, String className2)
-    {
-        int index1 = getClassIndex(className1);
-        int index2 = getClassIndex(className2);
-        if (index1 != -1 && index2 != -1)
+        if (!classes.containsKey(classNameFrom) || !classes.containsKey(classNameTo))
         {
-            int relIndex = getRelationshipIndex(classes.get(index1), classes.get(index2));
-            if (relIndex != -1)
-            {
-                relationships.remove(relIndex);
-            }
-            else
-            {
-                System.out.println("error, relationship doesn't exist");
-            }
-        }
-        else
-        {
-            System.out.println("error, one or both classes don't exist");
-        }
-    }
-
-    // Change the relationship type
-    // print an error if the relationship type doesn't exist
-    public void changeRelationshipType(String className1, String className2, String newTypeName)
-    {
-        int index1 = getClassIndex(className1);
-        int index2 = getClassIndex(className2);
-        Relationship.relationshipType newType = stringToRelationshipType(newTypeName);
-        if(newType != null)
-        {
-            if (index1 != -1 && index2 != -1)
-            {
-                int relIndex = getRelationshipIndex(classes.get(index1), classes.get(index2));
-                if (relIndex != -1)
-                {
-                    relationships.get(relIndex).setRelationshipType(newType);
-                }
-                else
-                {
-                    System.out.println("error, relationship doesn't exist");
-                }
-            }
-            else
-            {
-                System.out.println("error, one or both classes don't exist");
-            }
+            System.out.println("Error: One or both classes do not exist");
+            return;
         }
         
+        ClassObject classObjFrom = classes.get(classNameFrom);
+        ClassObject classObjTo = classes.get(classNameTo);
+
+        int index = getRelationshipIndex(classObjFrom, classObjTo);
+
+        if (index != -1)
+        {
+            System.out.println("Error: Relationship already exists");
+            return;
+        }
+
+        relationships.add(new Relationship(classObjFrom, classObjTo, type));
+        System.out.println("Successfully added");
     }
 
-    // Print the name of each ClassObject in the list
+
+    // Remove the relationship from the ClassObject called classNameFrom to the ClassObject called classNameTo
+    // Print an error if either of those names are not found in the project
+    // Print an error if there is no Relationship between those classes in the project
+    public void removeRelationship(String classNameFrom, String classNameTo)
+    {
+        if (!classes.containsKey(classNameFrom) || !classes.containsKey(classNameTo))
+        {
+            System.out.println("Error: One or both classes do not exist");
+            return;
+        }
+
+        ClassObject classObjFrom = classes.get(classNameFrom);
+        ClassObject classObjTo = classes.get(classNameTo);
+
+        int index = getRelationshipIndex(classObjFrom, classObjTo);
+
+        if (index == -1)
+        {
+            System.out.println("Error: Relationship does not exist");
+            return;
+        }
+
+        relationships.remove(index);
+        System.out.println("Successfully removed");
+    }
+
+    // Change the type of a Relationship from the ClassObject called classNameFrom to the ClassObject called ClassNameTo to newTypeName
+    // Print an error if either of those names are not found in the project
+    // Print an error if newTypeName does not speicfy a valid Relationship type
+    public void changeRelationshipType(String classNameFrom, String classNameTo, String newTypeName)
+    {
+        Relationship.relationshipType newType = stringToRelationshipType(newTypeName);
+        
+        if (newType == null)
+        {
+            System.out.println("Error: Not a valid relationship type");
+            return;
+        }
+
+        if (!classes.containsKey(classNameFrom) || !classes.containsKey(classNameTo))
+        {
+            System.out.println("Error: One or both classes do not exist");
+            return;
+        }
+
+        ClassObject classObjFrom = classes.get(classNameFrom);
+        ClassObject classObjTo = classes.get(classNameTo);
+
+        int index = getRelationshipIndex(classObjFrom, classObjTo);
+
+        if (index == -1)
+        {
+            System.out.println("Error: Relationship does not exist");
+            return;
+        }
+
+        relationships.get(index).setType(newType);
+        System.out.println("Successfully changed type");
+    }
+
+    // Print the name of each ClassObject in the project
     public void printClasses()
     {
-        for (ClassObject classObj : classes)
+        for (ClassObject classObj : classes.values())
         {
             System.out.println(classObj.getName());
         }
     }
 
-    // Print the names of the ClassObjects in each Relationship in the list
-    // Print in the format className1 -> className2
+    // Print the names of the ClassObjects in each Relationship in the project
+    // Print in the format className1 -> className2 (type)
     public void printRelationships()
     {
-        for (Relationship relation : relationships)
+        for (Relationship relationship : relationships)
         {
-            System.out.println(relation.getClassOne().getName() + " -> " + relation.getClassTwo().getName() + " type = " + relation.getRelationshipType());
+            System.out.println(relationship.getClassFrom().getName() + " -> " + relationship.getClassTo().getName() + " (" + relationship.getType() + ")");
         }
     }
 
-    // Print the name of each Attribute in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
+    // Print the Fields of the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void printFields(String className)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).printFields();
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).printFields();
     }
 
-    // Print the name of each Attribute in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
+    // Print the Methods of the ClassObject called className
+    // Print an error if there is no ClassObject with that name in the project
     public void printMethods(String className)
     {
-        int index = getClassIndex(className);
-        if (index != -1)
+        if (!classes.containsKey(className))
         {
-            classes.get(index).printMethods();
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, class doesn't exist");
-        }
+
+        classes.get(className).printMethods();
     }
 
-    // Return the index of the first ClassObject called className in the list
-    // Return -1 if no ClassObject is found
-    private int getClassIndex(String className)
+    // Print the ClassObject called className, including Fields and Methods
+    // Print an error if there is no ClassObject with that name in the project
+    public void printClass(String className)
     {
-        for (int i = 0; i < classes.size(); ++i)
+        if (!classes.containsKey(className))
         {
-            if (classes.get(i).getName().equals(className))
-            {
-                return i;
-            }
+            System.out.println("Error: Class does not exist");
+            return;
         }
-        return -1;
+
+        System.out.println(className);
+        System.out.println("------------");
+        classes.get(className).printFields();
+        classes.get(className).printMethods();
     }
 
     // Return the index of the first ordered Relationship between classObj1 and classObj2 in the list
     // Return -1 if no Relationship is found
-    private int getRelationshipIndex(ClassObject classObj1, ClassObject classObj2)
+    private int getRelationshipIndex(ClassObject classObjFrom, ClassObject classObjTo)
     {
         for (int i = 0; i < relationships.size(); ++i)
         {
-            if (relationships.get(i).getClassOne() == classObj1 && relationships.get(i).getClassTwo() == classObj2)
+            if (relationships.get(i).getClassFrom() == classObjFrom && relationships.get(i).getClassTo() == classObjTo)
             {
                 return i;
             }
@@ -437,141 +428,83 @@ public class WorkingProject {
     // Remove any relationships which contain classObj from the list
     private void removeRelationshipsByClass(ClassObject classObj)
     {
-        int i = 0;
-        while (i < relationships.size())
+        for (Relationship relationship : relationships)
         {
-            if (relationships.get(i).getClassOne() == classObj || relationships.get(i).getClassTwo() == classObj)
+            if (relationship.containsClass(classObj))
             {
-                relationships.remove(i);
-            }
-            else
-            {
-                ++i;
+                relationships.remove(relationship);
             }
         }
     }
     
     private Relationship.relationshipType stringToRelationshipType(String str)
     {
-        switch(str){
-            case "C":
-                return Relationship.relationshipType.COMPOSITION;
+        str = str.toUpperCase();
+        switch(str)
+        {
             case "A":
                 return Relationship.relationshipType.AGGREGATION;
-            case "G":
-                return Relationship.relationshipType.GENERALIZATION;
+            case "C":
+                return Relationship.relationshipType.COMPOSITION;
             case "I":
                 return Relationship.relationshipType.INHERITANCE;
+            case "R":
+                return Relationship.relationshipType.REALIZATION;
             default :
-                System.out.println("error: not a valid relationship type");
                 return null;
         }
     }
 
+    // Decode a JSONObject from the encoded String, then convert it back to a working project
     public void loadFromJSON(String jsonString)
     {
-        this.classes.clear();
-        this.relationships.clear();
-        
-        Object obj = JSONValue.parse(jsonString);
-        JSONObject object = (JSONObject)obj;
-        JSONArray classes = (JSONArray)object.get("Classes");
-        JSONArray relationships = (JSONArray)object.get("Relationships");
-        
-        for (int i = 0; i < classes.size(); ++i)
+        classes.clear();
+        relationships.clear();
+
+        JSONObject jsonProject = (JSONObject)JSONValue.parse(jsonString);
+        JSONObject jsonClasses = (JSONObject)jsonProject.get("classes");
+        JSONArray jsonRelationships = (JSONArray)jsonProject.get("relationships");
+
+        for (Object className : jsonClasses.keySet())
         {
-            JSONObject c = (JSONObject)classes.get(i);
-            String className = (String)c.get("Name");
-            this.addClass(className);
-
-            JSONArray attributes = (JSONArray)c.get("Attributes");
-            for (int j = 0; j < attributes.size(); ++j)
-            {
-                JSONObject a = (JSONObject)attributes.get(j);
-                String attributeName = (String)a.get("Name");
-                String attributeType = (String)a.get("Type");
-                String fieldOrMethod = (String)a.get("FieldOrMethod");
-                if (fieldOrMethod.equals("Method"))
-                {
-                    this.addMethod(className, attributeName, attributeType);
-
-                    JSONArray parameters = (JSONArray)a.get("Parameters");
-                    for (int k = 0; k < parameters.size(); ++k)
-                    {
-                        JSONObject p = (JSONObject)parameters.get(k);
-                        String parameterName = (String)p.get("Name");
-                        String parameterType = (String)p.get("Type");
-                        this.addParameter(className, attributeName, parameterName, parameterType);
-                    }
-                }
-                else if (fieldOrMethod.equals("Field"))
-                {
-                    this.addField(className, attributeName, attributeType);
-                }
-            }
+            classes.put((String)className, ClassObject.loadFromJSON((JSONObject)jsonClasses.get(className)));
         }
-        for (int i = 0; i < relationships.size(); ++i)
+
+        for (Object jsonRelationship : jsonRelationships)
         {
-            JSONObject r = (JSONObject)relationships.get(i);
-            String classOne = (String)r.get("ClassOne");
-            String classTwo = (String)r.get("ClassTwo");
-            String relationshipType; 
-            switch ((String)r.get("RelationshipType"))
-            {
-                case "AGGREGATION" : relationshipType = "A";
-                break;
-
-                case "GENERALIZATION" : relationshipType = "G";
-                break;
-
-                case "INHERITANCE" : relationshipType = "I";
-                break;
-
-                case "COMPOSITION" : relationshipType = "C";
-                break;
-
-                default : relationshipType = "Yikes";
-            }
-            this.addRelationship(classOne, classTwo, relationshipType);
+            String classNameFrom = (String)((JSONObject)jsonRelationship).get("from");
+            String classNameTo = (String)((JSONObject)jsonRelationship).get("to");
+            String typeName = (String)((JSONObject)jsonRelationship).get("type");
+            typeName = typeName.substring(0, 1);
+            Relationship.relationshipType type = stringToRelationshipType(typeName);
+            relationships.add(new Relationship(classes.get(classNameFrom), classes.get(classNameTo), type));
         }
+
+        System.out.println("Successfully loaded");
     }
-    //Encode the project into a JSONArray by encoding the classes and their attributes, and the relationships
+    
+    // Convert working project into a JSONObject, then return its JSON encoding
     public String toJSONString ()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("\"" + "Classes" + "\"");
-        sb.append(":");
-        sb.append("[");
-        
-        if (classes.size() > 0)
+        JSONObject jsonProject = new JSONObject();
+
+        JSONObject jsonClasses = new JSONObject();
+        for (String className : classes.keySet())
         {
-            for (int i = 0; i < classes.size() - 1; ++i)
-            {
-                sb.append(classes.get(i).toJSONString());
-                sb.append(",");
-            }
-            sb.append(classes.get(classes.size() - 1).toJSONString());
+            jsonClasses.put(className, classes.get(className).toJSON());
         }
 
-        sb.append("]");
-        sb.append(",");
-        sb.append("\"" + "Relationships" + "\"");
-        sb.append(":");
-        sb.append("[");
-
-        if (relationships.size() > 0)
+        JSONArray jsonRelationships = new JSONArray();
+        for (Relationship relationship : relationships)
         {
-            for (int i = 0; i < relationships.size() - 1; ++i)
-            {
-                sb.append(relationships.get(i).toJSONString());
-                sb.append(",");
-            }
-            sb.append(relationships.get(relationships.size() - 1).toJSONString());
+            jsonRelationships.add(relationship.toJSON());
         }
 
-        sb.append("]");
-        sb.append("}");
-        return sb.toString();
+        jsonProject.put("classes", jsonClasses);
+        jsonProject.put("relationships", jsonRelationships);
+
+        System.out.println("Successfully saved");
+
+        return jsonProject.toJSONString();
     }
 }

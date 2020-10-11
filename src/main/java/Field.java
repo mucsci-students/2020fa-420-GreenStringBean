@@ -1,25 +1,27 @@
+import org.json.simple.JSONObject;
+
 public class Field extends FormalDeclaration {
+    // Create a new Field with a name and data type
     public Field(String name, String type)
     {
         super(name, type);
     }
 
-    public String toJSONString ()
+   public JSONObject toJSON()
    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("\"" + "Name" + "\"");
-        sb.append(":");
-        sb.append("\"" + this.getName() + "\"");
-        sb.append(",");
-        sb.append("\"" + "Type" + "\"");
-        sb.append(":");
-        sb.append("\"" + this.getType() + "\"");
-        sb.append(",");
-        sb.append("\"" + "FieldOrMethod" + "\"");
-        sb.append(":");
-        sb.append("\"" + "Field" + "\"");
-        sb.append("}");
-        return sb.toString();
+       JSONObject jsonField = new JSONObject();
+
+       jsonField.put("name", getName());
+       jsonField.put("type", getType());
+
+       return jsonField;
+   }
+
+   public static Field loadFromJSON(JSONObject jsonField)
+   {
+        String name = (String)jsonField.get("name");
+        String type = (String)jsonField.get("type");
+
+        return new Field(name, type);
    }
 }
