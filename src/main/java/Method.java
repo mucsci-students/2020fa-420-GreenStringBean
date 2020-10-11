@@ -1,81 +1,85 @@
 import java.util.ArrayList;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class Method extends FormalDeclaration {
     private ArrayList<Parameter> parameters;
 
+    // Create a new Method with a name and return type
     public Method(String name, String type)
     {
         super(name, type);
         parameters = new ArrayList<>();
     }
 
+    // Add a new Parameter called paramName with data type paramType
+    // Print an error if there is aleady a Parameter called paramName in the method
     public void addParameter(String paramName, String paramType)
     {
-        if (getParamIndex(paramName) == -1)
+        if (getParamIndex(paramName) != -1)
         {
-            parameters.add(new Parameter(paramName, paramType));
+            System.out.println("Error: Name is already in use");
+            return;
         }
-        else
-        {
-            System.out.println("error, parameter already exists");
-        }
+
+        parameters.add(new Parameter(paramName, paramType));
+        System.out.println("Successfully added");
     }
 
+    // Remove the Parameter called paramName from the method
+    // Print an error if there is no Parameter with that name in the method
     public void removeParameter(String paramName)
     {
         int index = getParamIndex(paramName);
-        if (index != -1)
+        if (index == -1)
         {
-            parameters.remove(index);
+            System.out.println("Error: Parameter does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, parameter doesn't exist");
-        }
+
+        parameters.remove(index);
+        System.out.println("Successfully removed");
     }
 
+    // Rename the Parameter called oldParamName to newParamName
+    // Print an error if there is no Parameter called oldParamName in the method
+    // Print an error if there is already a Parameter called newParamName in the method
     public void renameParameter(String oldParamName, String newParamName)
     {
         int oldIndex = getParamIndex(oldParamName);
-        if (oldIndex != -1)
+        if (oldIndex == -1)
         {
-            int newIndex = getParamIndex(newParamName);
-            if (newIndex == -1)
-            {
-                parameters.get(oldIndex).setName(newParamName);
-            }
-            else
-            {
-                System.out.println("error, parameter with new name already exists");
-            }
+            System.out.println("Error: Parameter does not exist");
+            return;
         }
-        else
+        
+        int newIndex = getParamIndex(newParamName);
+        if (newIndex != -1)
         {
-            System.out.println("error, parameter doesn't exist");
+            System.out.println("Error: Name is already in use");
+            return;
         }
+
+        parameters.get(oldIndex).setName(newParamName);
+        System.out.println("Successfully renamed");
     }
 
+    // Change the data type of the Parameter called paramName to newType
+    // Print an error if there is no Parameter with that name in the method
     public void changeParameterType(String paramName, String newType)
     {
         int index = getParamIndex(paramName);
-        if (index != -1)
+        if (index == -1)
         {
-            Parameter param = parameters.get(index);
-            if (!param.getType().equals(newType))
-            {
-                param.setType(newType);
-            }
-            else
-            {
-                System.out.println("error, parameter already has that type");
-            }
+            System.out.println("Error: Parameter does not exist");
+            return;
         }
-        else
-        {
-            System.out.println("error, parameter doesn't exist");
-        }
+
+        parameters.get(index).setType(newType);
+        System.out.println("Successfully changed type");
     }
 
+    // Print the list of Parameters, separated by commas and flanked with spaces
     public void printParameters()
     {
         if (!parameters.isEmpty())
@@ -91,6 +95,8 @@ public class Method extends FormalDeclaration {
         }
     }
 
+    // Returns the index of the Parameter called paramName
+    // Returns -1 if there is no Parameter with that name in the list
     private int getParamIndex(String paramName)
     {
         for(int i = 0; i < parameters.size(); i++)
@@ -101,38 +107,39 @@ public class Method extends FormalDeclaration {
         return -1;
     }
 
-    public String toJSONString ()
+   public JSONObject toJSON()
    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("\"" + "Name" + "\"");
-        sb.append(":");
-        sb.append("\"" + this.getName() + "\"");
-        sb.append(",");
-        sb.append("\"" + "Type" + "\"");
-        sb.append(":");
-        sb.append("\"" + this.getType() + "\"");
-        sb.append(",");
-        sb.append("\"" + "FieldOrMethod" + "\"");
-        sb.append(":");
-        sb.append("\"" + "Method" + "\"");
-        sb.append(",");
-        sb.append("\"" + "Parameters" + "\"");
-        sb.append(":");
-        sb.append("[");
+       JSONObject jsonMethod = new JSONObject();
 
-        if (parameters.size() > 0)
-        {
-            for (int i = 0; i < parameters.size() - 1; ++i)
-            {
-                sb.append(parameters.get(i).toJSONString());
-                sb.append(",");
-            }
-            sb.append((parameters.get(parameters.size() - 1)).toJSONString());
-        }
+       JSONArray jsonParameters = new JSONArray();
+       for (Parameter parameter : parameters)
+       {
+            jsonParameters.add(parameter.toJSON());
+       }
 
-        sb.append("]");
-        sb.append("}");
-        return sb.toString();
+        jsonMethod.put("name", getName());
+        jsonMethod.put("type", getType());
+        jsonMethod.put("parameters", jsonParameters);
+
+        return jsonMethod;       
+   }
+
+   public static Method loadFromJSON(JSONObject jsonMethod)
+   {
+       String name = (String)jsonMethod.get("name");
+       String type = (String)jsonMethod.get("type");
+
+       Method method = new Method(name, type);
+
+       JSONArray jsonParameters = (JSONArray)jsonMethod.get("parameters");
+
+       for (Object jsonParameter : jsonParameters)
+       {
+           String paramName = (String)((JSONObject)jsonParameter).get("name");
+           String paramType = (String)((JSONObject)jsonParameter).get("type");
+           method.parameters.add(new Parameter(paramName, paramType));
+       }
+
+       return method;
    }
 }
