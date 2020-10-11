@@ -468,22 +468,28 @@ public class WorkingProject {
         }
     }
 
+    //Read in a JSON String and update the project according to its contents
     public void loadFromJSON(String jsonString)
     {
+        //Clear the current project
         this.classes.clear();
         this.relationships.clear();
         
+        //Get the list of classes and relationships
         Object obj = JSONValue.parse(jsonString);
         JSONObject object = (JSONObject)obj;
         JSONArray classes = (JSONArray)object.get("Classes");
         JSONArray relationships = (JSONArray)object.get("Relationships");
         
+        //Parse the classes
         for (int i = 0; i < classes.size(); ++i)
         {
+            //Get nth class
             JSONObject c = (JSONObject)classes.get(i);
             String className = (String)c.get("Name");
             this.addClass(className);
 
+            //Get the list of attributes for nth class
             JSONArray attributes = (JSONArray)c.get("Attributes");
             for (int j = 0; j < attributes.size(); ++j)
             {
@@ -510,6 +516,8 @@ public class WorkingProject {
                 }
             }
         }
+
+        //Parse the relationships
         for (int i = 0; i < relationships.size(); ++i)
         {
             JSONObject r = (JSONObject)relationships.get(i);

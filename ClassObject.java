@@ -312,9 +312,11 @@ public class ClassObject
                 sb.append(",");
             }
             sb.append(fields.get(fields.size() - 1).toJSONString());
-            sb.append(",");
         }
 
+        if (fields.size() > 0 && methods.size() > 0)
+            sb.append(",");
+            
         if (methods.size() > 0)
         {
             for (int i = 0; i < methods.size() -1; ++i)
