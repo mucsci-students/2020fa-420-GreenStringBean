@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.io.BufferedReader;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.JSONArray;
 
 public class Console {
 
@@ -167,31 +164,6 @@ public class Console {
                         project.removeRelationship (commands.get(1), commands.get(2));
                     break;
 
-                //Add a named attribute to a named class
-                case "addAttribute" :
-                    if (commands.size() < 3)
-                        System.out.println("error: too few arguments for addAttribute<class, name>");
-                    else if (commands.size() > 3)
-                        System.out.println("error: too many arguments for addAttribute<class, name>");
-                    else
-                    {
-                        //System.out.print("Is this attribute a field or a method?");
-                        //String attr = keyboard.nextLine();
-                        //if (attr.equals("field"))
-                        //  System.out.print("What is the data type?");
-                        //  String type = keyboard.nextLine();
-                        //else if (attr.equals("method"))
-                        //  System.out.print("What is the return type?");
-                        //  String type = keyboard.nextLine();
-
-                        //TODO: [Some checks to make sure input is valid]
-
-                        //project.addAttribute(commands.get(1), commands.get(2), attr, type);
-
-                        //project.addAttribute(commands.get(1), commands.get(2));
-                    }
-                    break;
-
                 //Add a new field attribute to named class
                 case "addField" :
                     if (commands.size() < 4)
@@ -215,6 +187,7 @@ public class Console {
                     }
                     break;
 
+                //Add a new parameter to a method in a class
                 case "addParameter" :
                     if (commands.size() < 5)
                         System.out.println("error: too few arguments for addParameter<class, method, paramName, paramType>");
@@ -243,7 +216,17 @@ public class Console {
                 else
                     project.removeMethod(commands.get(1), commands.get(2));
                 break;   
-                    
+
+                //Deleter a named parameter from a named method
+                case "deleteParameter" :
+                if (commands.size() < 4)
+                    System.out.println("error: too few arguments for deleteParameter<class, method, param>");
+                else if (commands.size() > 4)
+                    System.out.println("error: too many arguments for deleteParameter<class, method, param");
+                else
+                    project.removeParameter(commands.get(1), commands.get(2), commands.get(3));
+                break;
+                
                 //Rename a named field from a named class
                 case "renameField" :
                     if (commands.size() < 4)
@@ -254,7 +237,6 @@ public class Console {
                         project.renameField(commands.get(1), commands.get(2), commands.get(3));
                     break;
                 
-
                 //Rename a named method from a named class
                 case "renameMethod" :
                 if (commands.size() < 4)
@@ -265,13 +247,50 @@ public class Console {
                     project.renameMethod(commands.get(1), commands.get(2), commands.get(3));
                 break;
 
+                //Rename a parameter 
+                case "renameParameter" :
+                if (commands.size() < 5)
+                    System.out.println("error: too few arguments for renameParameter<class, method, parameter, newName>");
+                else if (commands.size() > 5)
+                    System.out.println("error: too many arguments for renameParameter<class, method, parameter, newName>");
+                else
+                    project.renameParameter(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
+                break;
+
+                case "changeFieldType" :
+                if (commands.size() < 4)
+                    System.out.println("error: too few arguments for changeFieldType<class, field, newType>");
+                else if (commands.size() > 4)
+                    System.out.println("error: too many arguments for changeFieldType<class, field, newType>");
+                else 
+                    project.changeFieldType (commands.get(1), commands.get(2), commands.get(3));
+                break;
+
+                case "changeMethodType" :
+                if (commands.size() < 4)
+                    System.out.println("error: too few arguments for changeMethodType<class, method, newType>");
+                else if (commands.size() > 4)
+                    System.out.println("error: too many arguments for changeMethodType<class, method, newType>");
+                else 
+                    project.changeMethodType (commands.get(1), commands.get(2), commands.get(3));
+                break;
+
+                case "changeParameterType" :
+                if (commands.size() < 5)
+                    System.out.println("error: too few arguments for changeParameterType<class, method, parameter, newType>");
+                else if (commands.size() > 5)
+                    System.out.println("error: too many arguments for changeParameterType<class, method, parameter, newType>");
+                else
+                    project.changeParamType (commands.get(1), commands.get(2), commands.get(3), commands.get(4));
+                break;
+
                 //Print the names of each class
                 case "printClasses" :
                     project.printClasses();
                     break;
                 
                 //Print the names of each attribute in a class
-                case "printAttributes" :
+                case "printClass" :
                     if (commands.size() < 2)
                         System.out.println("error: too few arguments for printAttributes<class>");
                     else if (commands.size() > 2)
@@ -348,7 +367,7 @@ public class Console {
 
     public static void saveFile (String projectName)
     {
-        String filename = projectName + ".txt";
+        String filename = projectName + ".json";
         try {
             File proj = new File(filename);
             if (proj.createNewFile())
@@ -370,7 +389,7 @@ public class Console {
     {
         
         try {
-            brProject = new BufferedReader(new FileReader(filename));
+            brProject = new BufferedReader(new FileReader(filename + ".json"));
             int i;
             StringBuilder projectString = new StringBuilder();
             while ((i = brProject.read()) != -1)
@@ -387,7 +406,7 @@ public class Console {
     {
         try {
             brHelp = new BufferedReader (new FileReader ("HelpDocument.txt"));
-            brHelp.mark(2000);
+            brHelp.mark(5000);
         }
         catch (Exception FileNotFoundException) {
             helpfilePresent = false;
