@@ -151,7 +151,6 @@ public class Console {
                             case "-r" : 
                                 project.addRelationship (commands.get(1), commands.get(2), "R"); 
                                 break;
-                            
                             default :
                                 System.out.println("error: no relationship type given. <class, class, type>");
                         }
