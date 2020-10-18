@@ -1,6 +1,11 @@
+import java.security.Policy.Parameters;
 import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import sun.jvm.hotspot.utilities.soql.MethodCallable;
+
+import java.util.List;
 
 /**
  * A method is a formal declaration contained in a class. Has a name, a return
@@ -177,4 +182,31 @@ public class Method extends FormalDeclaration {
 
         return method;
     }
+    public String toString()
+    {
+        String methodToString = getType() + " " + getName() + "("; 
+        if(parameters.size()>0){
+            Parameter currentParam = parameters.get(0);
+            methodToString += " " + currentParam.toString();
+            for (int i = 1; i < parameters.size(); ++i)
+            {
+                currentParam = parameters.get(i);
+                methodToString += ", " + currentParam.toString();
+            }
+            methodToString += " ";
+        }
+        return methodToString + ")";
+    }
+
+    public List<Parameter> getParameters(){
+        return parameters;
+    }
+
+    public Method copy(){
+        Method copy = new Method(getName(), getType());
+        copy.parameters.addAll(parameters);
+        copy.parameters.replaceAll(parameter->parameter.copy());
+        return copy;
+    }
 }
+

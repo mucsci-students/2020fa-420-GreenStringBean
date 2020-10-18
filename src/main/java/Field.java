@@ -43,4 +43,12 @@ public class Field extends FormalDeclaration {
 
         return new Field(name, type);
     }
+    public String toString()
+    {
+        return getType() + " " + getName();
+    }
+
+    public Field copy(){
+        return new Field(getName(), getType());
+    }
 }

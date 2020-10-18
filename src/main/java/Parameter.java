@@ -29,4 +29,11 @@ public class Parameter extends FormalDeclaration {
 
         return jsonParameter;
     }
+    public String toString()
+    {
+        return getType() + " " + getName();
+    }
+    public Parameter copy(){
+        return new Parameter(getName(), getType());
+    }
 }
