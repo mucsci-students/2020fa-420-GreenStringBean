@@ -4,274 +4,356 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
+/**
+ * The working project represents a UML diagram containing classes and
+ * relationships between those classes. Includes methods for creating and
+ * modifying the classes and relationships, as well as the data contained
+ * in classes. Methods use int return values to denote success or failure as
+ * follows:
+ *     00 - Success
+ *     01 - Class is not open
+ *     02 - Class does not exist
+ *     03 - Field does not exist
+ *     04 - Method does not exist
+ *     05 - Parameter does not exist
+ *     06 - Relationship does not exist
+ *     07 - Relationship already exists
+ *     08 - Name is already in use
+ *     09 - Name is not valid
+ *     10 - Data type is not valid
+ *     11 - Relationship type is not valid
+ *     12 - Error loading project
+ *     13 - Loaded project is not valid
+ */
 
 public class WorkingProject {
     private HashMap<String, ClassObject> classes;
     private ArrayList<Relationship> relationships;
     
 
-    // Create a new Working Project with empty ClassObject/Relationship lists
+    /**
+     * Creates a new working project with no classes or relationships.
+     */
     public WorkingProject()
     {
         classes = new HashMap<>();
         relationships = new ArrayList<>();
     }
 
-    // Add a new ClassObject called className to the project
-    // Print an error if there is already a ClassObject with that name in the project
-    public void addClass(String className)
+    /**
+     * Adds a new class to the project.
+     * @param className the name to be used by the new class
+     * @return          0 if successful, error code otherwise
+     */
+    public int addClass(String className)
     {
         if (classes.containsKey(className))
         {
-            System.out.println("Error: Name is already is use");
-            return;
+            return 8;
         }
 
         classes.put(className, new ClassObject(className));
-        System.out.println("Successfully added");
+        return 0;
     }
-
-    // Remove the ClassObject called className from the project
-    // Remove all Relationships which contain the removed ClassObject
-    // Print an error if there is no ClassObject with that name in the project
-    public void removeClass(String className)
+    
+    /**
+     * Removes a class from the project, if it exists. Also removes any
+     * relationships the class was part of.
+     * @param className the name of the class to remove
+     * @return          0 if successful, error code otherwise
+     */
+    public int removeClass(String className)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
         ClassObject removedClass = classes.remove(className);
         removeRelationshipsByClass(removedClass);
-        System.out.println("Successfully removed");
+        return 0;
     }
-
-    // Rename the ClassObject called oldClassName to newClassName
-    // Print an error if there is no ClassObject called oldClassName in the project
-    // Print an error if there is already a ClassObject called newClassName in the project
-    public void renameClass(String oldClassName, String newClassName)
+    
+    /**
+     * Renames a class, if it exists.
+     * @param oldClassName the current name of the class to rename
+     * @param newClassName the new name to give to the class
+     * @return             0 if successful, error code otherwise
+     */
+    public int renameClass(String oldClassName, String newClassName)
     {
         if (!classes.containsKey(oldClassName))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
         if (classes.containsKey(newClassName))
         {
-            System.out.println("Error: Name is already in use");
-            return;
+            return 8;
         }
 
         ClassObject renamedClass = classes.remove(oldClassName);
         renamedClass.setName(newClassName);
         classes.put(newClassName, renamedClass);
-        System.out.println("Successfully renamed");
+        return 0;
     }
 
-    // Close ClassObject called className
-    // Print an error if there is no ClassObject with that name in the list
-    public void closeClass(String className)
+    /**
+     * Closes a class, if it exists.
+     * @param className the name of the class to close
+     * @return          0 if successful, error code otherwise
+     */
+    public int closeClass(String className)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
         classes.get(className).close();
-        System.out.println("Successfully closed");
+        return 0;
     }
 
-    // Open ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void openClass(String className)
+    /**
+     * Opens a class, if it exists.
+     * @param className the name of the class to open
+     * @return          0 if successful, error code otherwise
+     */
+    public int openClass(String className)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
         classes.get(className).open();
-        System.out.println("Successfully opened");
+        return 0;
     }
 
-    // Add a new Field called fieldName with data type fieldType to the classObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void addField(String className, String fieldName, String fieldType)
+    /**
+     * Adds a new field to a class.
+     * @param className the name of the class to add a field to
+     * @param fieldName the name to be used by the new field
+     * @param fieldType the data type to be used by the new field
+     * @return          0 if successful, error code otherwise
+     */
+    public int addField(String className, String fieldName, String fieldType)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).addField(fieldName, fieldType);
+        return classes.get(className).addField(fieldName, fieldType);
     }
 
-    // Remove the Field called fieldName from the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void removeField(String className, String fieldName)
+    /**
+     * Removes a field from a class, if it exists.
+     * @param className the name of the class to remove a field from
+     * @param fieldName the name of the field to remove
+     * @return          0 if successful, error code otherwise
+     */
+    public int removeField(String className, String fieldName)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).removeField(fieldName);
+        return classes.get(className).removeField(fieldName);
     }
 
-    // Rename the Field called oldFieldName to newFieldName in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void renameField(String className, String oldFieldName, String newFieldName)
+    /**
+     * Renames a field, if it exists.
+     * @param className    the name of the class with the field to rename
+     * @param oldFieldName the current name of the field to rename
+     * @param newFieldName the new name to give to the field
+     * @return             0 if successful, error code otherwise
+     */
+    public int renameField(String className, String oldFieldName, String newFieldName)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).renameField(oldFieldName, newFieldName);
+        return classes.get(className).renameField(oldFieldName, newFieldName);
     }
 
-    // Change the data type of the Field called fieldName to newFieldType in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void changeFieldType(String className, String fieldName, String newFieldType)
+    /**
+     * Changes the data type of a field, if it exists.
+     * @param className    the name of the class with the field to modify
+     * @param fieldName    the name of the field to change the data type of
+     * @param newFieldType the new data type to give to the field
+     * @return             0 if successful, error code otherwise
+     */
+    public int changeFieldType(String className, String fieldName, String newFieldType)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).changeFieldType(fieldName, newFieldType);
+        return classes.get(className).changeFieldType(fieldName, newFieldType);
     }
 
-    // Add a new Method called methodName with the return type methodType to the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void addMethod(String className, String methodName, String methodType)
+    /**
+     * Adds a new method to a class.
+     * @param className  the name of the class to add a method to
+     * @param methodName the name to be used by the new method
+     * @param methodType the data type to be used by the new method
+     * @return           0 if successful, error code otherwise
+     */
+    public int addMethod(String className, String methodName, String methodType)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).addMethod(methodName, methodType);
+        return classes.get(className).addMethod(methodName, methodType);
     }
 
-    // Remove the Method called methodName from the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void removeMethod(String className, String methodName)
+    /**
+     * Removes a method from a class, if it exists.
+     * @param className  the name of the class to remove a method from
+     * @param methodName the name of the method to remove
+     * @return           0 if successful, error code otherwise
+     */
+    public int removeMethod(String className, String methodName)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).removeMethod(methodName);
+        return classes.get(className).removeMethod(methodName);
     }
 
-    // Rename the Method called oldMethodName to newMethodName in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void renameMethod(String className, String oldMethodName, String newMethodName)
+    /**
+     * Renames a method, if it exists.
+     * @param className     the name of the class with the method to rename
+     * @param oldMethodName the current name of the method to rename
+     * @param newMethodName the new name to give to the method
+     * @return              0 if successful, error code otherwise
+     */
+    public int renameMethod(String className, String oldMethodName, String newMethodName)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).renameMethod(oldMethodName, newMethodName);
+        return classes.get(className).renameMethod(oldMethodName, newMethodName);
     }
 
-    // Change the return type of the method called methodName to newMethodType in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void changeMethodType(String className, String methodName, String newMethodType)
+    /**
+     * Changes the return type of a method, if it exists.
+     * @param className     the name of the class with the method to modify
+     * @param methodName    the name of the method to change the return type of
+     * @param newMethodType the new return type to give to the method
+     * @return              0 if successful, error code otherwise
+     */
+    public int changeMethodType(String className, String methodName, String newMethodType)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).changeMethodType(methodName, newMethodType);
+        return classes.get(className).changeMethodType(methodName, newMethodType);
     }
 
-    // Add a new Parameter called paramName with the data type paramType to the Method called methodName in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void addParameter(String className, String methodName, String paramName, String paramType)
+    /**
+     * Adds a new parameter to a method.
+     * @param className  the name of the class with the method to modify
+     * @param methodName the name of the method to add a parameter to
+     * @param paramName  the name to be used by the new parameter
+     * @param paramType  the data type to be used by the new parameter
+     * @return           0 if successful, error code otherwise
+     */
+    public int addParameter(String className, String methodName, String paramName, String paramType)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).addParameter(methodName, paramName, paramType);
+        return classes.get(className).addParameter(methodName, paramName, paramType);
     }
 
-    // Remove the Parameter called paramName from the method called methodName in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void removeParameter(String className, String methodName, String paramName)
+    /**
+     * Removes a parameter from a method, if it exists.
+     * @param className  the name of the class with the method to modify
+     * @param methodName the name of the method to remove a parameter from
+     * @param paramName  the name of the parameter to remove
+     * @return           0 if successful, error code otherwise
+     */
+    public int removeParameter(String className, String methodName, String paramName)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).removeParameter(methodName, paramName);
+        return classes.get(className).removeParameter(methodName, paramName);
     }
 
-    // Rename the Parameter called oldParamName to newParamName in the Method called methodName in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void renameParameter(String className, String methodName, String oldParamName, String newParamName)
+    /**
+     * Renames a parameter, if it exists.
+     * @param className    the name of the class with the method to modify
+     * @param methodName   the name of the method with the parameter to rename
+     * @param oldParamName the current name of the parameter to rename
+     * @param newParamName the new name to give to the parameter
+     * @return             0 if successful, error code otherwise
+     */
+    public int renameParameter(String className, String methodName, String oldParamName, String newParamName)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).renameParameter(methodName, oldParamName, newParamName);
+        return classes.get(className).renameParameter(methodName, oldParamName, newParamName);
     }
-
-    // Change the data type of the Parameter called paramName to newParamType in the Method called methodName in the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void changeParameterType(String className, String methodName, String paramName, String newParamType)
+    
+    /**
+     * Changes the data type of a parameter, if it exists.
+     * @param className    the name of the class with the method to modify
+     * @param methodName   the name of the method with the parameter to modify
+     * @param paramName    the name of the parameter to change the data type of
+     * @param newParamType the new data type to give to the parameter
+     * @return             0 if successful, error code otherwise
+     */
+    public int changeParameterType(String className, String methodName, String paramName, String newParamType)
     {
         if (!classes.containsKey(className))
         {
-            System.out.println("Error: Class does not exist");
-            return;
+            return 2;
         }
 
-        classes.get(className).changeParameterType(methodName, paramName, newParamType);
+        return classes.get(className).changeParameterType(methodName, paramName, newParamType);
     }
 
-    // Add a new ordered Relationship from the ClassObject called classNameFrom to the ClassObject called classNameTo with the type specified by typeName
-    // Print an error if either of those names are not found in the project
-    // Print an error if there is already a Relationship between those classes in the project
-    // Print an error if typeName does not specify a valid Relationship type
-    public void addRelationship(String classNameFrom, String classNameTo, String typeName)
+    /**
+     * Adds a new ordered relationship to the project.
+     * @param classNameFrom the name of the class the relationship starts at
+     * @param classNameTo   the name of the class the relationship goes to
+     * @param typeName      the first letter of the relationship's type
+     * @return              0 if successful, error code otherwise
+     */
+    public int addRelationship(String classNameFrom, String classNameTo, String typeName)
     {
         Relationship.relationshipType type = stringToRelationshipType(typeName);
         
         if (type == null)
         {
-            System.out.println("Error: Not a valid relationship type");
-            return;
+            return 11;
         }
 
         if (!classes.containsKey(classNameFrom) || !classes.containsKey(classNameTo))
         {
-            System.out.println("Error: One or both classes do not exist");
-            return;
+            return 2;
         }
         
         ClassObject classObjFrom = classes.get(classNameFrom);
@@ -281,24 +363,24 @@ public class WorkingProject {
 
         if (index != -1)
         {
-            System.out.println("Error: Relationship already exists");
-            return;
+            return 7;
         }
 
         relationships.add(new Relationship(classObjFrom, classObjTo, type));
-        System.out.println("Successfully added");
+        return 0;
     }
 
-
-    // Remove the relationship from the ClassObject called classNameFrom to the ClassObject called classNameTo
-    // Print an error if either of those names are not found in the project
-    // Print an error if there is no Relationship between those classes in the project
-    public void removeRelationship(String classNameFrom, String classNameTo)
+    /**
+     * Removes a relationship from the project, if it exists.
+     * @param classNameFrom the name of the class the relationship starts at
+     * @param classNameTo   the name of the class the relationship goes to
+     * @return              0 if successful, error code otherwise
+     */
+    public int removeRelationship(String classNameFrom, String classNameTo)
     {
         if (!classes.containsKey(classNameFrom) || !classes.containsKey(classNameTo))
         {
-            System.out.println("Error: One or both classes do not exist");
-            return;
+            return 2;
         }
 
         ClassObject classObjFrom = classes.get(classNameFrom);
@@ -308,31 +390,32 @@ public class WorkingProject {
 
         if (index == -1)
         {
-            System.out.println("Error: Relationship does not exist");
-            return;
+            return 6;
         }
 
         relationships.remove(index);
-        System.out.println("Successfully removed");
+        return 0;
     }
-
-    // Change the type of a Relationship from the ClassObject called classNameFrom to the ClassObject called ClassNameTo to newTypeName
-    // Print an error if either of those names are not found in the project
-    // Print an error if newTypeName does not speicfy a valid Relationship type
-    public void changeRelationshipType(String classNameFrom, String classNameTo, String newTypeName)
+    
+    /**
+     * Changes the type of a relationship, if it exists.
+     * @param classNameFrom the name of the class the relationship starts at
+     * @param classNameTo   the name of the class the relationship goes to
+     * @param newTypeName   the first letter of the relationship's new type
+     * @return              0 if successful, error code otherwise
+     */
+    public int changeRelationshipType(String classNameFrom, String classNameTo, String newTypeName)
     {
         Relationship.relationshipType newType = stringToRelationshipType(newTypeName);
         
         if (newType == null)
         {
-            System.out.println("Error: Not a valid relationship type");
-            return;
+            return 11;
         }
 
         if (!classes.containsKey(classNameFrom) || !classes.containsKey(classNameTo))
         {
-            System.out.println("Error: One or both classes do not exist");
-            return;
+            return 2;
         }
 
         ClassObject classObjFrom = classes.get(classNameFrom);
@@ -342,12 +425,11 @@ public class WorkingProject {
 
         if (index == -1)
         {
-            System.out.println("Error: Relationship does not exist");
-            return;
+            return 6;
         }
 
         relationships.get(index).setType(newType);
-        System.out.println("Successfully changed type");
+        return 0;
     }
 
     // Print the name of each ClassObject in the project
@@ -455,8 +537,12 @@ public class WorkingProject {
         }
     }
 
-    // Decode a JSONObject from the encoded String, then convert it back to a working project
-    public void loadFromJSON(String jsonString)
+    /**
+     * Replaces current project with an encoded project.
+     * @param jsonString a JSON encoding of a project
+     * @return           0 if successful, error code otherwise
+     */
+    public int loadFromJSON(String jsonString)
     {
         classes.clear();
         relationships.clear();
@@ -480,11 +566,14 @@ public class WorkingProject {
             relationships.add(new Relationship(classes.get(classNameFrom), classes.get(classNameTo), type));
         }
 
-        System.out.println("Successfully loaded");
+        return 0;
     }
     
-    // Convert working project into a JSONObject, then return its JSON encoding
-    public String toJSONString ()
+    /**
+     * Encodes the current project as a JSON string.
+     * @return a JSON encoding of the project
+     */
+    public String toJSONString()
     {
         JSONObject jsonProject = new JSONObject();
 
