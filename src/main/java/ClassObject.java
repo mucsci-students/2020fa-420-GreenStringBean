@@ -2,6 +2,8 @@ import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONAware;
+import java.util.Set;
+import java.util.List;
 
 /**
  * The class object represents a UML class containing fields and methods.
@@ -11,7 +13,7 @@ import org.json.simple.JSONAware;
  * the working project class.
  */
 
-public class ClassObject {   
+public class ClassObject{   
     private String name;
     private boolean isOpen;
     private HashMap<String, Field> fields;
@@ -399,4 +401,35 @@ public class ClassObject {
 
         return classObj;
     }
+    public Set<String> getFieldNames(){
+        return fields.keySet();
+    }
+    public Set<String> getMethodNames(){
+        return methods.keySet();
+    }
+    
+    public Field getField(String fieldName){
+        if(fields.containsKey(fieldName)){
+            return fields.get(fieldName);
+        }
+        return null;
+    }
+    
+    public Method getMethod(String methodName){
+        if(methods.containsKey(methodName)){
+            return methods.get(methodName);
+        }
+        return null;
+    }
+
+    public ClassObject copy(){
+        ClassObject copy = new ClassObject(name);
+        copy.fields.putAll(fields);
+        copy.fields.replaceAll((name, field)->field.copy());
+        copy.methods.putAll(methods);
+        copy.methods.replaceAll((name, method)->method.copy());
+        return copy;
+    }
+
+
 }

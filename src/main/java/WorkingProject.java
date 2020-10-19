@@ -3,6 +3,9 @@ import java.util.ArrayList;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
+import java.util.Set;
+import java.util.List;
+import java.util.HashSet;
 
 /**
  * The working project represents a UML diagram containing classes and
@@ -69,8 +72,8 @@ public class WorkingProject {
             return 2;
         }
 
-        ClassObject removedClass = classes.remove(className);
-        removeRelationshipsByClass(removedClass);
+        classes.remove(className);
+        removeRelationshipsByClass(className);
         return 0;
     }
     
@@ -95,6 +98,7 @@ public class WorkingProject {
         ClassObject renamedClass = classes.remove(oldClassName);
         renamedClass.setName(newClassName);
         classes.put(newClassName, renamedClass);
+        renameClassInRelationships(oldClassName, newClassName);
         return 0;
     }
 
@@ -356,17 +360,14 @@ public class WorkingProject {
             return 2;
         }
         
-        ClassObject classObjFrom = classes.get(classNameFrom);
-        ClassObject classObjTo = classes.get(classNameTo);
-
-        int index = getRelationshipIndex(classObjFrom, classObjTo);
+        int index = getRelationshipIndex(classNameFrom, classNameTo);
 
         if (index != -1)
         {
             return 7;
         }
 
-        relationships.add(new Relationship(classObjFrom, classObjTo, type));
+        relationships.add(new Relationship(classNameFrom, classNameTo, type));
         return 0;
     }
 
@@ -383,10 +384,7 @@ public class WorkingProject {
             return 2;
         }
 
-        ClassObject classObjFrom = classes.get(classNameFrom);
-        ClassObject classObjTo = classes.get(classNameTo);
-
-        int index = getRelationshipIndex(classObjFrom, classObjTo);
+        int index = getRelationshipIndex(classNameFrom, classNameTo);
 
         if (index == -1)
         {
@@ -418,10 +416,7 @@ public class WorkingProject {
             return 2;
         }
 
-        ClassObject classObjFrom = classes.get(classNameFrom);
-        ClassObject classObjTo = classes.get(classNameTo);
-
-        int index = getRelationshipIndex(classObjFrom, classObjTo);
+        int index = getRelationshipIndex(classNameFrom, classNameTo);
 
         if (index == -1)
         {
@@ -441,65 +436,13 @@ public class WorkingProject {
         }
     }
 
-    // Print the names of the ClassObjects in each Relationship in the project
-    // Print in the format className1 -> className2 (type)
-    public void printRelationships()
-    {
-        for (Relationship relationship : relationships)
-        {
-            System.out.println(relationship.getClassFrom().getName() + " -> " + relationship.getClassTo().getName() + " (" + relationship.getType() + ")");
-        }
-    }
-
-    // Print the Fields of the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void printFields(String className)
-    {
-        if (!classes.containsKey(className))
-        {
-            System.out.println("Error: Class does not exist");
-            return;
-        }
-
-        classes.get(className).printFields();
-    }
-
-    // Print the Methods of the ClassObject called className
-    // Print an error if there is no ClassObject with that name in the project
-    public void printMethods(String className)
-    {
-        if (!classes.containsKey(className))
-        {
-            System.out.println("Error: Class does not exist");
-            return;
-        }
-
-        classes.get(className).printMethods();
-    }
-
-    // Print the ClassObject called className, including Fields and Methods
-    // Print an error if there is no ClassObject with that name in the project
-    public void printClass(String className)
-    {
-        if (!classes.containsKey(className))
-        {
-            System.out.println("Error: Class does not exist");
-            return;
-        }
-
-        System.out.println(className);
-        System.out.println("------------");
-        classes.get(className).printFields();
-        classes.get(className).printMethods();
-    }
-
     // Return the index of the first ordered Relationship between classObj1 and classObj2 in the list
     // Return -1 if no Relationship is found
-    private int getRelationshipIndex(ClassObject classObjFrom, ClassObject classObjTo)
+    private int getRelationshipIndex(String classNameFrom, String classNameTo)
     {
         for (int i = 0; i < relationships.size(); ++i)
         {
-            if (relationships.get(i).getClassFrom() == classObjFrom && relationships.get(i).getClassTo() == classObjTo)
+            if (relationships.get(i).getClassNameFrom() == classNameFrom && relationships.get(i).getClassNameTo() == classNameTo)
             {
                 return i;
             }
@@ -508,14 +451,24 @@ public class WorkingProject {
     }
 
     // Remove any relationships which contain classObj from the list
-    private void removeRelationshipsByClass(ClassObject classObj)
+    private void removeRelationshipsByClass(String className)
     {
         for (Relationship relationship : relationships)
         {
-            if (relationship.containsClass(classObj))
+            if (relationship.containsClass(className))
             {
                 relationships.remove(relationship);
             }
+        }
+    }
+
+    private void renameClassInRelationships(String oldClassName, String newClassName){
+        for(Relationship relationship : relationships)
+        {
+            if (relationship.getClassNameFrom().equals(oldClassName))
+            relationship.setClassNameFrom(newClassName);
+            if (relationship.getClassNameTo().equals(oldClassName))
+            relationship.setClassNameTo(newClassName);    
         }
     }
     
@@ -563,7 +516,7 @@ public class WorkingProject {
             String typeName = (String)((JSONObject)jsonRelationship).get("type");
             typeName = typeName.substring(0, 1);
             Relationship.relationshipType type = stringToRelationshipType(typeName);
-            relationships.add(new Relationship(classes.get(classNameFrom), classes.get(classNameTo), type));
+            relationships.add(new Relationship(classNameFrom, classNameTo, type));
         }
 
         return 0;
@@ -596,4 +549,23 @@ public class WorkingProject {
 
         return jsonProject.toJSONString();
     }
+
+    public Set<String> getClassNames(){
+        return classes.keySet();
+    }
+
+    public ClassObject getClass(String className){
+        if(classes.containsKey(className)){
+            return classes.get(className).copy();
+        }
+        return null;
+    }
+
+    public Set<Relationship> getRelationships(){
+        ArrayList<Relationship> relationshipsCopy = new ArrayList<Relationship>(relationships);
+        relationshipsCopy.replaceAll(relationship -> relationship.copy());
+        return new HashSet<Relationship>(relationshipsCopy);
+    }
+
+    
 }

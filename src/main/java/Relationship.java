@@ -11,20 +11,20 @@ public class Relationship {
 	{
 		AGGREGATION, COMPOSITION, INHERITANCE, REALIZATION;
 	}
-	private ClassObject classFrom;
-	private ClassObject classTo;
+	private String classNameFrom;
+	private String classNameTo;
 	private relationshipType type;
 	
 	/**
 	 * Creates a new relationship.
-	 * @param classFrom the class the relationship starts at
-	 * @param classTo   the class the relationship goes to
+	 * @param classNameFrom the name of the class the relationship starts at
+	 * @param classNameTo   the name of the class the relationship goes to
 	 * @param type      the relationship's type
 	 */
-	public Relationship(ClassObject classFrom, ClassObject classTo, relationshipType type)
+	public Relationship(String classNameFrom, String classNameTo, relationshipType type)
 	{
-		this.classFrom = classFrom;
-		this.classTo = classTo;
+		this.classNameFrom = classNameFrom;
+		this.classNameTo = classNameTo;
 		this.type = type;
 	}
 	
@@ -32,18 +32,26 @@ public class Relationship {
 	 * Accessor for the relationship's "from" class
 	 * @return the class the relationship starts at
 	 */
-	public ClassObject getClassFrom()
+	public String getClassNameFrom()
 	{
-		return classFrom;
+		return classNameFrom;
 	}
 	
 	/**
 	 * Accessor for the relationship's "to" class
 	 * @return the class the relationship goes to
 	 */
-	public ClassObject getClassTo()
+	public String getClassNameTo()
 	{
-		return classTo;
+		return classNameTo;
+	}
+
+	public void setClassNameFrom(String newClassNameFrom){
+		classNameFrom = newClassNameFrom;
+	}
+
+	public void setClassNameTo(String newClassNameTo){
+		classNameTo = newClassNameTo;
 	}
 
 	/**
@@ -70,19 +78,23 @@ public class Relationship {
 	 * @return         true if the class is this relationship's "from" or "to"
 	 *                 class
 	 */
-	public boolean containsClass(ClassObject classObj)
+	public boolean containsClass(String className)
 	{
-		return (classObj == classFrom || classObj == classTo);
+		return (className.equals(classNameFrom) || className.equals(classNameTo));
 	}
 
     public JSONObject toJSON()
     {
 		JSONObject jsonRelationship = new JSONObject();
 
-		jsonRelationship.put("from", classFrom.getName());
-		jsonRelationship.put("to", classTo.getName());
+		jsonRelationship.put("from", classNameFrom);
+		jsonRelationship.put("to", classNameTo;
 		jsonRelationship.put("type", type.name());
 
 		return jsonRelationship;
+	}
+
+	public Relationship copy(){
+		return new Relationship(classNameFrom, classNameTo, type);
 	}
 }
