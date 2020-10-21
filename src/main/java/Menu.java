@@ -28,6 +28,8 @@ import javax.swing.border.Border;
 import javax.swing.BorderFactory;
 import java.awt.GridLayout;
 
+import model.WorkingProject;
+
 public class Menu {
 
 	private JMenuBar menuB;
