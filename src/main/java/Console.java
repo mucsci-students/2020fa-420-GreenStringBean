@@ -8,6 +8,8 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.io.BufferedReader;
 
+import model.WorkingProject;
+
 public class Console {
 
     //Fields
@@ -296,7 +298,7 @@ public class Console {
                 else if (commands.size() > 2)
                     System.out.println("Error: too many arguments for printClass<class>");
                 else
-                    project.printClass(commands.get(1));
+                    System.out.println("No longer supported");
                 break;
 
                 //Print the fields of a named class
@@ -306,7 +308,7 @@ public class Console {
                     else if (commands.size() > 2)
                         System.out.println("Error: too many arguments for printFields<class>");
                     else
-                        project.printFields(commands.get(1));
+                        System.out.println("No longer supported");
                     break;
                 
                 //Print the methods of a named class
@@ -316,12 +318,12 @@ public class Console {
                     else if (commands.size() > 2)
                         System.out.println("Error: too many arguments for printFields<class>");
                     else
-                        project.printMethods(commands.get(1));
+                        System.out.println("No longer supported");
                     break;
                 
                 //Print each relationship
                 case "printRelationships" :
-                    project.printRelationships();
+                    System.out.println("No longer supported");
                     break;
                 
                 //If the input did not match any known command, then print an error message
