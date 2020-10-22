@@ -2,10 +2,15 @@ package controller;
 
 import java.util.ArrayDeque;
 
+import view.Observer;
+import java.util.List;
+import java.util.ArrayList;
 import command.*;
 import model.WorkingProject;
 
 public class WorkingProjectEditor {
+    private List<Observer<WorkingProject>> observers;
+    
     private WorkingProject project;
     private boolean lastCommandStatus;
     private String lastCommandStatusMsg;
@@ -21,6 +26,23 @@ public class WorkingProjectEditor {
         lastCommandStatusMsg = "No commands yet";
 
         executedCommands = new ArrayDeque<>();
+
+        observers = new ArrayList<>();
+    }
+
+    public void attach (Observer<WorkingProject> observer)
+    {
+        observers.add(observer);
+    }
+
+    public void detach (Observer<WorkingProject> observer)
+    {
+        observers.remove(observer);
+    }
+
+    private void notifyAllObservers()
+    {
+        observers.forEach(o -> o.onUpdate(getProjectSnapshot()));
     }
 
     public boolean getLastCommandStatus()
@@ -168,6 +190,8 @@ public class WorkingProjectEditor {
                 executedCommands.remove();
             }
             executedCommands.push(cmd);
+
+            notifyAllObservers();
         }
         lastCommandStatus = cmd.getStatus();
         lastCommandStatusMsg = cmd.getStatusMessage();
