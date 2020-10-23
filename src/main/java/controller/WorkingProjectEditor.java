@@ -16,6 +16,7 @@ public class WorkingProjectEditor {
     private String lastCommandStatusMsg;
 
     private ArrayDeque<Command> executedCommands;
+    private ArrayDeque<Command> undoneCommands;
 
     private static final int MAX_COMMAND_HISTORY = 50;
 
@@ -26,6 +27,7 @@ public class WorkingProjectEditor {
         lastCommandStatusMsg = "No commands yet";
 
         executedCommands = new ArrayDeque<>();
+        undoneCommands = new ArrayDeque<>();
 
         observers = new ArrayList<>();
     }
@@ -33,11 +35,21 @@ public class WorkingProjectEditor {
     public void attach (Observer<WorkingProject> observer)
     {
         observers.add(observer);
+        Set<String> classNames = project.getClassNames();
+        for(String className : classNames)
+        {
+            project.getClass(className).attach(observer);
+        }
     }
 
     public void detach (Observer<WorkingProject> observer)
     {
         observers.remove(observer);
+        Set<String> classNames = project.getClassNames();
+        for(String className : classNames)
+        {
+            project.getClass(className).detach(observer);
+        }
     }
 
     private void notifyAllObservers()
@@ -63,25 +75,40 @@ public class WorkingProjectEditor {
     public void addClass(String className)
     {
         Command cmd = new AddClassCommand(project, className);
-        executeCommand(cmd);
+        executeProjectCommand(cmd);
+        ClassObject class = project.getClass(className);
+
+        if(cmd.getStatus())
+            observers.forEach(o -> class.attach(o));
+
     }
 
     public void removeClass(String className)
     {
+        ClassObject class = project.getClass(className);
         Command cmd = new RemoveClassCommand(project, className);
-        executeCommand(cmd);
+        executeProjectCommand(cmd);
+
+        if(cmd.getStatus())
+            observers.forEach(o -> class.detach(o));
     }
 
     public void renameClass(String oldClassName, String newClassName)
     {
         Command cmd = new RenameClassCommand(project, oldClassName, newClassName);
-        executeCommand(cmd);
+        executeProjectCommand(cmd);
     }
 
     public void openClass(String className)
     {
         Command cmd = new OpenClassCommand(project, className);
         executeCommand(cmd);
+    }
+
+    public void loadProject(String jsonString)
+    {
+        Command cmd = new LoadProjectCommand(project, jsonString);
+        executeProjectCommand(cmd);
     }
 
     public void closeClass(String className)
@@ -165,23 +192,25 @@ public class WorkingProjectEditor {
     public void addRelationship(String classNameFrom, String classNameTo, String typeName)
     {
         Command cmd = new AddRelationshipCommand(project, classNameFrom, classNameTo, typeName);
-        executeCommand(cmd);
+        executeProjectCommand(cmd);
     }
 
     public void removeRelationship(String classNameFrom, String classNameTo)
     {
         Command cmd = new RemoveRelationshipCommand(project, classNameFrom, classNameTo);
-        executeCommand(cmd);
+        executeProjectCommand(cmd);
     }
 
     public void changeRelationshipType(String classNameFrom, String classNameTo, String newTypeName)
     {
         Command cmd = new ChangeRelationshipTypeCommand(project, classNameFrom, classNameTo, newTypeName);
-        executeCommand(cmd);
+        executeProjectCommand(cmd);
     }
 
     private void executeCommand(Command cmd)
     {
+        undoneCommands.clear();
+
         cmd.execute();
         if (cmd.getStatus())
         {
@@ -196,4 +225,47 @@ public class WorkingProjectEditor {
         lastCommandStatus = cmd.getStatus();
         lastCommandStatusMsg = cmd.getStatusMessage();
     }
+
+    private void executeProjectCommand(Command cmd)
+    {
+        executeCommand(cmd);
+        if(cmd.getStatus())
+            notifyAllObservers();
+    }
+
+    public String toJSONString()
+    {
+        return project.toJSONString();
+    }
+
+    public boolean canUndo()
+    {
+        return executedCommands.size()>0;
+    }
+
+    public void undo()
+    {
+        if(canUndo())
+        {
+            Command cmd = executedCommands.pop();
+            cmd.undo();
+            undoneCommands.push(cmd);
+        }
+    }
+
+    public boolean canRedo()
+    {
+        return undoneCommands.size()>0;
+    }
+
+    public void redo()
+    {
+        if(canRedo())
+        {
+            Command cmd = undoneCommands.pop();
+            cmd.execute();
+            executedCommands.push(cmd);
+        }
+    }
+
 }

@@ -1,3 +1,4 @@
-public interface Observer<E>{
-    void onUpdate(E data);
+public interface Observer{
+    void onUpdate(WorkingProject project);
+    void onUpdate(ClassObject class);
 }

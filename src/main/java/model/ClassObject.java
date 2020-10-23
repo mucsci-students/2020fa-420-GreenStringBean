@@ -18,6 +18,8 @@ public class ClassObject{
     private HashMap<String, Field> fields;
     private HashMap<String, Method> methods;
 
+    private List<Observer<ClassObject>> observers;
+
     /**
      * Creates a new closed class with no fields or methods.
      * @param name the name of the class, which must always match this class's
@@ -29,6 +31,21 @@ public class ClassObject{
         isOpen = false;
         fields = new HashMap<>();
         methods = new HashMap<>();
+    }
+
+    public void attach (Observer<WorkingProject> observer)
+    {
+        observers.add(observer);
+    }
+
+    public void detach (Observer<WorkingProject> observer)
+    {
+        observers.remove(observer);
+    }
+
+    private void notifyAllObservers()
+    {
+        observers.forEach(o -> o.onUpdate(copy()));
     }
 
     /**
@@ -93,6 +110,7 @@ public class ClassObject{
         }
 
         fields.put(fieldName, new Field(fieldName, fieldType));
+        notifyAllObservers();
         return 0;
     }
 
@@ -114,6 +132,7 @@ public class ClassObject{
         }
 
         fields.remove(fieldName);
+        notifyAllObservers();
         return 0;
     }
     
@@ -143,6 +162,7 @@ public class ClassObject{
         Field renamedField = fields.remove(oldFieldName);
         renamedField.setName(newFieldName);
         fields.put(newFieldName, renamedField);
+        notifyAllObservers();
         return 0;
     }
     
@@ -165,6 +185,7 @@ public class ClassObject{
         }
 
         fields.get(fieldName).setType(newFieldType);
+        notifyAllObservers();
         return 0;
     }
     
@@ -187,6 +208,7 @@ public class ClassObject{
         }
 
         methods.put(methodName, new Method(methodName, methodType));
+        notifyAllObservers();
         return 0;
     }
     
@@ -208,6 +230,7 @@ public class ClassObject{
         }
 
         methods.remove(methodName);
+        notifyAllObservers();
         return 0;
     }
 
@@ -237,6 +260,7 @@ public class ClassObject{
         Method renamedMethod = methods.remove(oldMethodName);
         renamedMethod.setName(newMethodName);
         methods.put(newMethodName, renamedMethod);
+        notifyAllObservers();
         return 0;
     }
     
@@ -259,6 +283,7 @@ public class ClassObject{
         }
 
         methods.get(methodName).setType(newMethodType);
+        notifyAllObservers();
         return 0;
     }
     
@@ -276,7 +301,10 @@ public class ClassObject{
             return 4;
         }
 
-        return methods.get(methodName).addParameter(paramName, paramType);
+        int retVal = methods.get(methodName).addParameter(paramName, paramType);
+        if(retVal == 0)
+            notifyAllObservers();
+        return retVal;
     }
     
     /**
@@ -292,7 +320,10 @@ public class ClassObject{
             return 4;
         }
 
-        return methods.get(methodName).removeParameter(paramName);
+        int retVal = methods.get(methodName).removeParameter(paramName);
+        if(retVal == 0)
+            notifyAllObservers();
+        return retVal;
     }
 
     /**
@@ -309,7 +340,11 @@ public class ClassObject{
             return 4;
         }
 
-        return methods.get(methodName).renameParameter(oldParamName, newParamName);
+        int retVal = methods.get(methodName).renameParameter(oldParamName, newParamName);
+        if(retVal == 0)
+            notifyAllObservers();
+        return retVal;
+        
     }
     
     /**
@@ -326,7 +361,10 @@ public class ClassObject{
             return 4;
         }
 
-        return methods.get(methodName).changeParameterType(paramName, newParamType);
+        int retVal = methods.get(methodName).changeParameterType(paramName, newParamType);
+        if(retVal == 0)
+            notifyAllObservers();
+        return retVal;
     }
 
     public void printFields()
