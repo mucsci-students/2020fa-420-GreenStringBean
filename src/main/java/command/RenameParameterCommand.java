@@ -3,7 +3,6 @@ package command;
 import model.WorkingProject;
 
 public class RenameParameterCommand extends Command {
-    private WorkingProject project;
     private String className;
     private String methodName;
     private String oldParamName;
@@ -11,15 +10,14 @@ public class RenameParameterCommand extends Command {
 
     public RenameParameterCommand (WorkingProject project, String className, String methodName, String oldParamName, String newParamName)
     {
-        super();
-        this.project = project;
+        super(project);
         this.className = className;
         this.methodName = methodName;
         this.oldParamName = oldParamName;
         this.newParamName = newParamName;
     }
 
-    public void execute()
+    public void onExecute()
     {
         updateStatus(project.renameParameter(className, methodName, oldParamName, newParamName));
     }
