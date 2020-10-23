@@ -1,11 +1,11 @@
+package model;
+
 import java.security.Policy.Parameters;
 import java.util.ArrayList;
+import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import sun.jvm.hotspot.utilities.soql.MethodCallable;
-
-import java.util.List;
 
 /**
  * A method is a formal declaration contained in a class. Has a name, a return
@@ -196,6 +196,11 @@ public class Method extends FormalDeclaration {
             methodToString += " ";
         }
         return methodToString + ")";
+    }
+
+    public boolean hasParameter(String paramName)
+    {
+        return (getParamIndex(paramName) != -1);
     }
 
     public List<Parameter> getParameters(){

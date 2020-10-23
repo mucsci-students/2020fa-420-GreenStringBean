@@ -1,3 +1,5 @@
+package model;
+
 /**
  * A formal declaration contains a name and a type.
  */

@@ -1,9 +1,8 @@
+package model;
+
 import java.util.HashMap;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONAware;
 import java.util.Set;
-import java.util.List;
 
 /**
  * The class object represents a UML class containing fields and methods.
@@ -401,11 +400,14 @@ public class ClassObject{
 
         return classObj;
     }
+
     public Set<String> getFieldNames(){
         return fields.keySet();
     }
-    public Set<String> getMethodNames(){
-        return methods.keySet();
+
+    public boolean hasField(String fieldName)
+    {
+        return fields.containsKey(fieldName);
     }
     
     public Field getField(String fieldName){
@@ -413,6 +415,15 @@ public class ClassObject{
             return fields.get(fieldName);
         }
         return null;
+    }
+
+    public Set<String> getMethodNames(){
+        return methods.keySet();
+    }
+
+    public boolean hasMethod(String methodName)
+    {
+        return methods.containsKey(methodName);
     }
     
     public Method getMethod(String methodName){
@@ -425,9 +436,9 @@ public class ClassObject{
     public ClassObject copy(){
         ClassObject copy = new ClassObject(name);
         copy.fields.putAll(fields);
-        copy.fields.replaceAll((name, field)->field.copy());
+        copy.fields.replaceAll((fieldName, field)->field.copy());
         copy.methods.putAll(methods);
-        copy.methods.replaceAll((name, method)->method.copy());
+        copy.methods.replaceAll((methodName, method)->method.copy());
         return copy;
     }
 

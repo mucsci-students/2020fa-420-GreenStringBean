@@ -8,6 +8,8 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.io.BufferedReader;
 
+import model.WorkingProject;
+
 public class Console {
 
     //Fields
@@ -142,11 +144,11 @@ public class Console {
                             case "-c" : 
                                 project.addRelationship (commands.get(1), commands.get(2), "C"); 
                                 break;
-                            case "-g" : 
-                                project.addRelationship (commands.get(1), commands.get(2), "G"); 
-                                break;
                             case "-i" : 
                                 project.addRelationship (commands.get(1), commands.get(2), "I"); 
+                                break;
+                            case "-r" : 
+                                project.addRelationship (commands.get(1), commands.get(2), "R"); 
                                 break;
                             default :
                                 System.out.println("Error: no relationship type given. <class, class, type>");
@@ -295,7 +297,7 @@ public class Console {
                 else if (commands.size() > 2)
                     System.out.println("Error: too many arguments for printClass<class>");
                 else
-                    project.printClass(commands.get(1));
+                    System.out.println("No longer supported");
                 break;
 
                 //Print the fields of a named class
@@ -305,7 +307,7 @@ public class Console {
                     else if (commands.size() > 2)
                         System.out.println("Error: too many arguments for printFields<class>");
                     else
-                        project.printFields(commands.get(1));
+                        System.out.println("No longer supported");
                     break;
                 
                 //Print the methods of a named class
@@ -315,12 +317,12 @@ public class Console {
                     else if (commands.size() > 2)
                         System.out.println("Error: too many arguments for printFields<class>");
                     else
-                        project.printMethods(commands.get(1));
+                        System.out.println("No longer supported");
                     break;
                 
                 //Print each relationship
                 case "printRelationships" :
-                    project.printRelationships();
+                    System.out.println("No longer supported");
                     break;
                 
                 //If the input did not match any known command, then print an error message
@@ -366,9 +368,17 @@ public class Console {
         String filename = projectName + ".json";
         try {
             File proj = new File(filename);
-            if (proj.createNewFile())
+            if (proj.exists()) 
             {
-                FileWriter fw = new FileWriter(proj);
+                //when false file is overwritten
+                FileWriter fw = new FileWriter(proj, false);
+                fw.write(project.toJSONString());
+                fw.close();
+            }
+            else if (proj.createNewFile())
+            {
+                //when true file is appended
+                FileWriter fw = new FileWriter(proj, true);
                 fw.write(project.toJSONString());
                 fw.close();
             }

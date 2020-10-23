@@ -1,11 +1,12 @@
+package model;
+
+import java.util.Set;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
-import java.util.Set;
-import java.util.List;
-import java.util.HashSet;
 
 /**
  * The working project represents a UML diagram containing classes and
@@ -466,9 +467,9 @@ public class WorkingProject {
         for(Relationship relationship : relationships)
         {
             if (relationship.getClassNameFrom().equals(oldClassName))
-            relationship.setClassNameFrom(newClassName);
+                relationship.setClassNameFrom(newClassName);
             if (relationship.getClassNameTo().equals(oldClassName))
-            relationship.setClassNameTo(newClassName);    
+                relationship.setClassNameTo(newClassName);    
         }
     }
     
@@ -550,21 +551,39 @@ public class WorkingProject {
         return jsonProject.toJSONString();
     }
 
+    public boolean hasClass(String className)
+    {
+        return classes.containsKey(className);
+    }
+
     public Set<String> getClassNames(){
         return classes.keySet();
     }
 
     public ClassObject getClass(String className){
         if(classes.containsKey(className)){
-            return classes.get(className).copy();
+            return classes.get(className);
         }
         return null;
     }
 
+    public boolean hasRelationship(String classNameFrom, String classNameTo)
+    {
+        return (getRelationshipIndex(classNameFrom, classNameTo) != -1);
+    }
+
     public Set<Relationship> getRelationships(){
-        ArrayList<Relationship> relationshipsCopy = new ArrayList<Relationship>(relationships);
-        relationshipsCopy.replaceAll(relationship -> relationship.copy());
-        return new HashSet<Relationship>(relationshipsCopy);
+        return new HashSet<>(relationships);
+    }
+
+    public WorkingProject copy()
+    {
+        WorkingProject copy = new WorkingProject();
+        copy.classes.putAll(classes);
+        copy.classes.replaceAll((name, classObj)->classObj.copy());
+        copy.relationships.addAll(relationships);
+        copy.relationships.replaceAll(relationship->relationship.copy());
+        return copy;
     }
 
     

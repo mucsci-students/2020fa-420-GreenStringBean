@@ -1,3 +1,5 @@
+package model;
+
 import org.json.simple.JSONObject;
 
 /**
@@ -88,7 +90,7 @@ public class Relationship {
 		JSONObject jsonRelationship = new JSONObject();
 
 		jsonRelationship.put("from", classNameFrom);
-		jsonRelationship.put("to", classNameTo;
+		jsonRelationship.put("to", classNameTo);
 		jsonRelationship.put("type", type.name());
 
 		return jsonRelationship;
