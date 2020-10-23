@@ -4,12 +4,14 @@ import java.util.ArrayDeque;
 
 import view.Observer;
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
 import command.*;
 import model.WorkingProject;
+import model.ClassObject;
 
 public class WorkingProjectEditor {
-    private List<Observer<WorkingProject>> observers;
+    private List<Observer> observers;
     
     private WorkingProject project;
     private boolean lastCommandStatus;
@@ -32,7 +34,7 @@ public class WorkingProjectEditor {
         observers = new ArrayList<>();
     }
 
-    public void attach (Observer<WorkingProject> observer)
+    public void attach (Observer observer)
     {
         observers.add(observer);
         Set<String> classNames = project.getClassNames();
@@ -42,7 +44,7 @@ public class WorkingProjectEditor {
         }
     }
 
-    public void detach (Observer<WorkingProject> observer)
+    public void detach (Observer observer)
     {
         observers.remove(observer);
         Set<String> classNames = project.getClassNames();
@@ -76,21 +78,21 @@ public class WorkingProjectEditor {
     {
         Command cmd = new AddClassCommand(project, className);
         executeProjectCommand(cmd);
-        ClassObject class = project.getClass(className);
+        ClassObject addedClass = project.getClass(className);
 
         if(cmd.getStatus())
-            observers.forEach(o -> class.attach(o));
+            observers.forEach(o -> addedClass.attach(o));
 
     }
 
     public void removeClass(String className)
     {
-        ClassObject class = project.getClass(className);
+        ClassObject removedClass = project.getClass(className);
         Command cmd = new RemoveClassCommand(project, className);
         executeProjectCommand(cmd);
 
         if(cmd.getStatus())
-            observers.forEach(o -> class.detach(o));
+            observers.forEach(o -> removedClass.detach(o));
     }
 
     public void renameClass(String oldClassName, String newClassName)

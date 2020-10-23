@@ -1,5 +1,7 @@
 package command;
 
+import model.WorkingProject;
+
 public abstract class Command {
 	private boolean status;
 	private String statusMsg;

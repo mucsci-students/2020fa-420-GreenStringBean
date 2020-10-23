@@ -3,6 +3,9 @@ package model;
 import java.util.HashMap;
 import org.json.simple.JSONObject;
 import java.util.Set;
+import java.util.List;
+
+import view.Observer;
 
 /**
  * The class object represents a UML class containing fields and methods.
@@ -18,7 +21,7 @@ public class ClassObject{
     private HashMap<String, Field> fields;
     private HashMap<String, Method> methods;
 
-    private List<Observer<ClassObject>> observers;
+    private List<Observer> observers;
 
     /**
      * Creates a new closed class with no fields or methods.
@@ -33,12 +36,12 @@ public class ClassObject{
         methods = new HashMap<>();
     }
 
-    public void attach (Observer<WorkingProject> observer)
+    public void attach (Observer observer)
     {
         observers.add(observer);
     }
 
-    public void detach (Observer<WorkingProject> observer)
+    public void detach (Observer observer)
     {
         observers.remove(observer);
     }
