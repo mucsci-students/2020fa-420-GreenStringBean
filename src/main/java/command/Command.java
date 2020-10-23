@@ -1,8 +1,13 @@
 package command;
 
+import model.WorkingProject;
+
 public abstract class Command {
 	private boolean status;
 	private String statusMsg;
+	protected WorkingProject project;
+	private String projectState;
+	
 
 	private static final String[] MESSAGES = 
 	{
@@ -22,10 +27,11 @@ public abstract class Command {
 		"Loaded project is not valid"
 	};
 
-	protected Command()
+	protected Command(WorkingProject project)
 	{
 		status = false;
 		statusMsg = "Not yet executed";
+		this.project = project;
 	}
 
 	public boolean getStatus()
@@ -52,5 +58,16 @@ public abstract class Command {
 		}
 	}
 
-	public abstract void execute();
+	public void execute()
+	{
+		projectState = project.toJSONString();
+		onExecute();
+	}
+
+	protected abstract void onExecute();
+
+	public void undo()
+	{
+		project.loadFromJSON(projectState);
+	}
 }

@@ -3,17 +3,16 @@ package command;
 import model.WorkingProject;
 
 public class AddClassCommand extends Command {
-    private WorkingProject project;
+    
     private String className;
 
     public AddClassCommand (WorkingProject project, String className)
     {
-        super();
-        this.project = project;
+        super(project);
         this.className = className;
     }
 
-    public void execute()
+    public void onExecute()
     {
         updateStatus(project.addClass(className));
     }
