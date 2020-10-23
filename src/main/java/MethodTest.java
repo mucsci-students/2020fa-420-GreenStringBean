@@ -43,48 +43,33 @@ public class MethodTest {
 
     }
 
-    @Test
-    public void TestSetFieldType ()
-    {
-        String newType;
-        if (type.equals("void"))
-            newType = "String";
-        else if (type.equals("String"))
-            newType = "void";
-        else 
-            newType = "String";
-
-        m.setType(newType);
-        assertTrue(null, m.getType().equals(newType));
-    }
 
     @Test
     public void TestAddParameter ()
     {
         m.addParameter("Thingy", "void");
-        JSONObject expectedParam = new JSONObject();
-        expectedParam.put("name", "Thingy");
-        expectedParam.put("type", "void");
-        JSONObject expectedMethod = new JSONObject();
-        JSONObject actual = m.toJSON();
+        assertTrue(m.getParameters().contains(new Parameter("Thingy", "void")));
     }
 
     @Test
     public void TestRenameParameter()
     {
         m.renameParameter("Thingy", "Thingabob");
+        assertTrue(m.getParameters().contains(new Parameter("Thingabob", "void")));
     }
 
     @Test
     public void TestChangeParameterType()
     {
         m.changeParameterType("Thingabob", "int");
+        assertTrue(m.getParameters().contains(new Parameter("Thingabob", "int")));
     }
 
     @Test
     public void TestDeleteParameter()
     {
         m.removeParameter("Thingabob");
+        assertTrue(!m.getParameters().contains(new Parameter("Thingabob", "int")));
     }
 
     @Test
