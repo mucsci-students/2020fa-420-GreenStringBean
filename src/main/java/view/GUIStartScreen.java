@@ -1,9 +1,10 @@
+package view;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
-
 import java.awt.event.*;
 import java.awt.FlowLayout;
 
@@ -44,8 +45,8 @@ public class GUIStartScreen
     		String cmd = e.getActionCommand();
     		if(cmd.equals("Start")) 
     		{
-    			 UMLwindow uml = new UMLwindow();
-                 win.setVisible(false);
+    			 GUIEditor uml = new GUIEditor();
+                 win.setVisible(true);
     		}else if(cmd.equals("Close")){
     			System.exit(0);
     		}

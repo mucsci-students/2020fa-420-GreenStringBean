@@ -1,20 +1,23 @@
+package view;
 import javax.swing.JOptionPane;
 import javax.swing.*;
 import java.awt.GridLayout;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 
-public class UMLwindow {
+public class GUIEditor extends GUIViews {
 	   private JFrame win;
-	   private Menu me;
+	   private JMenu me;
 
-	   public UMLwindow()
+	   public GUIEditor()
 	   {
 		   win = new JFrame("UML");
-		   me = new Menu();
+		   me = new JMenu();
 	       win.setLayout(new GridLayout(5,5));
 	       win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	       win.setSize(800,750);
-	       me.makeMenu(win);
-	       win.setJMenuBar(me.getMenuBar());
+	       makeMenu(win);
+	       win.setJMenuBar(getMenuBar());
 	       win.setVisible(true);
 	   }
 
@@ -23,3 +26,4 @@ public class UMLwindow {
 		   return win;
 	   }
 }
+
