@@ -35,7 +35,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'UMLEditor.controller.UMLConsoleController'
+    mainClassName = 'controller.UMLConsoleController'
 }
 
 test {
