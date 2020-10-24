@@ -35,11 +35,8 @@ dependencies {
 
 application {
     // Define the main class for the application.
-<<<<<<< HEAD
     mainClassName = 'controller.UMLConsoleController'
-=======
-    mainClassName = 'UMLedit'
->>>>>>> parent of c8b1aa6... MVC GUI
+
 }
 
 test {
