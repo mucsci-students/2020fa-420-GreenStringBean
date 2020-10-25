@@ -45,17 +45,16 @@ public class Field extends FormalDeclaration {
     */
     public static Field loadFromJSON(JSONObject jsonField)
     {
-        
-        String visibilityName = (String)jsonMethod.get("visibility");
-        ClassObject.visibility vis = ClassObject.stringToVisibility(visibilityName);
         String name = (String)jsonField.get("name");
         String type = (String)jsonField.get("type");
+        String visibilityName = (String)jsonField.get("visibility");
+        ClassObject.visibility vis = ClassObject.stringToVisibility(visibilityName);
 
         return new Field(name, type, vis);
     }
     public String toString()
     {
-        return visibility.name().toLowerCase() + " " + getType() + " " + getName();
+        return vis.name().toLowerCase() + " " + getType() + " " + getName();
     }
 
     public Field copy(){

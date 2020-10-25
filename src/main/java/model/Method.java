@@ -188,7 +188,7 @@ public class Method extends FormalDeclaration {
     }
     public String toString()
     {
-        String methodToString = visibility.name().toLowerCase() + " " + getType() + " " + getName() + "("; 
+        String methodToString = vis.name().toLowerCase() + " " + getType() + " " + getName() + "("; 
         if(parameters.size()>0){
             Parameter currentParam = parameters.get(0);
             methodToString += " " + currentParam.toString();

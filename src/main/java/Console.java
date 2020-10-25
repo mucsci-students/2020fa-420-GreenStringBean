@@ -173,7 +173,7 @@ public class Console {
                     else if (commands.size() > 4)
                         System.out.println("Error: too many arguments for addField class <class, name, data type>");
                     else 
-                        project.addField(commands.get(1), commands.get(2), commands.get(3));
+                        System.out.println("No longer supported");
                     break;
 
                 //Add a new method attribute to named class
@@ -184,8 +184,8 @@ public class Console {
                         System.out.println("Error: too many arguments for addMethod class <class, name, return type>");
                     else
                     {
-                        ArrayList<String> param;
-                        project.addMethod(commands.get(1), commands.get(2), commands.get(3));
+                        //ArrayList<String> param;
+                        System.out.println("No longer supported");
                     }
                     break;
 
