@@ -41,6 +41,23 @@ public class ClassObject{
         isOpen = false;
         fields = new HashMap<>();
         methods = new HashMap<>();
+
+        observers = new ArrayList<>();
+    }
+
+    public void attach (Observer observer)
+    {
+        observers.add(observer);
+    }
+
+    public void detach (Observer observer)
+    {
+        observers.remove(observer);
+    }
+
+    private void notifyAllObservers()
+    {
+        observers.forEach(o -> o.onUpdate(copy()));
     }
 
     public void attach (Observer observer)
