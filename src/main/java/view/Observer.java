@@ -1,5 +1,4 @@
 package view;
-
 import model.WorkingProject;
 import model.ClassObject;
 

@@ -16,6 +16,7 @@ import org.json.simple.JSONObject;
 
 public class Method extends FormalDeclaration {
     private ArrayList<Parameter> parameters;
+    private ClassObject.visibility vis;
 
     /**
      * Creates a new method with no parameters.
@@ -23,10 +24,11 @@ public class Method extends FormalDeclaration {
      *             method's key in the class
      * @param type the return type of the method
      */
-    public Method(String name, String type)
+    public Method(String name, String type, ClassObject.visibility vis)
     {
         super(name, type);
         parameters = new ArrayList<>();
+        this.vis = vis;
     }
     
     /**
@@ -153,6 +155,7 @@ public class Method extends FormalDeclaration {
 
         jsonMethod.put("name", getName());
         jsonMethod.put("type", getType());
+        jsonMethod.put("visibility", vis.name());
         jsonMethod.put("parameters", jsonParameters);
 
         return jsonMethod;       
@@ -166,10 +169,11 @@ public class Method extends FormalDeclaration {
     public static Method loadFromJSON(JSONObject jsonMethod)
     {
         String name = (String)jsonMethod.get("name");
-        System.out.println(name);
         String type = (String)jsonMethod.get("type");
+        String visibilityName = (String)jsonMethod.get("visibility");
+        ClassObject.visibility vis = ClassObject.stringToVisibility(visibilityName);
 
-        Method method = new Method(name, type);
+        Method method = new Method(name, type, vis);
 
         JSONArray jsonParameters = (JSONArray)jsonMethod.get("parameters");
 
@@ -184,7 +188,7 @@ public class Method extends FormalDeclaration {
     }
     public String toString()
     {
-        String methodToString = getType() + " " + getName() + "("; 
+        String methodToString = visibility.name().toLowerCase() + " " + getType() + " " + getName() + "("; 
         if(parameters.size()>0){
             Parameter currentParam = parameters.get(0);
             methodToString += " " + currentParam.toString();
@@ -208,10 +212,24 @@ public class Method extends FormalDeclaration {
     }
 
     public Method copy(){
-        Method copy = new Method(getName(), getType());
+        Method copy = new Method(getName(), getType(), vis);
         copy.parameters.addAll(parameters);
         copy.parameters.replaceAll(parameter->parameter.copy());
         return copy;
+    }
+
+    /**
+     * Changes the visibility of a method.
+     * @param vis the visibility type to change to
+     */
+    public void setVisibility(ClassObject.visibility vis)
+    {
+        this.vis = vis;
+    }
+
+    public ClassObject.visibility getVisibility()
+    {
+        return vis;
     }
 }
 
