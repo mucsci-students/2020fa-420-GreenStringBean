@@ -3,6 +3,9 @@ package model;
 import java.util.HashMap;
 import org.json.simple.JSONObject;
 import java.util.Set;
+import java.util.List;
+
+import view.Observer;
 
 /**
  * The class object represents a UML class containing fields and methods.
@@ -18,6 +21,15 @@ public class ClassObject{
     private HashMap<String, Field> fields;
     private HashMap<String, Method> methods;
 
+    private List<Observer> observers;
+
+    enum visibility
+    {
+        PUBLIC,
+        PRIVATE,
+        PROTECTED
+    }
+
     /**
      * Creates a new closed class with no fields or methods.
      * @param name the name of the class, which must always match this class's
@@ -29,6 +41,23 @@ public class ClassObject{
         isOpen = false;
         fields = new HashMap<>();
         methods = new HashMap<>();
+
+        observers = new ArrayList<>();
+    }
+
+    public void attach (Observer observer)
+    {
+        observers.add(observer);
+    }
+
+    public void detach (Observer observer)
+    {
+        observers.remove(observer);
+    }
+
+    private void notifyAllObservers()
+    {
+        observers.forEach(o -> o.onUpdate(copy()));
     }
 
     /**
@@ -80,11 +109,17 @@ public class ClassObject{
      * @param fieldType the data type to be used by the new field
      * @return          0 if successful, error code otherwise
      */
-    public int addField(String fieldName, String fieldType)
+    public int addField(String fieldName, String fieldType, String fieldVisName)
     {
         if (!isOpen)
         {
             return 1;
+        }
+
+        visibility fieldVis = stringToVisibility(fieldVisName);
+        if (fieldVis == null)
+        {
+            return 14;
         }
 
         if (fields.containsKey(fieldName))
@@ -92,7 +127,8 @@ public class ClassObject{
             return 8;
         }
 
-        fields.put(fieldName, new Field(fieldName, fieldType));
+        fields.put(fieldName, new Field(fieldName, fieldType, fieldVis));
+        notifyAllObservers();
         return 0;
     }
 
@@ -114,6 +150,7 @@ public class ClassObject{
         }
 
         fields.remove(fieldName);
+        notifyAllObservers();
         return 0;
     }
     
@@ -143,6 +180,7 @@ public class ClassObject{
         Field renamedField = fields.remove(oldFieldName);
         renamedField.setName(newFieldName);
         fields.put(newFieldName, renamedField);
+        notifyAllObservers();
         return 0;
     }
     
@@ -165,6 +203,30 @@ public class ClassObject{
         }
 
         fields.get(fieldName).setType(newFieldType);
+        notifyAllObservers();
+        return 0;
+    }
+
+    public int changeFieldVisibility(String fieldName, String fieldVisName)
+    {
+        if (!isOpen)
+        {
+            return 1;
+        }
+        visibility fieldVis = stringToVisibility(fieldVisName);
+        if(fieldVis == null)
+        {
+            return 14;
+        }
+
+        if (!fields.containsKey(fieldName))
+        {
+            return 3;
+        }
+
+        fields.get(fieldName).setVisibility(fieldVis);
+
+        notifyAllObservers();
         return 0;
     }
     
@@ -174,11 +236,17 @@ public class ClassObject{
      * @param methodType the return type to be used by the new method
      * @return           0 if successful, error code otherwise
      */
-    public int addMethod(String methodName, String methodType)
+    public int addMethod(String methodName, String methodType, String methodVisName)
     {
         if (!isOpen)
         {
             return 1;
+        }
+
+        visibility methodVis = stringToVisibility(methodVisName);
+        if (methodVis == null)
+        {
+            return 14;
         }
 
         if (methods.containsKey(methodName))
@@ -186,7 +254,8 @@ public class ClassObject{
             return 8;
         }
 
-        methods.put(methodName, new Method(methodName, methodType));
+        methods.put(methodName, new Method(methodName, methodType, methodVis));
+        notifyAllObservers();
         return 0;
     }
     
@@ -208,6 +277,7 @@ public class ClassObject{
         }
 
         methods.remove(methodName);
+        notifyAllObservers();
         return 0;
     }
 
@@ -237,6 +307,7 @@ public class ClassObject{
         Method renamedMethod = methods.remove(oldMethodName);
         renamedMethod.setName(newMethodName);
         methods.put(newMethodName, renamedMethod);
+        notifyAllObservers();
         return 0;
     }
     
@@ -259,6 +330,30 @@ public class ClassObject{
         }
 
         methods.get(methodName).setType(newMethodType);
+        notifyAllObservers();
+        return 0;
+    }
+
+    public int changeMethodVisibility(String methodName, String methodVisName)
+    {
+        if (!isOpen)
+        {
+            return 1;
+        }
+        visibility methodVis = stringToVisibility(methodVisName);
+        if(methodVis == null)
+        {
+            return 14;
+        }
+
+        if (!methods.containsKey(methodName))
+        {
+            return 3;
+        }
+
+        methods.get(methodName).setVisibility(methodVis);
+
+        notifyAllObservers();
         return 0;
     }
     
@@ -276,7 +371,10 @@ public class ClassObject{
             return 4;
         }
 
-        return methods.get(methodName).addParameter(paramName, paramType);
+        int retVal = methods.get(methodName).addParameter(paramName, paramType);
+        if(retVal == 0)
+            notifyAllObservers();
+        return retVal;
     }
     
     /**
@@ -292,7 +390,10 @@ public class ClassObject{
             return 4;
         }
 
-        return methods.get(methodName).removeParameter(paramName);
+        int retVal = methods.get(methodName).removeParameter(paramName);
+        if(retVal == 0)
+            notifyAllObservers();
+        return retVal;
     }
 
     /**
@@ -309,7 +410,11 @@ public class ClassObject{
             return 4;
         }
 
-        return methods.get(methodName).renameParameter(oldParamName, newParamName);
+        int retVal = methods.get(methodName).renameParameter(oldParamName, newParamName);
+        if(retVal == 0)
+            notifyAllObservers();
+        return retVal;
+        
     }
     
     /**
@@ -326,7 +431,10 @@ public class ClassObject{
             return 4;
         }
 
-        return methods.get(methodName).changeParameterType(paramName, newParamType);
+        int retVal = methods.get(methodName).changeParameterType(paramName, newParamType);
+        if(retVal == 0)
+            notifyAllObservers();
+        return retVal;
     }
 
     public void printFields()
@@ -442,5 +550,20 @@ public class ClassObject{
         return copy;
     }
 
+    public static visibility stringToVisibility(String str)
+    {
+        str = str.toUpperCase();
+        switch(str)
+        {
+            case "PUBLIC":
+                return visibility.PUBLIC;
+            case "PRIVATE":
+                return visibility.PRIVATE;
+            case "PROTECTED":
+                return visibility.PROTECTED;
+            default :
+                return null;
+        }
+    }
 
 }
