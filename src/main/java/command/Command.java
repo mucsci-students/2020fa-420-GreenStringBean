@@ -1,5 +1,4 @@
 package command;
-
 import model.WorkingProject;
 
 public abstract class Command {
@@ -24,7 +23,8 @@ public abstract class Command {
 		"Data type is not valid",
 		"Relationship type is not valid",
 		"Error loading project",
-		"Loaded project is not valid"
+		"Loaded project is not valid",
+		"Visibility Modifier is not valid"
 	};
 
 	protected Command(WorkingProject project)
