@@ -7,14 +7,11 @@ import model.Relationship;
 
 public class RelationshipClick implements ActionListener
 {
-
-	private WorkingProject project;
 	private MenuViews view;
 	private HelperControllers controller;
 	
-	public RelationshipClick(WorkingProject p, MenuViews v, HelperControllers c)
+	public RelationshipClick(MenuViews v, HelperControllers c)
 	{
-		this.project = p;
 		this.view = v;
 		this.controller = c;
 	}

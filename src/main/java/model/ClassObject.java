@@ -4,7 +4,7 @@ import java.util.HashMap;
 import org.json.simple.JSONObject;
 import java.util.Set;
 import java.util.List;
-
+import java.util.ArrayList;
 import view.Observer;
 
 /**
@@ -34,6 +34,8 @@ public class ClassObject{
         isOpen = false;
         fields = new HashMap<>();
         methods = new HashMap<>();
+
+        observers = new ArrayList<>();
     }
 
     public void attach (Observer observer)

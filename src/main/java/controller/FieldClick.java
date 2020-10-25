@@ -11,14 +11,11 @@ import view.MenuViews;
 
 public class FieldClick implements ActionListener 
 {
-	private WorkingProject project;
-	private ClassObject classObj;
 	private MenuViews view;
 	private HelperControllers controller;
 	
-	public FieldClick(WorkingProject p, MenuViews v, HelperControllers c)
+	public FieldClick(MenuViews v, HelperControllers c)
 	{
-		this.project = p;
 		this.view = v;
 		this.controller = c;
 	}

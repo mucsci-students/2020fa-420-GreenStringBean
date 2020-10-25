@@ -8,13 +8,12 @@ import view.MenuViews;
 
 public class ClassClick implements ActionListener
 {
-	private WorkingProject project;
+	
 	private MenuViews view;
 	private HelperControllers controller;
 	
-	public ClassClick(WorkingProject p, MenuViews v, HelperControllers c)
+	public ClassClick(MenuViews v, HelperControllers c)
 	{
-		this.project = p;
 		this.view = v;
 		this.controller = c;
 	}

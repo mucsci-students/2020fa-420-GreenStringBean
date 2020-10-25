@@ -3,7 +3,7 @@ package view;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
-public interface MenuViews
+public interface MenuViews extends Observer
 {
 	String getText(String string);
 

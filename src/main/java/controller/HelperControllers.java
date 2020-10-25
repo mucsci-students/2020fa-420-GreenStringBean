@@ -5,13 +5,15 @@ import model.WorkingProject;
 import view.*;
 
 public class HelperControllers {
-	private WorkingProject project;
+	private WorkingProjectEditor project;
 	private MenuViews view;
 	
-	public HelperControllers(WorkingProject p, MenuViews v) 
+	public HelperControllers(MenuViews v) 
 	{
-		this.project = p;
+		this.project = new WorkingProjectEditor();
 		this.view = v;
+		project.attach(v);
+		addListeners();
 	}
 
 	public void createClass(String className) 
@@ -19,22 +21,22 @@ public class HelperControllers {
 		System.out.println("made it to createClass() in HellperController");
 		
 		project.addClass(className);
-		ClassObject aClass = project.getClass(className);
+		/*ClassObject aClass = project.getProjectSnapshot().getClass(className);
 		String classes = aClass.toString();
-		view.createClass(classes);
+		view.createClass(classes);*/
 	}
 
 	public void delClass(String className) 
 	{
-		ClassObject aClass = project.getClass(className);
+		//ClassObject aClass = project.getProjectSnapshot().getClass(className);
 		project.removeClass(className);
-		String classes = aClass.toString();
-		view.delClass(classes);
+		/*String classes = aClass.toString();
+		view.delClass(classes);*/
 	}
 
 	public void renameClass(String oldName, String newName) 
 	{
-		ClassObject oldClass = project.getClass(oldName);
+		ClassObject oldClass = project.getProjectSnapshot().getClass(oldName);
 		String old = oldClass.toString();
 		project.renameClass(oldName, newName);
 		sendView("Class", "renamed", newName, old);
@@ -42,7 +44,7 @@ public class HelperControllers {
 
 	public void addField(String className, String name, String type) 
 	{
-		ClassObject aClass = project.getClass(className);
+		ClassObject aClass = project.getProjectSnapshot().getClass(className);
 		String oldClass = aClass.toString();
 		project.addField(className, name, type);
 		sendView("Field", "added", className, oldClass);
@@ -50,7 +52,7 @@ public class HelperControllers {
 
 	public void removeField(String className, String name) 
 	{
-		ClassObject aClass = project.getClass(className);
+		ClassObject aClass = project.getProjectSnapshot().getClass(className);
 		String oldClass = aClass.toString();
 		project.removeField(className, name);
 		sendView("Field", "deleted", className, oldClass);
@@ -58,7 +60,7 @@ public class HelperControllers {
 
 	public void renameField(String className, String name, String newName) 
 	{
-		ClassObject aClass = project.getClass(className);
+		ClassObject aClass = project.getProjectSnapshot().getClass(className);
 		String oldClass = aClass.toString();
 		project.renameField(className, name, newName);
 		sendView("Field", "renamed", className, oldClass);
@@ -70,10 +72,15 @@ public class HelperControllers {
 		
 	}
 
+	public void save(String projectToSave)
+	{
+
+	}
+
 	public void addRelationship(String classNameFrom, String classNameTo, String type) 
 	{
-		ClassObject className = project.getClass(classNameFrom);
-		ClassObject toClass = project.getClass(classNameTo);
+		ClassObject className = project.getProjectSnapshot().getClass(classNameFrom);
+		ClassObject toClass = project.getProjectSnapshot().getClass(classNameTo);
 		String fromClassStr = className.toString();
 		String toClassStr = toClass.toString();
 		project.addRelationship(classNameFrom, classNameTo, type);
@@ -83,14 +90,14 @@ public class HelperControllers {
 	
 	private void sendView(String object, String action, String className, String oldClass)
 	{
-		String updateClassString = project.getClass(className).toString();
+		String updateClassString = project.getProjectSnapshot().getClass(className).toString();
 		view.updateClass(oldClass, updateClassString);
 	}
 	
 	public void addListeners()
     {
 		System.out.println("Made it to addListeners()");
-        view.addListeners(new FileButtonClick(project, view, this), new ClassClick(project, view, this), new FieldClick(project, view, this), new RelationshipClick(project, view, this));
+        view.addListeners(new FileButtonClick(view, this), new ClassClick(view, this), new FieldClick(view, this), new RelationshipClick(view, this));
     }
 
 }

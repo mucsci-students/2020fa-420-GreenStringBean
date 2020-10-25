@@ -8,15 +8,13 @@ import javax.swing.JPanel;
 import model.WorkingProject;
 import view.*;
 
-public class FileButtonClick  implements ActionListener
+public class FileButtonClick implements ActionListener
 {
-	private WorkingProject project;
 	private MenuViews view;
 	private HelperControllers controller;
 	
-	public FileButtonClick(WorkingProject p, MenuViews v, HelperControllers c)
+	public FileButtonClick(MenuViews v, HelperControllers c)
 	{
-		this.project = p;
 		this.view = v;
 		this.controller = c;
 	}
@@ -29,7 +27,7 @@ public class FileButtonClick  implements ActionListener
 		if(cmd.equals("Save"))
 		{
 			String currFile = view.getText("Save ->");
-			currFile = project.toJSONString();
+			controller.save(currFile);
 		}
 		else if(cmd.equals("Load"))
 		{

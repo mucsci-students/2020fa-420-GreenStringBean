@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -16,6 +17,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
+
+import model.ClassObject;
+import model.WorkingProject;
 
 public class GUIViews implements MenuViews{
 	private JMenuBar mb;
@@ -34,6 +38,8 @@ public class GUIViews implements MenuViews{
 	
 	public void window()
 	{
+		System.out.println("Got to make the window(): GUIViews()");
+
 		   win = new JFrame("UML");
 	       win.setLayout(new GridLayout(5,5));
 	       win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,7 +83,7 @@ public class GUIViews implements MenuViews{
 	{
 		System.out.println("made file menu: GUIViews()");
 		
-		JMenu f = new JMenu("File");
+		fileM = new JMenu("File");
 
 		JMenuItem s = new JMenuItem("Save");
 		JMenuItem l = new JMenuItem("Load...");
@@ -89,7 +95,7 @@ public class GUIViews implements MenuViews{
 
 		for(int count = 0; count < 3; ++count)
 		{
-			f.add(arr[count]);
+			fileM.add(arr[count]);
 			arr[count].setToolTipText(txt[count]);
 			if(count < 2)
 			{
@@ -98,7 +104,7 @@ public class GUIViews implements MenuViews{
 			else
 				arr[count].addActionListener((event) -> System.exit(0));
 		}		
-		mb.add(f);
+		mb.add(fileM);
 	}
 	
 	private void FileListener(ActionListener fileL)
@@ -116,7 +122,7 @@ public class GUIViews implements MenuViews{
 	{
 		System.out.println("made class menu: GUIViews()");
 		
-		JMenu classes = new JMenu("Class");
+		classM = new JMenu("Class");
 		JMenuItem aClass = new JMenuItem("Create class");
 		JMenuItem dClass = new JMenuItem("Delete class");
 		JMenuItem rClass = new JMenuItem("Rename class");
@@ -127,11 +133,11 @@ public class GUIViews implements MenuViews{
 
 		for(int i = 0; i < 3; ++i)
 		{
-			classes.add(arr[i]);
+			classM.add(arr[i]);
 			arr[i].setToolTipText(text[i]);
 			arr[i].setActionCommand(comd[i]);
 		}
-		mb.add(classes);	
+		mb.add(classM);	
 	}
 	
 	private void ClassListener(ActionListener classL)
@@ -149,7 +155,7 @@ public class GUIViews implements MenuViews{
 	{
 		System.out.println("made field menu:  GUIView()");
 		
-		JMenu attrib = new JMenu("Attribute");
+		fieldM = new JMenu("Attribute");
 
 		JMenuItem field = new JMenuItem("Create field");
     	JMenuItem dField = new JMenuItem("Delete field");
@@ -165,11 +171,11 @@ public class GUIViews implements MenuViews{
 
 		for(int count = 0; count < 6; ++count)
 		{
-			attrib.add(arr[count]);
+			fieldM.add(arr[count]);
 			arr[count].setToolTipText(text[count]);
 			arr[count].setActionCommand(command[count]);	
 		}
-		mb.add(attrib);
+		mb.add(fieldM);
 	}
 	
 	private void FieldListener(ActionListener fieldL)
@@ -187,7 +193,7 @@ public class GUIViews implements MenuViews{
 	{
 		System.out.println("made relationship menu:  GUIView()");
 		
-		JMenu relat = new JMenu("Relationship");
+		relaM = new JMenu("Relationship");
 		JMenuItem in = new JMenuItem("Inheritence");
 		JMenuItem ag = new JMenuItem("Aggregation");
 		JMenuItem comp = new JMenuItem("Composition");
@@ -199,11 +205,11 @@ public class GUIViews implements MenuViews{
 
 		for(int i = 0; i < 4; ++i)
 		{
-			relat.add(arr[i]);
+			relaM.add(arr[i]);
 			arr[i].setToolTipText(names[i]);
 			arr[i].setActionCommand(comd[i]);
 		}
-		mb.add(relat);
+		mb.add(relaM);
 	}
 	
 	private void RelationshipListener(ActionListener relatL)
@@ -225,7 +231,9 @@ public class GUIViews implements MenuViews{
         FileListener(fileL);
         ClassListener(classL);
         FieldListener(fieldL);
-        RelationshipListener(relatL);
+		RelationshipListener(relatL);
+		
+		System.out.println("finished listeners: GUIViews()");
     }
 	
 	public void start()
@@ -234,7 +242,7 @@ public class GUIViews implements MenuViews{
         refresh();
     }
 	
-	public void createNewClass(String className)
+	public void createNewClass(ClassObject className)
 	{
 		classPanel(className);
 		refresh();
@@ -246,37 +254,61 @@ public class GUIViews implements MenuViews{
 		refresh();
 	}
 	
-	public void updateNewClass(String oldClassName, String newClassName)
+	/*public void updateNewClass(String oldClassName, String newClassName)
 	{
 		JPanel pn = classes.get(oldClassName);
 		classes.remove(oldClassName);
 		classes.put(newClassName, pn);
 		refresh();
-	}
+	}*/
 	
-	private void classPanel(String aClass)
+	private void classPanel(ClassObject aClass)
 	{
 		System.out.println("made the class panel for display: GUIViews()");
 		
 		JPanel classP = new JPanel();
 		classP.setVisible(true);
 
-		JTextArea classTxt = new JTextArea(aClass);
+		JTextArea classTxt = new JTextArea(aClass.getName());
 		classTxt.setEditable(false);
 		classP.add(classTxt);
-		classes.put(aClass, classP);
+		classes.put(aClass.getName(), classP);
 		classP.setSize(classTxt.getSize());
 
 		Border bd = BorderFactory.createLineBorder(Color.RED);
 		classTxt.setBorder(bd);
 		pWindow.add(classP);	
 	}
+
+	public void onUpdate(WorkingProject p)
+	{
+		System.out.println("Made it to onUpdate: GUIViews()");
+		Set<String> newClasses = p.getClassNames();
+		for(String className: newClasses)
+		{
+			if(!classes.containsKey(className))
+			{
+				createNewClass(p.getClass(className));
+			}
+		}
+		for(String className: classes.keySet())
+		{
+			if(!newClasses.contains(className))
+			{
+				deleteOldClass(className);
+			}
+		}
+		refresh();
+	}
+
+	public void onUpdate(ClassObject c)
+	{
+	
+	}
 	
 	private void deleteClassPanel(String aClass)
 	{
-		JPanel pn = classes.get(aClass);
 		classes.remove(aClass);
-		classes.remove(pn);
 	}
 	
 	public void refresh() 
