@@ -1,10 +1,8 @@
 package controller;
-
-import model.ClassObject;
-import model.WorkingProject;
 import view.*;
 
-public class HelperControllers {
+public class HelperControllers 
+{
 	private WorkingProjectEditor project;
 	private MenuViews view;
 	
@@ -16,60 +14,106 @@ public class HelperControllers {
 		addListeners();
 	}
 
+	/**********************************CLASSES********************************************/
+	public void openClass(String className)
+	{
+		project.openClass(className);
+	}
+
 	public void createClass(String className) 
 	{
-		System.out.println("made it to createClass() in HellperController");
-		
+		System.out.println("made it to createClass() in HellperController");	
 		project.addClass(className);
-		/*ClassObject aClass = project.getProjectSnapshot().getClass(className);
-		String classes = aClass.toString();
-		view.createClass(classes);*/
 	}
 
 	public void delClass(String className) 
 	{
-		//ClassObject aClass = project.getProjectSnapshot().getClass(className);
 		project.removeClass(className);
-		/*String classes = aClass.toString();
-		view.delClass(classes);*/
 	}
 
 	public void renameClass(String oldName, String newName) 
 	{
-		ClassObject oldClass = project.getProjectSnapshot().getClass(oldName);
-		String old = oldClass.toString();
 		project.renameClass(oldName, newName);
-		sendView("Class", "renamed", newName, old);
 	}
-
-	public void addField(String className, String name, String type) 
+	/**********************************ATRIBUTES********************************************/
+	/***********************************FIELDS**********************************************/
+	public void addField(String className, String visability, String name, String type) 
 	{
-		ClassObject aClass = project.getProjectSnapshot().getClass(className);
-		String oldClass = aClass.toString();
-		project.addField(className, name, type);
-		sendView("Field", "added", className, oldClass);
+		project.addField(className, name, type, visability);
 	}
-
+	
 	public void removeField(String className, String name) 
 	{
-		ClassObject aClass = project.getProjectSnapshot().getClass(className);
-		String oldClass = aClass.toString();
 		project.removeField(className, name);
-		sendView("Field", "deleted", className, oldClass);
 	}
 
 	public void renameField(String className, String name, String newName) 
 	{
-		ClassObject aClass = project.getProjectSnapshot().getClass(className);
-		String oldClass = aClass.toString();
 		project.renameField(className, name, newName);
-		sendView("Field", "renamed", className, oldClass);
 	}
 
+	/**********************************METHODS*****************************************/
+	public void addMethod(String className, String visability, String name, String type)
+	{
+		project.addMethod(className, name, type, visability);
+	}
+
+	public void removeMethod(String className, String name)
+	{
+		project.removeMethod(className, name);
+	}
+
+	public void renameMethod(String className, String name, String newName)
+	{
+		project.renameMethod(className, name, newName);
+	}
+    /**********************************PARAMS********************************************/
+	public void addParameter(String className, String methodName, String paramName, String paramType)
+	{
+		project.addParameter(className, methodName, paramName, paramType);
+	}
+
+	public void removeParameter(String className, String methodName, String paramName)
+	{
+		project.removeParameter(className, methodName, paramName);
+	}
+
+	public void renameParameter(String className, String methodName, String oldParamName, String newParamName)
+	{
+		project.renameParameter(className, methodName, oldParamName, newParamName);
+	}
+
+	/**********************************VISABILITY********************************************/
+	public void changeFieldVisablity( String className, String fieldName, String newFieldVis)
+	{
+		project.changeFieldVisibility(className, fieldName, newFieldVis);
+	}
+
+	public void changeMethodVisablity(String className, String methodName, String newMethVis)
+	{
+		project.changeMethodVisibility(className, methodName, newMethVis);
+	}
+
+	/**********************************RELATIONS********************************************/
+	public void addRelationship(String classNameFrom, String classNameTo, String type) 
+	{
+		project.addRelationship(classNameFrom, classNameTo, type);
+	}
+
+	public void removeRelationship(String classNameFrom, String classNameTo)
+	{
+		project.removeRelationship(classNameFrom, classNameTo);
+	}
+
+	public void changeRelationship(String classNameFrom, String classNameTo, String newTypeName)
+	{
+		project.changeRelationshipType(classNameFrom, classNameTo, newTypeName);
+	}
+
+	/**********************************OTHERS********************************************/
 	public void load(String projectToLoad) 
 	{
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 	public void save(String projectToSave)
@@ -77,27 +121,29 @@ public class HelperControllers {
 
 	}
 
-	public void addRelationship(String classNameFrom, String classNameTo, String type) 
+	public void undo()
 	{
-		ClassObject className = project.getProjectSnapshot().getClass(classNameFrom);
-		ClassObject toClass = project.getProjectSnapshot().getClass(classNameTo);
-		String fromClassStr = className.toString();
-		String toClassStr = toClass.toString();
-		project.addRelationship(classNameFrom, classNameTo, type);
-		sendView("Relationship", "added", classNameFrom, fromClassStr);
-		sendView("Relationship", "added", classNameTo, toClassStr);
+		project.undo();
 	}
-	
-	private void sendView(String object, String action, String className, String oldClass)
+
+	public void redo()
 	{
-		String updateClassString = project.getProjectSnapshot().getClass(className).toString();
-		view.updateClass(oldClass, updateClassString);
+		project.redo();
 	}
 	
 	public void addListeners()
     {
 		System.out.println("Made it to addListeners()");
         view.addListeners(new FileButtonClick(view, this), new ClassClick(view, this), new FieldClick(view, this), new RelationshipClick(view, this));
+	}
+	
+	public void checkStatus()
+    {
+        // If the last command failed
+        if(!project.getLastCommandStatus())
+        {
+            view.alert("Error: " + project.getLastCommandStatusMessage());
+        }
     }
 
 }
