@@ -228,11 +228,15 @@ public class WorkingProjectEditor {
         cmd.execute();
         if (cmd.getStatus())
         {
+            System.out.println("Command stack size: " + executedCommands.size());
             if (executedCommands.size() == MAX_COMMAND_HISTORY)
             {
-                executedCommands.remove();
+                System.out.println("Command stack at capacity");
+                executedCommands.removeLast();
+                System.out.println("Command stack size after remove: " + executedCommands.size());
             }
             executedCommands.push(cmd);
+            System.out.println("Command stack size after push: " + executedCommands.size());
 
             notifyAllObservers();
         }
@@ -261,10 +265,12 @@ public class WorkingProjectEditor {
 
     public void undo()
     {
+        System.out.println("Attempting to undo. Command stack size: " + executedCommands.size());
         if(canUndo())
         {
             Command cmd = executedCommands.pop();
             cmd.undo();
+            System.out.println("Successfully undid. Command stack size: " + executedCommands.size());
             undoneCommands.push(cmd);
             notifyAllObservers();
         }
