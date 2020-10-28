@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.json.simple.JSONObject;
 import java.util.Set;
@@ -44,22 +45,7 @@ public class ClassObject{
 
         observers = new ArrayList<>();
     }
-
-    public void attach (Observer observer)
-    {
-        observers.add(observer);
-    }
-
-    public void detach (Observer observer)
-    {
-        observers.remove(observer);
-    }
-
-    private void notifyAllObservers()
-    {
-        observers.forEach(o -> o.onUpdate(copy()));
-    }
-
+    
     public void attach (Observer observer)
     {
         observers.add(observer);
