@@ -2,12 +2,8 @@ package view;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JRadioButton;
-
 import controller.HelperControllers;
-
 import java.awt.event.*;
 import java.awt.FlowLayout;
 

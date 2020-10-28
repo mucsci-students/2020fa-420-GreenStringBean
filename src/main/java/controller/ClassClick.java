@@ -1,9 +1,6 @@
 package controller;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import model.WorkingProject;
 import view.MenuViews;
 
 public class ClassClick implements ActionListener

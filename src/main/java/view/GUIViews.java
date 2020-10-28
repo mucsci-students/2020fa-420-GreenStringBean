@@ -1,5 +1,4 @@
 package view;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
@@ -90,15 +89,17 @@ public class GUIViews implements MenuViews{
 		
 		fileM = new JMenu("File");
 
+		JMenuItem un = new JMenuItem("Undo");
+		JMenuItem re = new JMenuItem("Redo");
 		JMenuItem s = new JMenuItem("Save");
 		JMenuItem l = new JMenuItem("Load...");
 		JMenuItem ex = new JMenuItem("Exit");
 
-		JMenuItem[] arr = {s, l, ex};
-		String[] txt = {"Save edited file", "Load selected project", "Exit application"};
-		String[] cmd = {"Save", "Load"};
+		JMenuItem[] arr = {un, re, s, l, ex};
+		String[] txt = {"Undo", "Redo", "Save edited file", "Load selected project", "Exit application"};
+		String[] cmd = {"Undo", "Redo", "Save", "Load", "Exit"};
 
-		for(int count = 0; count < 3; ++count)
+		for(int count = 0; count < 5; ++count)
 		{
 			fileM.add(arr[count]);
 			arr[count].setToolTipText(txt[count]);
@@ -128,13 +129,14 @@ public class GUIViews implements MenuViews{
 		System.out.println("made class menu: GUIViews()");
 		
 		classM = new JMenu("Class");
-		JMenuItem oClass = new JMenuItem("Open class");
-		JMenuItem aClass = new JMenuItem("Create class");
-		JMenuItem dClass = new JMenuItem("Delete class");
-		JMenuItem rClass = new JMenuItem("Rename class");
+
+		JMenuItem oClass = new JMenuItem("Open Class");
+		JMenuItem aClass = new JMenuItem("Create Class");
+		JMenuItem dClass = new JMenuItem("Delete Class");
+		JMenuItem rClass = new JMenuItem("Rename Class");
 
 		JMenuItem[] arr = {oClass, aClass, dClass, rClass};
-		String[] text = {"Open class", "Add Class", "Delete Class", "Rename Class"};
+		String[] text = {"Open Class", "Add Class", "Delete Class", "Rename Class"};
 		String[] comd = {"Open", "Add", "Delete", "Rename"};
 
 		for(int i = 0; i < 4; ++i)
@@ -163,19 +165,25 @@ public class GUIViews implements MenuViews{
 		
 		fieldM = new JMenu("Attribute");
 
-		JMenuItem field = new JMenuItem("Create field");
-    	JMenuItem dField = new JMenuItem("Delete field");
-    	JMenuItem rField = new JMenuItem("Rename field");
+		JMenuItem field = new JMenuItem("Create Field");
+    	JMenuItem dField = new JMenuItem("Delete Field");
+		JMenuItem rField = new JMenuItem("Rename Field");
+		JMenuItem vField = new JMenuItem("Change Visability of Field");
 
-		JMenuItem met = new JMenuItem("Create method");
-    	JMenuItem dMethod = new JMenuItem("Delete method");
-    	JMenuItem rMethod = new JMenuItem("Rename method");
+		JMenuItem met = new JMenuItem("Create Method");
+    	JMenuItem dMethod = new JMenuItem("Delete Method");
+		JMenuItem rMethod = new JMenuItem("Rename Method");
+		JMenuItem vMethod = new JMenuItem("Change Visability of Method");
+		
+		JMenuItem param = new JMenuItem("Create Parameter");
+    	JMenuItem dParam = new JMenuItem("Delete Parameter");
+    	JMenuItem rParam = new JMenuItem("Rename Parameter");
 
-		JMenuItem[] arr = {field, dField, rField, met, dMethod, rMethod};
-		String[] text = {"Create Field", "Delete Field", "Rename Field", "Create Method", "Delete Method", "Rename Method"};
-		String[] command = {"cField", "aField", "rField", "cMethod", "dMethod", "rMethod"};
+		JMenuItem[] arr = {field, dField, rField, vField, met, dMethod, rMethod, vMethod, param, dParam, rParam};
+		String[] text = {"Create Field", "Delete Field", "Rename Field", "Change Visability of Field", "Create Method", "Delete Method", "Rename Method", "Change Visability of Method", "Create Parameter", "Delete Parameter", "Rename Parameter"};
+		String[] command = {"field", "dField", "rField", "vField", "cMethod", "dMethod", "rMethod", "vMethod", "param", "dParam", "rParam"};
 
-		for(int count = 0; count < 6; ++count)
+		for(int count = 0; count < 11; ++count)
 		{
 			fieldM.add(arr[count]);
 			arr[count].setToolTipText(text[count]);
@@ -200,16 +208,19 @@ public class GUIViews implements MenuViews{
 		System.out.println("made relationship menu:  GUIView()");
 		
 		relaM = new JMenu("Relationship");
+
 		JMenuItem in = new JMenuItem("Inheritence");
 		JMenuItem ag = new JMenuItem("Aggregation");
 		JMenuItem comp = new JMenuItem("Composition");
-		JMenuItem gen = new JMenuItem("Generalization");
+		JMenuItem re = new JMenuItem("Realization");
+		JMenuItem cRelat = new JMenuItem("Change Relationship");
+		JMenuItem dRelat = new JMenuItem("Delete Relationship");
 
-		JMenuItem[] arr = {in, ag, comp, gen};
-		String[] names = {"Inheritence", "Aggregation", "Composition", "Generalization"};
-		String[] comd = {"I", "A", "C", "G"};
+		JMenuItem[] arr = {in, ag, comp, re, cRelat, dRelat};
+		String[] names = {"Inheritence", "Aggregation", "Composition", "Realization", "Change Relationship", "Delete Relationship"};
+		String[] comd = {"I", "A", "C", "R", "cRelat", "dRelat"};
 
-		for(int i = 0; i < 4; ++i)
+		for(int i = 0; i < 6; ++i)
 		{
 			relaM.add(arr[i]);
 			arr[i].setToolTipText(names[i]);
@@ -299,6 +310,7 @@ public class GUIViews implements MenuViews{
 			{
 				createNewClass(p.getClass(className));
 			}
+			onUpdate(p.getClass(className));
 		}
 		for(String className: classes.keySet())
 		{
@@ -315,7 +327,6 @@ public class GUIViews implements MenuViews{
 		JPanel panel = classes.get(c.getName());
         panel.removeAll();
 		JTextArea classTxt = new JTextArea(c.getName());
-		JTextArea enter = new JTextArea("/n");
         classTxt.setEditable(false);
         Border classBd = BorderFactory.createLineBorder(Color.RED);
         Border fieldBd = BorderFactory.createLineBorder(Color.GREEN);
@@ -324,7 +335,6 @@ public class GUIViews implements MenuViews{
         panel.add(classTxt);
         for (String fieldName : c.getFieldNames())
         {
-			panel.add(enter);
             JTextArea fieldTxt = new JTextArea(c.getField(fieldName).toString());
             fieldTxt.setEditable(false);
             fieldTxt.setBorder(fieldBd);

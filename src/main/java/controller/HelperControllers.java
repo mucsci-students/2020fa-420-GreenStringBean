@@ -1,10 +1,8 @@
 package controller;
-
-import model.ClassObject;
-import model.WorkingProject;
 import view.*;
 
-public class HelperControllers {
+public class HelperControllers 
+{
 	private WorkingProjectEditor project;
 	private MenuViews view;
 	
@@ -39,7 +37,7 @@ public class HelperControllers {
 	}
 	/**********************************ATRIBUTES********************************************/
 	/***********************************FIELDS**********************************************/
-	public void addField(String className, String visability,String name, String type) 
+	public void addField(String className, String visability, String name, String type) 
 	{
 		project.addField(className, name, type, visability);
 	}
@@ -91,9 +89,9 @@ public class HelperControllers {
 		project.changeFieldVisibility(className, fieldName, newFieldVis);
 	}
 
-	public void changeMethodVisablity( String className, String methodName, String newMethVis)
+	public void changeMethodVisablity(String className, String methodName, String newMethVis)
 	{
-		project.changeFieldVisibility(className, methodName, newMethVis);
+		project.changeMethodVisibility(className, methodName, newMethVis);
 	}
 
 	/**********************************RELATIONS********************************************/
@@ -112,6 +110,7 @@ public class HelperControllers {
 		project.changeRelationshipType(classNameFrom, classNameTo, newTypeName);
 	}
 
+	/**********************************OTHERS********************************************/
 	public void load(String projectToLoad) 
 	{
 		// TODO Auto-generated method stub		
@@ -120,6 +119,16 @@ public class HelperControllers {
 	public void save(String projectToSave)
 	{
 
+	}
+
+	public void undo()
+	{
+		project.undo();
+	}
+
+	public void redo()
+	{
+		project.redo();
 	}
 	
 	public void addListeners()

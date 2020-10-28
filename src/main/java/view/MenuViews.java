@@ -1,7 +1,5 @@
 package view;
-
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 
 public interface MenuViews extends Observer
 {

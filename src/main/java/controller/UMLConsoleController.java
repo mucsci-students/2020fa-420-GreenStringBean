@@ -1,5 +1,4 @@
 package controller;
-
 import view.GUIStartScreen;
 
 public class UMLConsoleController {
