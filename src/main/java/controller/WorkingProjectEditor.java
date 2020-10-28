@@ -244,7 +244,9 @@ public class WorkingProjectEditor {
     {
         executeCommand(cmd);
         if(cmd.getStatus())
+        {
             notifyAllObservers();
+        }
     }
 
     public String toJSONString()
@@ -254,7 +256,7 @@ public class WorkingProjectEditor {
 
     public boolean canUndo()
     {
-        return executedCommands.size()>0;
+        return !executedCommands.isEmpty();
     }
 
     public void undo()
@@ -264,12 +266,13 @@ public class WorkingProjectEditor {
             Command cmd = executedCommands.pop();
             cmd.undo();
             undoneCommands.push(cmd);
+            notifyAllObservers();
         }
     }
 
     public boolean canRedo()
     {
-        return undoneCommands.size()>0;
+        return !undoneCommands.isEmpty();
     }
 
     public void redo()
@@ -279,6 +282,7 @@ public class WorkingProjectEditor {
             Command cmd = undoneCommands.pop();
             cmd.execute();
             executedCommands.push(cmd);
+            notifyAllObservers();
         }
     }
 

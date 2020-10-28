@@ -3,7 +3,7 @@ import java.awt.event.ActionListener;
 
 public interface MenuViews extends Observer
 {
-	String getText(String string);
+	String getText(String prompt, String title);
 	
 	void alert(String message);
 
@@ -11,11 +11,4 @@ public interface MenuViews extends Observer
 			ActionListener fieldClick, ActionListener relationshipClick);	
 
 	void start();
-
-	void createClass(String classes);
-
-	void delClass(String className);
-
-	void updateClass(String oldClass, String updateClassString);
-	
 }

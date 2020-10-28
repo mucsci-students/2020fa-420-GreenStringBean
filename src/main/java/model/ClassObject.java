@@ -102,6 +102,7 @@ public class ClassObject{
     public void open()
     {
         isOpen = true;
+        notifyAllObservers();
     }
 
     /**
@@ -475,6 +476,7 @@ public class ClassObject{
         }
 
         jsonClass.put("name", name);
+        jsonClass.put("isOpen", isOpen);
         jsonClass.put("fields", jsonFields);
         jsonClass.put("methods", jsonMethods);
 
@@ -491,6 +493,7 @@ public class ClassObject{
         String name = (String)jsonClass.get("name");
         
         ClassObject classObj = new ClassObject(name);
+        classObj.isOpen = (boolean)jsonClass.get("isOpen");
         
         JSONObject jsonFields = (JSONObject)jsonClass.get("fields");
         JSONObject jsonMethods = (JSONObject)jsonClass.get("methods");
@@ -542,6 +545,7 @@ public class ClassObject{
 
     public ClassObject copy(){
         ClassObject copy = new ClassObject(name);
+        copy.isOpen = isOpen;
         copy.fields.putAll(fields);
         copy.fields.replaceAll((fieldName, field)->field.copy());
         copy.methods.putAll(methods);

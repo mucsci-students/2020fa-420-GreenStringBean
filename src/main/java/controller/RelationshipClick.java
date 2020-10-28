@@ -22,43 +22,43 @@ public class RelationshipClick implements ActionListener
         {
 			System.out.println("adding I relat to classes: relationclick()");
 			
-			String classNameOne = view.getText("Class one ->");
-			String classNametwo = view.getText("Class two ->");
+			String classNameOne = view.getText("Class one ->", cmd);
+			String classNametwo = view.getText("Class two ->", cmd);
         	String i = new String("I");
         	controller.addRelationship(classNameOne, classNametwo, i);
         }
         else if (cmd.equals("A")) 
         {
-			String classNameOne = view.getText("Class one ->");
-			String classNametwo = view.getText("Class two ->");
+			String classNameOne = view.getText("Class one ->", cmd);
+			String classNametwo = view.getText("Class two ->", cmd);
         	String a = new String("A");
         	controller.addRelationship(classNameOne, classNametwo, a);
         }
         else if (cmd.equals("C"))
         {
-			String classNameOne = view.getText("Class one ->");
-			String classNametwo = view.getText("Class two ->");
+			String classNameOne = view.getText("Class one ->", cmd);
+			String classNametwo = view.getText("Class two ->", cmd);
         	String c = new String("Composition");
         	controller.addRelationship(classNameOne, classNametwo, c);
         }
         else if (cmd.equals("R"))
         {
-			String classNameOne = view.getText("Class one ->");
-			String classNametwo = view.getText("Class two ->");
+			String classNameOne = view.getText("Class one ->", cmd);
+			String classNametwo = view.getText("Class two ->", cmd);
         	String r = new String("Realization");
         	controller.addRelationship(classNameOne, classNametwo, r);
         }
         else if (cmd.equals("dRelat")) 
         {
-			String classOne = view.getText("Class One");
-			String classTwo = view.getText("Class Two");
+			String classOne = view.getText("Class One", cmd);
+			String classTwo = view.getText("Class Two", cmd);
 			controller.removeRelationship(classOne, classTwo);
 		}
 		else if(cmd.equals("cRelat"))
 		{
-			String classNameFrom = view.getText("Class From");
-			String classNameTo = view.getText("Class To");
-			String newTypeName = view.getText("New Relationship name (I/A/C/R)");
+			String classNameFrom = view.getText("Class From", cmd);
+			String classNameTo = view.getText("Class To", cmd);
+			String newTypeName = view.getText("New Relationship name (I/A/C/R)", cmd);
 			controller.changeRelationship(classNameFrom, classNameTo, newTypeName);
 
 		}

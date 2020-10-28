@@ -5,7 +5,6 @@ import view.MenuViews;
 
 public class ClassClick implements ActionListener
 {
-	
 	private MenuViews view;
 	private HelperControllers controller;
 	
@@ -19,33 +18,58 @@ public class ClassClick implements ActionListener
 	{
 		System.out.println("succesfully got to ClassClick actions: ClassClick()");
 		
-		String command = e.getActionCommand();
-		if(command.equals("Open"))
+		String cmd = e.getActionCommand();
+		if(cmd.equals("Open"))
 		{
-			String classOpen = view.getText("Class to open ->");
-			controller.openClass(classOpen);
-			controller.checkStatus();
+			String className = view.getText("Name of class to open ->", cmd);
+			if (className == null)
+			{
+				return;
+			}
+			controller.openClass(className);
 		}
-		else if(command.equals("Add"))
+		if(cmd.equals("Close"))
 		{
-			System.out.println("got to add class");
-			String classToAdd = view.getText("Class -> ");
-			controller.createClass(classToAdd);
-			controller.checkStatus();
+			String className = view.getText("Name of class to close ->", cmd);
+			if (className == null)
+			{
+				return;
+			}
+			controller.closeClass(className);
 		}
-		else if(command.equals("Delete"))
+		else if(cmd.equals("Add Class"))
 		{
-			//get a list of classes and find className == classToDelete
-			String classToDelete = view.getText("Class To Delete ->");
-			controller.delClass(classToDelete);
-			controller.checkStatus();
+			String className = view.getText("Class name ->", cmd);
+			if (className == null)
+			{
+				return;
+			}
+			controller.createClass(className);
 		}
-		else if(command.equals("Rename"))
+		else if(cmd.equals("Remove Class"))
 		{
-			String renamed = view.getText("Class to be renamed ->"); 
-			String newClassName = view.getText("New Class Name ->");
-			controller.renameClass(renamed, newClassName);
-			controller.checkStatus();
+			// TODO select a class from the list instead of raw input
+			String className = view.getText("Name of class to remove ->", cmd);
+			if (className == null)
+			{
+				return;
+			}
+			controller.delClass(className);
+		}
+		else if(cmd.equals("Rename Class"))
+		{
+			// TODO select a class from the list instead of raw input
+			String oldClassName = view.getText("Old class name ->", cmd);
+			if (oldClassName == null)
+			{
+				return;
+			}
+			String newClassName = view.getText("New class Name ->", cmd);
+			if (newClassName == null)
+			{
+				return;
+			}
+			controller.renameClass(oldClassName, newClassName);
 		}	
 	}
 }

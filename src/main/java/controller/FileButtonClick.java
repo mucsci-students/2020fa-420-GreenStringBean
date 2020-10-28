@@ -29,12 +29,12 @@ public class FileButtonClick implements ActionListener
 		}
 		else if(cmd.equals("Save"))
 		{
-			String currFile = view.getText("Save ->");
+			String currFile = view.getText("Save ->", cmd);
 			controller.save(currFile);
 		}
 		else if(cmd.equals("Load"))
 		{
-			String projectToLoad = view.getText("Load -> ");
+			String projectToLoad = view.getText("Load -> ", cmd);
 			controller.load(projectToLoad);
 		}
 	}

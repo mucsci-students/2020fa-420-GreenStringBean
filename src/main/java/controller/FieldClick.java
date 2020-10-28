@@ -16,93 +16,217 @@ public class FieldClick implements ActionListener
 	
 	public void actionPerformed(ActionEvent e) 
 	{
-		System.out.println("succesfully got to FieldClick actions: FileClick()");
+		System.out.println("succesfully got to FieldClick actions: FieldClick()");
 		
-		String className = view.getText("Type in class to add/del/rename Attributes");
 		String cmd = e.getActionCommand();
+        String className = view.getText("Name of class to modify ->", cmd);
+        if (className == null)
+        {
+            return;
+        }
 		//Fields
-        if (cmd.equals("field")) 
+        if (cmd.equals("Add Field")) 
         {
-            String visability = view.getText("Visibility (public/private/protected)");
-            String type = view.getText("Type");
-            String name = view.getText("Name");
-            controller.addField(className, visability, name, type);
-            controller.checkStatus();
+            // TODO Choose from options instead of raw input
+            String fieldVis = view.getText("Visibility (public / protected / private) ->", cmd);
+            if (fieldVis == null)
+            {
+                return;
+            }
+            String fieldType = view.getText("Data type ->", cmd);
+            if (fieldType == null)
+            {
+                return;
+            }
+            String fieldName = view.getText("Field name ->", cmd);
+            if (fieldType == null)
+            {
+                return;
+            }
+            controller.addField(className, fieldName, fieldType, fieldVis);
         } 
-        else if (cmd.equals("dField")) 
+        else if (cmd.equals("Remove Field")) 
         {
-            String name = view.getText("Field Name to Delete");
-            controller.removeField(className, name);
-            controller.checkStatus();
+            String fieldName = view.getText("Name of field to remove ->", cmd);
+            if (fieldName == null)
+            {
+                return;
+            }
+            controller.removeField(className, fieldName);
         }
-        else if (cmd.equals("rField"))
+        else if (cmd.equals("Rename Field"))
         {
-        	String name = view.getText("Old Field Name");
-        	String newName = view.getText("New Field Name");
-            controller.renameField(className, name, newName);
-            controller.checkStatus();
+            String oldFieldName = view.getText("Old field name ->", cmd);
+            if (oldFieldName == null)
+            {
+                return;
+            }
+            String newFieldName = view.getText("New field name ->", cmd);
+            if (newFieldName == null)
+            {
+                return;
+            }
+            controller.renameField(className, oldFieldName, newFieldName);
         }
-        else if (cmd.equals("vField"))
+        else if (cmd.equals("Change Field Type"))
         {
-        	String fieldName = view.getText("Field Name");
-        	String newFieldVis = view.getText("New Field Visibility(public/private/protected)");
-            controller.changeFieldVisablity(className, fieldName, newFieldVis);;
-            controller.checkStatus();
+            String fieldName = view.getText("Name of field to modify ->", cmd);
+            if (fieldName == null)
+            {
+                return;
+            }
+            String newFieldType = view.getText("New data type ->", cmd);
+            if (newFieldType == null)
+            {
+                return;
+            }
+            controller.changeFieldType(className, fieldName, newFieldType);
+        }
+        else if (cmd.equals("Change Field Visibility"))
+        {
+            String fieldName = view.getText("Name of field to modify ->", cmd);
+            if (fieldName == null)
+            {
+                return;
+            }
+            String newFieldVis = view.getText("New visibility (public / protected / private) ->", cmd);
+            if (newFieldVis == null)
+            {
+                return;
+            }
+            controller.changeFieldVisiblity(className, fieldName, newFieldVis);;
         }
 
         //Methods
-        else if (cmd.equals("cMethod"))
+        else if (cmd.equals("Add Method"))
         {
-        	String visability = view.getText("Visibility (public/private/protected)");
-            String type = view.getText("Type");
-            String name = view.getText("Name");
-            controller.addMethod(className, visability, name, type);
-            controller.checkStatus();
+            String methodVis = view.getText("Visibility (public / protected / private) ->", cmd);
+            if (methodVis == null)
+            {
+                return;
+            }
+            String methodType = view.getText("Return type ->", cmd);
+            if (methodType == null)
+            {
+                return;
+            }
+            String methodName = view.getText("Method name ->", cmd);
+            if (methodName == null)
+            {
+                return;
+            }
+            controller.addMethod(className, methodName, methodType, methodVis);
         }
-        else if (cmd.equals("dMethod"))
+        else if (cmd.equals("Remove Method"))
         {
-            String name = view.getText("Method Name to Delete");
-            controller.removeMethod(className, name);
-            controller.checkStatus();
+            String methodName = view.getText("Name of method to remove ->", cmd);
+            if (methodName == null)
+            {
+                return;
+            }
+            controller.removeMethod(className, methodName);
         }
-        else if (cmd.equals("rMethod"))
+        else if (cmd.equals("Rename Method"))
         {
-        	String name = view.getText("Old Method Name");
-        	String newName = view.getText("New Method Name");
-            controller.renameMethod(className, name, newName);
-            controller.checkStatus();
+            String oldMethodName = view.getText("Old method name ->", cmd);
+            if (oldMethodName == null)
+            {
+                return;
+            }
+            String newMethodName = view.getText("New method name ->", cmd);
+            if (newMethodName == null)
+            {
+                return;
+            }
+            controller.renameMethod(className, oldMethodName, newMethodName);
         }
-        else if (cmd.equals("vMethod"))
+        else if (cmd.equals("Change Method Type"))
         {
-        	String methodName = view.getText("Method Name");
-        	String newMethVis = view.getText("New Method Visiblity(public/private/protected)");
-            controller.changeMethodVisablity(className, methodName, newMethVis);;
-            controller.checkStatus();
+            String methodName = view.getText("Name of method to modify ->", cmd);
+            if (methodName == null)
+            {
+                return;
+            }
+            String newMethodType = view.getText("New return type ->", cmd);
+            if (newMethodType == null)
+            {
+                return;
+            }
+            controller.changeMethodType(className, methodName, newMethodType);
         }
-
-        //Params
-        else if (cmd.equals("param"))
+        else if (cmd.equals("Change Method Visibility"))
         {
-            String methName = view.getText("Method Name");
-            String name = view.getText("Param Name");
-            String type = view.getText("Param Type");
-            controller.addParameter(className, methName, name, type);
-            controller.checkStatus();
+            String methodName = view.getText("Name of method to modify ->", cmd);
+            if (methodName == null)
+            {
+                return;
+            }
+            String newMethodVis = view.getText("New visibility (public / protected / private) ->", cmd);
+            if (newMethodVis == null)
+            {
+                return;
+            }
+            controller.changeMethodVisiblity(className, methodName, newMethodVis);
         }
-        else if (cmd.equals("dParam"))
+        else
         {
-            String methName = view.getText("Method Name");
-            String paramName = view.getText("Parameter Name");
-            controller.removeParameter(className, methName, paramName);
-            controller.checkStatus();
-        }
-        else if (cmd.equals("rParam"))
-        {
-            String methodName = view.getText("Method Name");
-            String oldParamName =  view.getText("Old Parameter Name");
-        	String newParamName = view.getText("New Parameter Name");
-            controller.renameParameter(className, methodName, oldParamName, newParamName);
-            controller.checkStatus();
+            //Params
+            String methodName = view.getText("Name of method to modify ->", cmd);
+            if (methodName == null)
+            {
+                return;
+            }
+            if (cmd.equals("Add Parameter"))
+            {
+                String paramName = view.getText("Parameter name ->", cmd);
+                if (paramName == null)
+                {
+                    return;
+                }
+                String paramType = view.getText("Data type ->", cmd);
+                if (paramType == null)
+                {
+                    return;
+                }
+                controller.addParameter(className, methodName, paramName, paramType);
+            }
+            else if (cmd.equals("Remove Parameter"))
+            {
+                String paramName = view.getText("Name of parameter to remove ->", cmd);
+                if (paramName == null)
+                {
+                    return;
+                }
+                controller.removeParameter(className, methodName, paramName);
+            }
+            else if (cmd.equals("Rename Parameter"))
+            {
+                String oldParamName = view.getText("Old parameter name ->", cmd);
+                if (oldParamName == null)
+                {
+                    return;
+                }
+                String newParamName = view.getText("New parameter name ->", cmd);
+                if (newParamName == null)
+                {
+                    return;
+                }
+                controller.renameParameter(className, methodName, oldParamName, newParamName);
+            }
+            else if (cmd.equals("Change Parameter Type"))
+            {
+                String paramName = view.getText("Name of parameter to modify ->", cmd);
+                if (paramName == null)
+                {
+                    return;
+                }
+                String newParamType = view.getText("New data type ->", cmd);
+                if (newParamType == null)
+                {
+                    return;
+                }
+                controller.changeParameterType(className, methodName, paramName, newParamType);
+            }
         }
 	}
 }
