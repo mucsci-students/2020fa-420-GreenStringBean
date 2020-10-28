@@ -536,12 +536,12 @@ public class WorkingProject {
         relationships.clear();
 
         JSONObject jsonProject = (JSONObject)JSONValue.parse(jsonString);
-        JSONObject jsonClasses = (JSONObject)jsonProject.get("classes");
+        JSONArray jsonClasses = (JSONArray)jsonProject.get("classes");
         JSONArray jsonRelationships = (JSONArray)jsonProject.get("relationships");
 
-        for (Object className : jsonClasses.keySet())
+        for (Object jsonClass : jsonClasses)
         {
-            classes.put((String)className, ClassObject.loadFromJSON((JSONObject)jsonClasses.get(className)));
+            classes.put((String)(((JSONObject)jsonClass).get("name")), ClassObject.loadFromJSON((JSONObject)jsonClass));
         }
 
         for (Object jsonRelationship : jsonRelationships)
@@ -565,10 +565,10 @@ public class WorkingProject {
     {
         JSONObject jsonProject = new JSONObject();
 
-        JSONObject jsonClasses = new JSONObject();
+        JSONArray jsonClasses = new JSONArray();
         for (String className : classes.keySet())
         {
-            jsonClasses.put(className, classes.get(className).toJSON());
+            jsonClasses.add(classes.get(className).toJSON());
         }
 
         JSONArray jsonRelationships = new JSONArray();

@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 import java.util.Set;
 import java.util.List;
 import java.util.Map;
@@ -488,16 +489,16 @@ public class ClassObject{
     {
         JSONObject jsonClass = new JSONObject();
 
-        JSONObject jsonFields = new JSONObject();
+        JSONArray jsonFields = new JSONArray();
         for (String fieldName : fields.keySet())
         {
-            jsonFields.put(fieldName, fields.get(fieldName).toJSON());
+            jsonFields.add(fields.get(fieldName).toJSON());
         }
 
-        JSONObject jsonMethods = new JSONObject();
+        JSONArray jsonMethods = new JSONArray();
         for (String methodName : methods.keySet())
         {
-            jsonMethods.put(methodName, methods.get(methodName).toJSON());
+            jsonMethods.add(methods.get(methodName).toJSON());
         }
 
         jsonClass.put("name", name);
@@ -520,17 +521,17 @@ public class ClassObject{
         ClassObject classObj = new ClassObject(name);
         classObj.isOpen = (boolean)jsonClass.get("isOpen");
         
-        JSONObject jsonFields = (JSONObject)jsonClass.get("fields");
-        JSONObject jsonMethods = (JSONObject)jsonClass.get("methods");
+        JSONArray jsonFields = (JSONArray)jsonClass.get("fields");
+        JSONArray jsonMethods = (JSONArray)jsonClass.get("methods");
 
-        for (Object fieldName : jsonFields.keySet())
+        for (Object jsonField : jsonFields)
         {
-            classObj.fields.put((String)fieldName, Field.loadFromJSON((JSONObject)jsonFields.get(fieldName)));
+            classObj.fields.put((String)(((JSONObject)jsonField).get("name")), Field.loadFromJSON((JSONObject)jsonField));
         }
 
-        for (Object methodName : jsonMethods.keySet())
+        for (Object jsonMethod : jsonMethods)
         {
-            classObj.methods.put((String)methodName, Method.loadFromJSON((JSONObject)jsonMethods.get(methodName)));
+            classObj.methods.put((String)(((JSONObject)jsonMethod).get("name")), Method.loadFromJSON((JSONObject)jsonMethod));
         }
 
         return classObj;
