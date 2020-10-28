@@ -60,6 +60,7 @@ public class Console {
                         System.out.print(">");
                         String name = keyboard.nextLine();
                         saveFile (parseLine(name).get(0));
+                        return;
                     }
                     else if (YN.equals("n".toUpperCase()) || YN.equals("n"))
                     {
