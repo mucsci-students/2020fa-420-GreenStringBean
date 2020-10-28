@@ -1,5 +1,8 @@
+package controller;
+import view.GUIStartScreen;
+import view.Console;
 
-public class UMLedit {
+public class UMLConsoleController {
 
 		public static void main(String[] args) {
 			//start in console
@@ -11,4 +14,4 @@ public class UMLedit {
 			//Starts the app with a prompt to start GUI 
 			GUIStartScreen uml = new GUIStartScreen();
 		}
-	}
+}
