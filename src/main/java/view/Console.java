@@ -1,3 +1,5 @@
+package view;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.File;
@@ -10,6 +12,7 @@ import model.ClassObject;
 import model.Relationship;
 import java.util.Set;
 import java.util.Iterator;
+import model.WorkingProject;
 import java.io.BufferedReader;
 import controller.WorkingProjectEditor;
 
@@ -544,11 +547,9 @@ public class Console {
      */
     private static void printRelationships()
     {
-        Set<Relationship> r = projectEditor.getProjectSnapshot().getRelationships();
-        Iterator iter = r.iterator();
-        while(iter.hasNext())
+        Set<Relationship> relationships = projectEditor.getProjectSnapshot().getRelationships();
+        for (Relationship rel : relationships)
         {
-            Relationship rel = (Relationship)iter.next();
             System.out.println(rel.getClassNameFrom() + " -> " + rel.getClassNameTo() + " " + rel.getType());
         }
     }
@@ -560,9 +561,13 @@ public class Console {
      */
     private static void printClass(String className)
     {
-        ClassObject c = projectEditor.getProjectSnapshot().getClass(className);
-        c.printFields();
-        c.printMethods();
+        WorkingProject snapshot = projectEditor.getProjectSnapshot();
+        if (snapshot.hasClass(className))
+        {
+            ClassObject c = snapshot.getClass(className);
+            c.printFields();
+            c.printMethods();
+        }
     }
 
     public static void main(String[] args)

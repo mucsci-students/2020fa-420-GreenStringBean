@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.json.simple.JSONObject;
 import java.util.Set;
@@ -44,7 +45,7 @@ public class ClassObject{
 
         observers = new ArrayList<>();
     }
-
+    
     public void attach (Observer observer)
     {
         observers.add(observer);
@@ -441,7 +442,7 @@ public class ClassObject{
     {
         for (Field field : fields.values())
         {
-            System.out.println(field.getType() + " " + field.getName());
+            System.out.println(field.toString());
         }
     }
 
@@ -449,9 +450,7 @@ public class ClassObject{
     {
         for (Method method : methods.values())
         {
-            System.out.print(method.getType() + " " + method.getName() + "(");
-            method.printParameters();
-            System.out.println(")");
+            System.out.println(method.toString());
         }
     }
 

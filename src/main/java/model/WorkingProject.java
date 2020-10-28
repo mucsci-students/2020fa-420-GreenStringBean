@@ -566,8 +566,6 @@ public class WorkingProject {
         jsonProject.put("classes", jsonClasses);
         jsonProject.put("relationships", jsonRelationships);
 
-        System.out.println("Successfully saved");
-
         return jsonProject.toJSONString();
     }
 
