@@ -180,6 +180,6 @@ save () {
 APP_ARGS=`save "$@"`
 
 # Collect all arguments for the java command, following the shell quoting and substitution rules
-eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $UML_OPTS -classpath "\"$CLASSPATH\"" UMLedit "$APP_ARGS"
+eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $UML_OPTS -classpath "\"$CLASSPATH\"" controller.UMLConsoleController "$APP_ARGS"
 
 exec "$JAVACMD" "$@"

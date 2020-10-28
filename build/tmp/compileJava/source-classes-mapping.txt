@@ -2,6 +2,8 @@ command/AddRelationshipCommand.java
  command.AddRelationshipCommand
 command/RemoveFieldCommand.java
  command.RemoveFieldCommand
+command/AddMethodCommand.java
+ command.AddMethodCommand
 command/RemoveParameterCommand.java
  command.RemoveParameterCommand
 command/ChangeMethodVisibilityCommand.java
@@ -12,19 +14,17 @@ command/RenameFieldCommand.java
  command.RenameFieldCommand
 controller/WorkingProjectEditor.java
  controller.WorkingProjectEditor
-GUIStartScreen.java
- GUIStartScreen
- GUIStartScreen$ButtonClickListener
 command/RemoveClassCommand.java
  command.RemoveClassCommand
-Menu.java
- Menu
- Menu$AttribBClickListener
- Menu$ClassBClickListener
- Menu$FileBClickListener
- Menu$RelatBClickListener
+view/GUIStartScreen.java
+ view.GUIStartScreen
+ view.GUIStartScreen$ButtonClickListener
+controller/FieldClick.java
+ controller.FieldClick
 command/CloseClassCommand.java
  command.CloseClassCommand
+controller/ClassClick.java
+ controller.ClassClick
 command/ChangeFieldTypeCommand.java
  command.ChangeFieldTypeCommand
 command/RemoveMethodCommand.java
@@ -37,6 +37,8 @@ command/RenameMethodCommand.java
  command.RenameMethodCommand
 command/Command.java
  command.Command
+command/AddClassCommand.java
+ command.AddClassCommand
 command/ChangeFieldVisibilityCommand.java
  command.ChangeFieldVisibilityCommand
 command/ChangeParameterTypeCommand.java
@@ -45,10 +47,16 @@ view/Observer.java
  view.Observer
 command/OpenClassCommand.java
  command.OpenClassCommand
-UMLwindow.java
- UMLwindow
 model/Field.java
  model.Field
+controller/FileButtonClick.java
+ controller.FileButtonClick
+controller/HelperControllers.java
+ controller.HelperControllers
+controller/RelationshipClick.java
+ controller.RelationshipClick
+view/MenuViews.java
+ view.MenuViews
 command/ChangeRelationshipTypeCommand.java
  command.ChangeRelationshipTypeCommand
 command/ChangeMethodTypeCommand.java
@@ -60,24 +68,24 @@ model/ClassObject.java
  model.ClassObject$visibility
 model/FormalDeclaration.java
  model.FormalDeclaration
-command/AddMethodCommand.java
- command.AddMethodCommand
 model/Relationship.java
  model.Relationship
  model.Relationship$relationshipType
-command/AddClassCommand.java
- command.AddClassCommand
+view/GUIViews.java
+ view.GUIViews
 model/Parameter.java
  model.Parameter
 command/AddParameterCommand.java
  command.AddParameterCommand
 command/AddFieldCommand.java
  command.AddFieldCommand
+view/GUIEditor.java
+ view.GUIEditor
 command/RemoveRelationshipCommand.java
  command.RemoveRelationshipCommand
 command/RenameClassCommand.java
  command.RenameClassCommand
-UMLedit.java
- UMLedit
-Console.java
- Console
+view/Console.java
+ view.Console
+controller/UMLConsoleController.java
+ controller.UMLConsoleController

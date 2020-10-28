@@ -71,7 +71,7 @@ set CLASSPATH=%APP_HOME%\lib\UML.jar;%APP_HOME%\lib\json-simple-1.1.1.jar;%APP_H
 
 
 @rem Execute UML
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %UML_OPTS%  -classpath "%CLASSPATH%" UMLedit %*
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %UML_OPTS%  -classpath "%CLASSPATH%" controller.UMLConsoleController %*
 
 :end
 @rem End local scope for the variables with windows NT shell
