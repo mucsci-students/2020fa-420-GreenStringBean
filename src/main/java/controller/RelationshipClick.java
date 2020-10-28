@@ -17,50 +17,58 @@ public class RelationshipClick implements ActionListener
 	{
 		System.out.println("succesfully got to RelationshipClick actions: RelationshipClick()");
 		String cmd = e.getActionCommand();
-		
-        if (cmd.equals("I"))
-        {
-			System.out.println("adding I relat to classes: relationclick()");
-			
-			String classNameOne = view.getText("Class one ->");
-			String classNametwo = view.getText("Class two ->");
-        	String i = new String("I");
-        	controller.addRelationship(classNameOne, classNametwo, i);
-        }
-        else if (cmd.equals("A")) 
-        {
-			String classNameOne = view.getText("Class one ->");
-			String classNametwo = view.getText("Class two ->");
-        	String a = new String("A");
-        	controller.addRelationship(classNameOne, classNametwo, a);
-        }
-        else if (cmd.equals("C"))
-        {
-			String classNameOne = view.getText("Class one ->");
-			String classNametwo = view.getText("Class two ->");
-        	String c = new String("Composition");
-        	controller.addRelationship(classNameOne, classNametwo, c);
-        }
-        else if (cmd.equals("R"))
-        {
-			String classNameOne = view.getText("Class one ->");
-			String classNametwo = view.getText("Class two ->");
-        	String r = new String("Realization");
-        	controller.addRelationship(classNameOne, classNametwo, r);
-        }
-        else if (cmd.equals("dRelat")) 
-        {
-			String classOne = view.getText("Class One");
-			String classTwo = view.getText("Class Two");
-			controller.removeRelationship(classOne, classTwo);
-		}
-		else if(cmd.equals("cRelat"))
-		{
-			String classNameFrom = view.getText("Class From");
-			String classNameTo = view.getText("Class To");
-			String newTypeName = view.getText("New Relationship name (I/A/C/R)");
-			controller.changeRelationship(classNameFrom, classNameTo, newTypeName);
 
+		// Temporary until we can display arrows between class boxes
+		if (cmd.equals("Show Relationships"))
+		{
+			controller.showRelationships();
+			return;
+		}
+
+		String classNameFrom = view.getText("\"From\" class:", cmd);
+		if (classNameFrom == null)
+		{
+			return;
+		}
+		String classNameTo = view.getText("\"To\" class:", cmd);
+		if (classNameTo == null)
+		{
+			return;
+		}
+		
+        if (cmd.equals("Add Inheritance"))
+        {
+        	controller.addRelationship(classNameFrom, classNameTo, "I");
+        }
+		
+        else if (cmd.equals("Add Aggregation"))
+        {
+        	controller.addRelationship(classNameFrom, classNameTo, "A");
+        }
+		
+        else if (cmd.equals("Add Composition"))
+        {
+        	controller.addRelationship(classNameFrom, classNameTo, "C");
+        }
+		
+        else if (cmd.equals("Add Realization"))
+        {
+        	controller.addRelationship(classNameFrom, classNameTo, "R");
+		}
+		
+        else if (cmd.equals("Change Relationship Type")) 
+        {
+            // TODO Choose from options instead of raw input
+			String newTypeName = view.getText("New relationship type (I / A / C / R):", cmd);
+			if (newTypeName == null)
+			{
+				return;
+			}
+			controller.changeRelationshipType(classNameFrom, classNameTo, newTypeName);
+		}
+		else if (cmd.equals("Remove Relationship"))
+		{
+			controller.removeRelationship(classNameFrom, classNameTo);
 		}
 	}
 }
