@@ -145,11 +145,11 @@ public class Console {
                             case "-c" : 
                                 project.addRelationship (commands.get(1), commands.get(2), "C"); 
                                 break;
-                            case "-g" : 
-                                project.addRelationship (commands.get(1), commands.get(2), "G"); 
-                                break;
                             case "-i" : 
                                 project.addRelationship (commands.get(1), commands.get(2), "I"); 
+                                break;
+                            case "-r" : 
+                                project.addRelationship (commands.get(1), commands.get(2), "R"); 
                                 break;
                             default :
                                 System.out.println("error: no relationship type given. <class, class, type>");
@@ -428,9 +428,17 @@ public class Console {
         String filename = projectName + ".txt";
         try {
             File proj = new File(filename);
-            if (proj.createNewFile())
+            if (proj.exists()) 
             {
-                FileWriter fw = new FileWriter(proj);
+                //when false file is overwritten
+                FileWriter fw = new FileWriter(proj, false);
+                fw.write(project.toJSONString());
+                fw.close();
+            }
+            else if (proj.createNewFile())
+            {
+                //when true file is appended
+                FileWriter fw = new FileWriter(proj, true);
                 fw.write(project.toJSONString());
                 fw.close();
             }
