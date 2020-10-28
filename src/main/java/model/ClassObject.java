@@ -1,10 +1,11 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import org.json.simple.JSONObject;
 import java.util.Set;
 import java.util.List;
+import java.util.Map;
 
 import view.Observer;
 
@@ -19,8 +20,8 @@ import view.Observer;
 public class ClassObject{   
     private String name;
     private boolean isOpen;
-    private HashMap<String, Field> fields;
-    private HashMap<String, Method> methods;
+    private LinkedHashMap<String, Field> fields;
+    private LinkedHashMap<String, Method> methods;
 
     private List<Observer> observers;
 
@@ -40,8 +41,8 @@ public class ClassObject{
     {
         this.name = name;
         isOpen = false;
-        fields = new HashMap<>();
-        methods = new HashMap<>();
+        fields = new LinkedHashMap<>();
+        methods = new LinkedHashMap<>();
 
         observers = new ArrayList<>();
     }
@@ -157,7 +158,7 @@ public class ClassObject{
     }
     
     /**
-     * Renames a field, if it exists.
+     * Renames a field, if it exists. (Preserves order)
      * @param oldFieldName the current name of the field to rename
      * @param newFieldName the new name to give to the field
      * @return             0 if successful, error code otherwise
@@ -179,9 +180,21 @@ public class ClassObject{
             return 8;
         }
 
-        Field renamedField = fields.remove(oldFieldName);
-        renamedField.setName(newFieldName);
-        fields.put(newFieldName, renamedField);
+        LinkedHashMap<String, Field> tempFields = new LinkedHashMap<>();
+        for (Map.Entry<String, Field> fieldEntry: fields.entrySet())
+        {
+            if (fieldEntry.getKey().equals(oldFieldName))
+            {
+                Field field = fieldEntry.getValue();
+                field.setName(newFieldName);
+                tempFields.put(newFieldName, field);
+            }
+            else
+            {
+                tempFields.put(fieldEntry.getKey(), fieldEntry.getValue());
+            }
+        }
+        fields = tempFields;
         notifyAllObservers();
         return 0;
     }
@@ -306,9 +319,21 @@ public class ClassObject{
             return 8;
         }
 
-        Method renamedMethod = methods.remove(oldMethodName);
-        renamedMethod.setName(newMethodName);
-        methods.put(newMethodName, renamedMethod);
+        LinkedHashMap<String, Method> tempMethods = new LinkedHashMap<>();
+        for (Map.Entry<String, Method> methodEntry: methods.entrySet())
+        {
+            if (methodEntry.getKey().equals(oldMethodName))
+            {
+                Method method = methodEntry.getValue();
+                method.setName(newMethodName);
+                tempMethods.put(newMethodName, method);
+            }
+            else
+            {
+                tempMethods.put(methodEntry.getKey(), methodEntry.getValue());
+            }
+        }
+        methods = tempMethods;
         notifyAllObservers();
         return 0;
     }

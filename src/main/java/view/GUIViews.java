@@ -23,6 +23,7 @@ import javax.swing.WindowConstants;
 
 import model.ClassObject;
 import model.WorkingProject;
+import model.Relationship;
 
 public class GUIViews implements MenuViews{
 	private JMenuBar mb;
@@ -218,16 +219,17 @@ public class GUIViews implements MenuViews{
 		
 		relaM = new JMenu("Relationship");
 
-		JMenuItem in = new JMenuItem("Inheritence");
-		JMenuItem ag = new JMenuItem("Aggregation");
-		JMenuItem comp = new JMenuItem("Composition");
-		JMenuItem re = new JMenuItem("Realization");
-		JMenuItem cRelat = new JMenuItem("Change Relationship");
+		JMenuItem in = new JMenuItem("Create Inheritence");
+		JMenuItem ag = new JMenuItem("Create Aggregation");
+		JMenuItem comp = new JMenuItem("Create Composition");
+		JMenuItem re = new JMenuItem("Create Realization");
+		JMenuItem cRelat = new JMenuItem("Change Type");
 		JMenuItem dRelat = new JMenuItem("Delete Relationship");
+		JMenuItem sRelat = new JMenuItem("Show Relationships");
 
-		JMenuItem[] arr = {in, ag, comp, re, cRelat, dRelat};
-		String[] txt = {"Inheritence", "Aggregation", "Composition", "Realization", "Change Relationship", "Delete Relationship"};
-		String[] cmd = {"I", "A", "C", "R", "cRelat", "dRelat"};
+		JMenuItem[] arr = {in, ag, comp, re, cRelat, dRelat, sRelat};
+		String[] txt = {"Inheritence", "Aggregation", "Composition", "Realization", "Change Relationship", "Delete Relationship", "Show Relationships"};
+		String[] cmd = {"Add Inheritance", "Add Aggregation", "Add Composition", "Add Realization", "Change Relationship Type", "Remove Relationship", "Show Relationships"};
 
 		for(int i = 0; i < arr.length; ++i)
 		{
@@ -376,5 +378,16 @@ public class GUIViews implements MenuViews{
 	{
 		pWindow.revalidate();
 		pWindow.repaint();
+	}
+
+	// Temporary until we can display arrows between class boxes
+	public void showRelationships(WorkingProject project)
+	{
+		StringBuilder message = new StringBuilder("Relationships:");
+		for (Relationship relationship : project.getRelationships())
+		{
+			message.append("\n" + relationship.toString());
+		}
+		alert(message.toString());
 	}
 }

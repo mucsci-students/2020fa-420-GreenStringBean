@@ -1,5 +1,6 @@
 package view;
 import java.awt.event.ActionListener;
+import model.WorkingProject;
 
 public interface MenuViews extends Observer
 {
@@ -11,4 +12,7 @@ public interface MenuViews extends Observer
 			ActionListener fieldClick, ActionListener relationshipClick);	
 
 	void start();
+
+	// Temporary until we can display arrows between class boxes
+	void showRelationships(WorkingProject snapshot);
 }

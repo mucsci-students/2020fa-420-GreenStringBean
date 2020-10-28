@@ -146,10 +146,16 @@ public class HelperControllers
 		checkStatus();
 	}
 
-	public void changeRelationship(String classNameFrom, String classNameTo, String newTypeName)
+	public void changeRelationshipType(String classNameFrom, String classNameTo, String newTypeName)
 	{
 		project.changeRelationshipType(classNameFrom, classNameTo, newTypeName);
 		checkStatus();
+	}
+
+	// Temporary until we can display arrows between class boxes
+	public void showRelationships()
+	{
+		view.showRelationships(project.getProjectSnapshot());
 	}
 
 	/**********************************OTHERS********************************************/

@@ -99,4 +99,9 @@ public class Relationship {
 	public Relationship copy(){
 		return new Relationship(classNameFrom, classNameTo, type);
 	}
+
+	public String toString()
+	{
+		return classNameFrom + " -> " + classNameTo + " (" + type.name() + ")";
+	}
 }
