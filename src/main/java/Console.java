@@ -394,13 +394,13 @@ public class Console {
 
                 //Print a named class with fields and methods
                 case "printClass" :
-                if (commands.size() < 2)
-                    System.out.println("Error: too few arguments for printClass<class>");
-                else if (commands.size() > 2)
-                    System.out.println("Error: too many arguments for printClass<class>");
-                else
-                    printClass(commands.get(1));
-                break;
+                    if (commands.size() < 2)
+                        System.out.println("Error: too few arguments for printClass<class>");
+                    else if (commands.size() > 2)
+                        System.out.println("Error: too many arguments for printClass<class>");
+                    else
+                        printClass(commands.get(1));
+                    break;
 
                 
                 /**

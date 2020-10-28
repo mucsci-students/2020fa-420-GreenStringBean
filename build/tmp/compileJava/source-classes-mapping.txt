@@ -1,0 +1,83 @@
+command/AddRelationshipCommand.java
+ command.AddRelationshipCommand
+command/RemoveFieldCommand.java
+ command.RemoveFieldCommand
+command/RemoveParameterCommand.java
+ command.RemoveParameterCommand
+command/ChangeMethodVisibilityCommand.java
+ command.ChangeMethodVisibilityCommand
+command/LoadProjectCommand.java
+ command.LoadProjectCommand
+command/RenameFieldCommand.java
+ command.RenameFieldCommand
+controller/WorkingProjectEditor.java
+ controller.WorkingProjectEditor
+GUIStartScreen.java
+ GUIStartScreen
+ GUIStartScreen$ButtonClickListener
+command/RemoveClassCommand.java
+ command.RemoveClassCommand
+Menu.java
+ Menu
+ Menu$AttribBClickListener
+ Menu$ClassBClickListener
+ Menu$FileBClickListener
+ Menu$RelatBClickListener
+command/CloseClassCommand.java
+ command.CloseClassCommand
+command/ChangeFieldTypeCommand.java
+ command.ChangeFieldTypeCommand
+command/RemoveMethodCommand.java
+ command.RemoveMethodCommand
+model/Method.java
+ model.Method
+model/WorkingProject.java
+ model.WorkingProject
+command/RenameMethodCommand.java
+ command.RenameMethodCommand
+command/Command.java
+ command.Command
+command/ChangeFieldVisibilityCommand.java
+ command.ChangeFieldVisibilityCommand
+command/ChangeParameterTypeCommand.java
+ command.ChangeParameterTypeCommand
+view/Observer.java
+ view.Observer
+command/OpenClassCommand.java
+ command.OpenClassCommand
+UMLwindow.java
+ UMLwindow
+model/Field.java
+ model.Field
+command/ChangeRelationshipTypeCommand.java
+ command.ChangeRelationshipTypeCommand
+command/ChangeMethodTypeCommand.java
+ command.ChangeMethodTypeCommand
+command/RenameParameterCommand.java
+ command.RenameParameterCommand
+model/ClassObject.java
+ model.ClassObject
+ model.ClassObject$visibility
+model/FormalDeclaration.java
+ model.FormalDeclaration
+command/AddMethodCommand.java
+ command.AddMethodCommand
+model/Relationship.java
+ model.Relationship
+ model.Relationship$relationshipType
+command/AddClassCommand.java
+ command.AddClassCommand
+model/Parameter.java
+ model.Parameter
+command/AddParameterCommand.java
+ command.AddParameterCommand
+command/AddFieldCommand.java
+ command.AddFieldCommand
+command/RemoveRelationshipCommand.java
+ command.RemoveRelationshipCommand
+command/RenameClassCommand.java
+ command.RenameClassCommand
+UMLedit.java
+ UMLedit
+Console.java
+ Console
