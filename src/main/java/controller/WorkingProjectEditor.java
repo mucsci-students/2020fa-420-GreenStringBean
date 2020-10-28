@@ -175,7 +175,7 @@ public class WorkingProjectEditor {
 
     public void changeMethodVisibility(String className, String methodName, String newMethodVis)
     {
-        Command cmd = new ChangeMethodTypeCommand(project, className, methodName, newMethodVis);
+        Command cmd = new ChangeMethodVisibilityCommand(project, className, methodName, newMethodVis);
         executeCommand(cmd);
     }
 
