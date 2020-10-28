@@ -1,10 +1,11 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.json.simple.JSONObject;
 import java.util.Set;
 import java.util.List;
-import java.util.ArrayList;
+
 import view.Observer;
 
 /**
@@ -44,7 +45,7 @@ public class ClassObject{
 
         observers = new ArrayList<>();
     }
-
+    
     public void attach (Observer observer)
     {
         observers.add(observer);
