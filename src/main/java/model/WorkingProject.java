@@ -29,6 +29,7 @@ import org.json.simple.JSONValue;
  *     11 - Relationship type is not valid
  *     12 - Error loading project
  *     13 - Loaded project is not valid
+ *     14 - Visibility Modifier is not valid
  */
 
 public class WorkingProject {
@@ -143,14 +144,14 @@ public class WorkingProject {
      * @param fieldType the data type to be used by the new field
      * @return          0 if successful, error code otherwise
      */
-    public int addField(String className, String fieldName, String fieldType)
+    public int addField(String className, String fieldName, String fieldType, String fieldVisName)
     {
         if (!classes.containsKey(className))
         {
             return 2;
         }
 
-        return classes.get(className).addField(fieldName, fieldType);
+        return classes.get(className).addField(fieldName, fieldType, fieldVisName);
     }
 
     /**
@@ -203,6 +204,15 @@ public class WorkingProject {
         return classes.get(className).changeFieldType(fieldName, newFieldType);
     }
 
+    public int changeFieldVisibility(String className, String fieldName, String fieldVisName)
+    {
+        if(!classes.containsKey(className))
+        {
+            return 2;
+        }
+        return classes.get(className).changeFieldVisibility(fieldName, fieldVisName);
+    }
+
     /**
      * Adds a new method to a class.
      * @param className  the name of the class to add a method to
@@ -210,14 +220,14 @@ public class WorkingProject {
      * @param methodType the data type to be used by the new method
      * @return           0 if successful, error code otherwise
      */
-    public int addMethod(String className, String methodName, String methodType)
+    public int addMethod(String className, String methodName, String methodType, String methodVisName)
     {
         if (!classes.containsKey(className))
         {
             return 2;
         }
 
-        return classes.get(className).addMethod(methodName, methodType);
+        return classes.get(className).addMethod(methodName, methodType, methodVisName);
     }
 
     /**
@@ -268,6 +278,15 @@ public class WorkingProject {
         }
 
         return classes.get(className).changeMethodType(methodName, newMethodType);
+    }
+
+    public int changeMethodVisibility(String className, String methodName, String methodVisName)
+    {
+        if(!classes.containsKey(className))
+        {
+            return 2;
+        }
+        return classes.get(className).changeMethodVisibility(methodName, methodVisName);
     }
 
     /**
@@ -474,7 +493,7 @@ public class WorkingProject {
         }
     }
     
-    private Relationship.relationshipType stringToRelationshipType(String str)
+    public static Relationship.relationshipType stringToRelationshipType(String str)
     {
         str = str.toUpperCase();
         switch(str)

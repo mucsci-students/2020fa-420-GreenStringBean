@@ -119,9 +119,9 @@ public class WorkingProjectEditor {
         executeCommand(cmd);
     }
 
-    public void addField(String className, String fieldName, String fieldType)
+    public void addField(String className, String fieldName, String fieldType, String fieldVisName)
     {
-        Command cmd = new AddFieldCommand(project, className, fieldName, fieldType);
+        Command cmd = new AddFieldCommand(project, className, fieldName, fieldType, fieldVisName);
         executeCommand(cmd);
     }
 
@@ -143,9 +143,15 @@ public class WorkingProjectEditor {
         executeCommand(cmd);
     }
 
-    public void addMethod(String className, String methodName, String methodType)
+    public void changeFieldVisibility(String className, String fieldName, String newFieldVis)
     {
-        Command cmd = new AddMethodCommand(project, className, methodName, methodType);
+        Command cmd = new ChangeFieldVisibilityCommand(project, className, fieldName, newFieldVis);
+        executeCommand(cmd);
+    }
+
+    public void addMethod(String className, String methodName, String methodType, String methodVis)
+    {
+        Command cmd = new AddMethodCommand(project, className, methodName, methodType, methodVis);
         executeCommand(cmd);
     }
 
@@ -164,6 +170,12 @@ public class WorkingProjectEditor {
     public void changeMethodType(String className, String methodName, String newMethodType)
     {
         Command cmd = new ChangeMethodTypeCommand(project, className, methodName, newMethodType);
+        executeCommand(cmd);
+    }
+
+    public void changeMethodVisibility(String className, String methodName, String newMethodVis)
+    {
+        Command cmd = new ChangeMethodTypeCommand(project, className, methodName, newMethodVis);
         executeCommand(cmd);
     }
 

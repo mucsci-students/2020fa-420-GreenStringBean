@@ -233,26 +233,26 @@ public class Console {
 
                 //Add a new field attribute to named class
                 case "addField" :
-                    if (commands.size() < 4)
-                        System.out.println("Error: too few arguments for addField <class, name, data type>");
-                    else if (commands.size() > 4)
-                        System.out.println("Error: too many arguments for addField class <class, name, data type>");
+                    if (commands.size() < 5)
+                        System.out.println("Error: too few arguments for addField <class, name, data type, visibility>");
+                    else if (commands.size() > 5)
+                        System.out.println("Error: too many arguments for addField class <class, name, data type, visibility>");
                     else 
                     {
-                        projectEditor.addField(commands.get(1), commands.get(2), commands.get(3));
+                        projectEditor.addField(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
                         printStatusMessage();
                     }
                     break;
 
                 //Add a new method attribute to named class
                 case "addMethod" :
-                    if (commands.size() < 4)
-                        System.out.println("Error: too few arguments for addMethod <class, name, return type>");
-                    else if (commands.size() > 4)
-                        System.out.println("Error: too many arguments for addMethod class <class, name, return type>");
+                    if (commands.size() < 5)
+                        System.out.println("Error: too few arguments for addMethod <class, name, return type, visibility>");
+                    else if (commands.size() > 5)
+                        System.out.println("Error: too many arguments for addMethod class <class, name, return type, visibility>");
                     else
                     {
-                        projectEditor.addMethod(commands.get(1), commands.get(2), commands.get(3));
+                        projectEditor.addMethod(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
                         printStatusMessage();
                     }
                     break;

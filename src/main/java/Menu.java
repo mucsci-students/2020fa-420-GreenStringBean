@@ -316,7 +316,7 @@ public class Menu {
 	        {
 	            String type = getText("Type-> ");
 	            String name = getText("Name-> ");
-	            project.addField(className, name, type);
+	            //project.addField(className, name, type);
 	            refresh();
 	        } 
 	        else if (cmd.equals("dField")) 
