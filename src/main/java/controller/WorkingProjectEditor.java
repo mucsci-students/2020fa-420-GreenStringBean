@@ -230,7 +230,7 @@ public class WorkingProjectEditor {
         {
             if (executedCommands.size() == MAX_COMMAND_HISTORY)
             {
-                executedCommands.remove();
+                executedCommands.removeLast();
             }
             executedCommands.push(cmd);
 
