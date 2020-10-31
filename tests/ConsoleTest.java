@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Assert;
 
+//Use Dependency Injection to test the Console. Same goes for the GUI
 public class ConsoleTest {
     
 
@@ -11,8 +12,9 @@ public class ConsoleTest {
     public void TestAddClass() {
         WorkingProject wp = EmptyProject();
         wp.addClass("Apple");
-        //assertEquals(wp.classExists("Apple"), True);
+        assertTrue(wp.hasClass("Apple"));
     }
+
 
     private WorkingProject EmptyProject() {
         WorkingProject wp = new WorkingProject();

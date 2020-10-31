@@ -1,8 +1,161 @@
 import org.json.simple.*;
+import org.junit.Test;
+
+import model.WorkingProject;
 
 public class WorkingProjectTest {
-    public static void main(String[] args)
+    WorkingProject wp;
+
+    @Test 
+    public void TestCreateProject()
     {
+        wp = new WorkingProject();
+        AssertTrue(wp);
+    }
+
+    @Test
+    public void TestAddClass()
+    {
+        wp.addClass("Fruits");
+        AssertTrue(wp.getClass("Fruits"));
+    }
+
+    @Test
+    public void TestAddField()
+    {
+        wp.addField("Fruits", "mass", "float", "public");
+        AssertTrue(wp.getClass("Fruits").hasField("mass"));
+    }
+
+    @Test
+    public void TestAddMethod()
+    {
+        wp.addMethod("Fruits", "Purchase", "float", "public");
+        AssertTrue(wp.getClass("Fruits").hasMethod("Cost"));
+    }
+
+    @Test
+    public void TestAddParameter()
+    {
+        wp.addParameter("Fruits", "Purchase", "PaymentType", "String");
+        AssertTrue(wp.getClass("Fruits").getMethod("Purchase").hasParameter("PaymentType"));
+    }
+
+    @Test
+    public void TestChangeFieldType()
+    {
+        wp.changeFieldType("Fruits", "mass", "double");
+        AssertTrue(wp.getClass("Fruits").getField("mass").getType());
+    }
+
+    @Test
+    public void TestChangeMethodType()
+    {
+        wp.changeMethodType("Fruits", "Purchase", "int");
+        AssertTrue(wp.getClass("Fruits").getMethod("Purchase").getType().equals("int"));
+    }
+
+    @Test
+    public void TestChangeParameterType()
+    {
+        wp.changeParameterType("Fruits", "Purchase", "PaymentType", "int");
+        //Note: Can Parameter have a simple getParameter method that takes a name and returns the Parameter object instead of a list?
+        AssertTrue(wp.getClass("Fruits").getMethod("Purchase").getParameters().get(0).getType() == "int");
+    }
+
+
+    @Test
+    public void TestChangeFieldName()
+    {
+        wp.changeFieldType("Fruits", "mass", "weight");
+        AssertTrue(wp.getClass("Fruits").hasField("weight"));
+        AssertTrue(!wp.getClass("Fruits").hasField("mass"));
+    }
+
+    @Test
+    public void TestChangeMethodName()
+    {
+        wp.renameMethod("Fruits", "Purchase", "Buy");
+        AssertTrue(wp.getClass("Fruits").hasMethod("Buy"));
+        AssertTrue(wp.getClass("Fruits").hasMethod("Purchase"));
+    }
+
+    @Test
+    public void TestChangeParameterName()
+    {
+        wp.renameParameter("Fruits", "Buy", "PaymentType", "PaymentOption");
+        AssertTrue(wp.getClass("Fruits").getMethod("Buy").getParameters().get(0).getName() == "PaymentOption");
+        AssertTrue(!(wp.getClass("Fruits").getMethod("Buy").getParameters().get(0).getName() == "PaymentType"));
+    }
+        
+
+    @Test
+    public void TestChangeFieldVisibility()
+    {
+        wp.changeFieldVisibility("Fruits", "weight", "private");
+        AssertTrue(wp.getClass("Fruits").getField("weight").getVisibility() == "private");
+    }
+
+    @Test
+    public void TestChangeMethodVisibility()
+    {
+        wp.changeMethodVisibility("Fruits", "Buy", "private");
+        AssertTrue(wp.getClass("Fruits").getMethod("Buy").getVisibility() == "private");
+    }
+
+    @Test
+    public void TestAddRelationship()
+    {
+        wp.addClass("Vegetables");
+        wp.addRelationship("Fruits", "Vegetables", "A");
+        AssertTrue(wp.hasRelationship("Fruits", "Vegetables"));
+        //Need to check relationship type
+    }
+
+    @Test
+    public void TestChangeRelationshipType()
+    {
+        wp.changeRelationshipType("Fruits", "Vegetables", "C");
+    }
+
+    @Test
+    public void TestRemoveRelationship()
+    {
+        wp.removeRelationship("Fruits", "Vegetables");
+        AssertTrue(!wp.hasRelationship("Fruits", "Vegetables"));
+    }
+
+    @Test
+    public void TestRemoveField()
+    {
+        wp.removeField("Fruits", "weight");
+        AssertTrue(!wp.hasField("weight"));
+    }
+
+    @Test
+    public void TestRemoveParameter()
+    {
+        wp.removeParameter("Fruits", "Buy", "PaymentOption");
+        AssertTrue(!wp.hasParameter("Fruits", "Buy", "PaymentOption"));
+    }
+
+    @Test
+    public void TestRemoveMethod()
+    {
+        wp.removeMethod("Fruits", "Buy");
+        AssertTrue(!wp.hasMethod("Fruits", "Buy"));
+    }
+
+    @Test
+    public void TestRemoveClass()
+    {
+        wp.removeClass("Fruits");
+        AssertTrue(!wp.hasClass("Fruits"));
+    }
+
+}
+    //public static void main(String[] args)
+    //{
         /*
         System.out.println("-Testing Working Project Class");
 
@@ -230,5 +383,5 @@ public class WorkingProjectTest {
         }
 
         return loadedProject;*/
-    }
-}
+    //}
+//}

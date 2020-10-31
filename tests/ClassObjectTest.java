@@ -41,7 +41,7 @@ public class ClassObjectTest {
     @Test
     public void TestAddField()
     {
-        c.addField("Edible", "bool");
+        c.addField("Edible", "bool", "public");
         assertTrue(c.getField("Edible") != null);
     }
 
@@ -70,7 +70,7 @@ public class ClassObjectTest {
     @Test
     public void TestAddMethod()
     {
-        c.addMethod("Eat", "void");
+        c.addMethod("Eat", "void", "public");
         assertTrue(c.getMethod("Eat").getType() == "void");
     }
 
@@ -87,6 +87,18 @@ public class ClassObjectTest {
     {
         c.changeMethodType("Cook", "Meal");
         assertTrue(c.getMethod("Cook").getType() == "Meal");
+    }
+
+    @Test
+    public void TestChangeFieldVisibility()
+    {
+        //TODO
+    }
+
+    @Test
+    public void TestChangeMethodVisibility()
+    {
+        //TODO
     }
 
     @Test
@@ -117,18 +129,21 @@ public class ClassObjectTest {
         assertTrue(!c.getMethod("Cook").getParameters().contains(new Parameter("Prep_Time", "float")));
     }
 
+    @Test
     public void TestRemoveMethod()
     {
         c.removeMethod("Cook");
         assertTrue(c.getMethod("Cook") == null);
     }
 
+    
+
     @Test
     public void TestToJSON ()
     {
         ClassObject d = new ClassObject("Construction");
-        d.addField("Height", "double");
-        d.addMethod("BuildHouse", "void");
+        d.addField("Height", "double", "public");
+        d.addMethod("BuildHouse", "void", "public");
         d.addParameter("BuildHouse", "Four_Bedroom", "HouseType");
         JSONObject expectedF = new JSONObject();
         JSONObject expectedM = new JSONObject();

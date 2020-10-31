@@ -14,7 +14,7 @@ public class MethodTest {
     @Test
     public void TestCreateMethod (String name, String type)
     {
-        m = new Method("doSomething", "void");
+        m = new Method("doSomething", "void", "public");
     }
 
     @Test

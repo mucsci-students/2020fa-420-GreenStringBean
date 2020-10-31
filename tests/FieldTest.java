@@ -9,9 +9,9 @@ public class FieldTest {
     String type;
     Field f;
     @Test
-    public void TestCreateField (String name, String type)
+    public void TestCreateField ()
     {
-        Field f = new Field("SSN", "int");
+        Field f = new Field("SSN", "int", "public");
     }
 
     @Test
