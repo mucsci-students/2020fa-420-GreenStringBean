@@ -1,13 +1,15 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
 import java.util.Set;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.LinkedHashMap;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+
+import model.VisibleDeclaration.visibility;
 import view.Observer;
 
 /**
@@ -26,13 +28,6 @@ public class ClassObject{
 
     private List<Observer> observers;
 
-    enum visibility
-    {
-        PUBLIC,
-        PRIVATE,
-        PROTECTED
-    }
-
     /**
      * Creates a new open class with no fields or methods.
      * @param name the name of the class, which must always match this class's
@@ -48,16 +43,29 @@ public class ClassObject{
         observers = new ArrayList<>();
     }
     
+    /**
+     * Attaches an observer to this class, to be notified on state changes.
+     * @param observer the observer to attach
+     */
     public void attach (Observer observer)
     {
         observers.add(observer);
     }
 
+    /**
+     * Detaches an observer from this class.
+     * @param observer the observer to detach
+     */
     public void detach (Observer observer)
     {
         observers.remove(observer);
     }
 
+    /**
+     * Notifies all observers, by calling their onUpdate method. Sends each
+     * observer a copy of this class, so that this class cannot be modified by
+     * an observer.
+     */
     private void notifyAllObservers()
     {
         observers.forEach(o -> o.onUpdate(copy()));
@@ -96,6 +104,7 @@ public class ClassObject{
     public void close()
     {
         isOpen = false;
+        notifyAllObservers();
     }
 
     /**
@@ -109,9 +118,10 @@ public class ClassObject{
 
     /**
      * Adds a new field to the class.
-     * @param fieldName the name to be used by the new field
-     * @param fieldType the data type to be used by the new field
-     * @return          0 if successful, error code otherwise
+     * @param fieldName    the name to be used by the new field
+     * @param fieldType    the data type to be used by the new field
+     * @param fieldVisName the visibility to be used by the new field
+     * @return             0 if successful, error code otherwise
      */
     public int addField(String fieldName, String fieldType, String fieldVisName)
     {
@@ -223,14 +233,20 @@ public class ClassObject{
         return 0;
     }
 
-    public int changeFieldVisibility(String fieldName, String fieldVisName)
+    /**
+     * Changes the visibility of a field, if it exists.
+     * @param fieldName       the name of the field to modify
+     * @param newFieldVisName the new visibility modifier to give to the field
+     * @return                0 if successful, error code otherwise
+     */
+    public int changeFieldVisibility(String fieldName, String newFieldVisName)
     {
         if (!isOpen)
         {
             return 1;
         }
-        visibility fieldVis = stringToVisibility(fieldVisName);
-        if(fieldVis == null)
+        visibility newFieldVis = stringToVisibility(newFieldVisName);
+        if(newFieldVis == null)
         {
             return 14;
         }
@@ -240,7 +256,7 @@ public class ClassObject{
             return 3;
         }
 
-        fields.get(fieldName).setVisibility(fieldVis);
+        fields.get(fieldName).setVisibility(newFieldVis);
 
         notifyAllObservers();
         return 0;
@@ -248,9 +264,10 @@ public class ClassObject{
     
     /**
      * Adds a new method to the class.
-     * @param methodName the name to be used by the new method
-     * @param methodType the return type to be used by the new method
-     * @return           0 if successful, error code otherwise
+     * @param methodName    the name to be used by the new method
+     * @param methodType    the return type to be used by the new method
+     * @param methodVisName the visibility to be used by the new method
+     * @return              0 if successful, error code otherwise
      */
     public int addMethod(String methodName, String methodType, String methodVisName)
     {
@@ -362,13 +379,19 @@ public class ClassObject{
         return 0;
     }
 
-    public int changeMethodVisibility(String methodName, String methodVisName)
+    /**
+     * Changes the visibility type of a method, if it exists.
+     * @param methodName       the name of the method to modify
+     * @param newMethodVisName the new visibility to give to the method
+     * @return                 0 if successful, error code otherwise
+     */
+    public int changeMethodVisibility(String methodName, String newMethodVisName)
     {
         if (!isOpen)
         {
             return 1;
         }
-        visibility methodVis = stringToVisibility(methodVisName);
+        visibility methodVis = stringToVisibility(newMethodVisName);
         if(methodVis == null)
         {
             return 14;
@@ -465,6 +488,9 @@ public class ClassObject{
         return retVal;
     }
 
+    /**
+     * Prints all fields in this class. (Legacy)
+     */
     public void printFields()
     {
         for (Field field : fields.values())
@@ -473,6 +499,9 @@ public class ClassObject{
         }
     }
 
+    /**
+     * Prints all the methods in this class. (Legacy)
+     */
     public void printMethods()
     {
         for (Method method : methods.values())
@@ -537,31 +566,63 @@ public class ClassObject{
         return classObj;
     }
 
-    public Set<String> getFieldNames(){
+    /**
+     * Accessor for the set of field names in this class
+     * @return the set of field names
+     */
+    public Set<String> getFieldNames()
+    {
         return fields.keySet();
     }
 
+    /**
+     * Returns true if the class contains a field called fieldName
+     * @param fieldName the name to search for
+     * @return          true if the field is found, false otherwise
+     */
     public boolean hasField(String fieldName)
     {
         return fields.containsKey(fieldName);
     }
     
-    public Field getField(String fieldName){
-        if(fields.containsKey(fieldName)){
+    /**
+     * Accesses a field in the class by name.
+     * @param fieldName the name of the field to access
+     * @return          the field called fieldName, or null if none exists
+     */
+    public Field getField(String fieldName)
+    {
+        if(fields.containsKey(fieldName))
+        {
             return fields.get(fieldName);
         }
         return null;
     }
 
-    public Set<String> getMethodNames(){
+    /**
+     * Accessor for the set of method names in this class
+     * @return the set of method names
+     */
+    public Set<String> getMethodNames()
+    {
         return methods.keySet();
     }
 
+    /**
+     * Returns true if the class contains a method called methodName
+     * @param methodName the name to search for
+     * @return           true if the method is found, false otherwise
+     */
     public boolean hasMethod(String methodName)
     {
         return methods.containsKey(methodName);
     }
     
+    /**
+     * Accesses a method in the class by name.
+     * @param methodName the name of the method to access
+     * @return           the method called methodName, or null if none exists
+     */
     public Method getMethod(String methodName){
         if(methods.containsKey(methodName)){
             return methods.get(methodName);
@@ -569,16 +630,28 @@ public class ClassObject{
         return null;
     }
 
-    public ClassObject copy(){
+    /**
+     * Creates a copy of this class object
+     * @return the copy of this class object
+     */
+    public ClassObject copy()
+    {
         ClassObject copy = new ClassObject(name);
         copy.isOpen = isOpen;
         copy.fields.putAll(fields);
-        copy.fields.replaceAll((fieldName, field)->field.copy());
+        copy.fields.replaceAll((fieldName, field) -> field.copy());
         copy.methods.putAll(methods);
-        copy.methods.replaceAll((methodName, method)->method.copy());
+        copy.methods.replaceAll((methodName, method) -> method.copy());
         return copy;
     }
 
+    /**
+     * Converts a string to the associated visibility modifier. Not case
+     * sensitive.
+     * @param str the String to convert to a visibility modifier
+     * @return    the String's associated visibility modifier, or null if the
+     *            String is not a visibility modifier
+     */
     public static visibility stringToVisibility(String str)
     {
         str = str.toUpperCase();
