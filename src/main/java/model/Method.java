@@ -1,34 +1,33 @@
 package model;
 
-import java.security.Policy.Parameters;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 
 /**
  * A method is a formal declaration contained in a class. Has a name, a return
- * type, and an ordered list of parameters. Includes methods for creating and
- * modifying parameters. Methods use int return values to denote success or
- * failure as documented in the working project class.
+ * type, a visibility modifier, and an ordered list of parameters. Includes
+ * methods for creating and modifying parameters. Methods use int return values
+ * to denote success or failure as documented in the working project class.
  */
 
-public class Method extends FormalDeclaration {
+public class Method extends VisibleDeclaration {
     private ArrayList<Parameter> parameters;
-    private ClassObject.visibility vis;
 
     /**
      * Creates a new method with no parameters.
      * @param name the name of the method, which must always match this
      *             method's key in the class
      * @param type the return type of the method
+     * @param vis  the visibility of the method
      */
-    public Method(String name, String type, ClassObject.visibility vis)
+    public Method(String name, String type, visibility vis)
     {
-        super(name, type);
+        super(name, type, vis);
         parameters = new ArrayList<>();
-        this.vis = vis;
     }
     
     /**
@@ -107,36 +106,55 @@ public class Method extends FormalDeclaration {
         return 0;
     }
 
-    // Print the list of Parameters, separated by commas and flanked with spaces
-    public void printParameters()
+    /**
+     * Creates a String representation of the method as it would appear in java
+     * @return the String representing this method
+     */
+    public String toString()
     {
-        if (!parameters.isEmpty())
+        String methodString = vis.name().toLowerCase() + " " + type + " " + name + "("; 
+        if(!parameters.isEmpty())
         {
             Parameter currentParam = parameters.get(0);
-            System.out.print(" " + currentParam.getType() + " " + currentParam.getName());
+            methodString += " " + currentParam.toString();
             for (int i = 1; i < parameters.size(); ++i)
             {
                 currentParam = parameters.get(i);
-                System.out.print(", " + currentParam.getType() + " " + currentParam.getName());
+                methodString += ", " + currentParam.toString();
             }
-            System.out.print(" ");
+            methodString += " ";
         }
+        return methodString + ")";
     }
-    
+
     /**
-     * Finds a parameter in the list.
+     * Returns true if the method contains a parameter called paramName
      * @param paramName the name of the parameter to search for
-     * @return          the index of the parameter in the list, or -1 if not
-     *                  found
+     * @return          true if the parameter is found, false otherwise
      */
-    private int getParamIndex(String paramName)
+    public boolean hasParameter(String paramName)
     {
-        for(int i = 0; i < parameters.size(); i++)
-        {
-            if(parameters.get(i).getName().equals(paramName))
-                return i;
-        }
-        return -1;
+        return (getParamIndex(paramName) != -1);
+    }
+
+    /**
+     * Accessor for the parameter list
+     * @return the list of parameters
+     */
+    public List<Parameter> getParameters(){
+        return parameters;
+    }
+
+    /**
+     * Creates a copy of this method
+     * @return the copy of this method
+     */
+    public Method copy()
+    {
+        Method copy = new Method(name, type, vis);
+        copy.parameters.addAll(parameters);
+        copy.parameters.replaceAll(parameter -> parameter.copy());
+        return copy;
     }
 
     /**
@@ -153,8 +171,8 @@ public class Method extends FormalDeclaration {
             jsonParameters.add(parameter.toJSON());
         }
 
-        jsonMethod.put("name", getName());
-        jsonMethod.put("type", getType());
+        jsonMethod.put("name", name);
+        jsonMethod.put("type", type);
         jsonMethod.put("visibility", vis.name());
         jsonMethod.put("parameters", jsonParameters);
 
@@ -170,8 +188,8 @@ public class Method extends FormalDeclaration {
     {
         String name = (String)jsonMethod.get("name");
         String type = (String)jsonMethod.get("type");
-        String visibilityName = (String)jsonMethod.get("visibility");
-        ClassObject.visibility vis = ClassObject.stringToVisibility(visibilityName);
+        String visName = (String)jsonMethod.get("visibility");
+        visibility vis = ClassObject.stringToVisibility(visName);
 
         Method method = new Method(name, type, vis);
 
@@ -186,50 +204,21 @@ public class Method extends FormalDeclaration {
 
         return method;
     }
-    public String toString()
-    {
-        String methodToString = vis.name().toLowerCase() + " " + getType() + " " + getName() + "("; 
-        if(parameters.size()>0){
-            Parameter currentParam = parameters.get(0);
-            methodToString += " " + currentParam.toString();
-            for (int i = 1; i < parameters.size(); ++i)
-            {
-                currentParam = parameters.get(i);
-                methodToString += ", " + currentParam.toString();
-            }
-            methodToString += " ";
-        }
-        return methodToString + ")";
-    }
-
-    public boolean hasParameter(String paramName)
-    {
-        return (getParamIndex(paramName) != -1);
-    }
-
-    public List<Parameter> getParameters(){
-        return parameters;
-    }
-
-    public Method copy(){
-        Method copy = new Method(getName(), getType(), vis);
-        copy.parameters.addAll(parameters);
-        copy.parameters.replaceAll(parameter->parameter.copy());
-        return copy;
-    }
-
+    
     /**
-     * Changes the visibility of a method.
-     * @param vis the visibility type to change to
+     * Finds a parameter in the list.
+     * @param paramName the name of the parameter to search for
+     * @return          the index of the parameter in the list, or -1 if not
+     *                  found
      */
-    public void setVisibility(ClassObject.visibility vis)
+    private int getParamIndex(String paramName)
     {
-        this.vis = vis;
-    }
-
-    public ClassObject.visibility getVisibility()
-    {
-        return vis;
+        for(int i = 0; i < parameters.size(); i++)
+        {
+            if(parameters.get(i).getName().equals(paramName))
+                return i;
+        }
+        return -1;
     }
 }
 

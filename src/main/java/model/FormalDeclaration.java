@@ -5,22 +5,22 @@ package model;
  */
 
 public abstract class FormalDeclaration {
-    private String name;
-    private String type;
+    protected String name;
+    protected String type;
 
     /**
-     * Creates a new formal declatation.
+     * Creates a new formal declatation
      * @param name the name of the formal declaration
      * @param type the type of the formal declaration
      */
-    public FormalDeclaration(String name, String type)
+    protected FormalDeclaration(String name, String type)
     {
         this.name = name;
         this.type = type;
     }
 
     /**
-     * Accessor for the name.
+     * Accessor for the name
      * @return the name of the formal declaration
      */
     public String getName()
@@ -29,7 +29,7 @@ public abstract class FormalDeclaration {
     }
 
     /**
-     * Accessor for the type.
+     * Accessor for the type
      * @return the type of the formal declaration
      */
     public String getType()
