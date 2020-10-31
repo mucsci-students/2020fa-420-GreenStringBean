@@ -3,24 +3,39 @@ package model;
 import org.json.simple.JSONObject;
 
 /**
- * A field is a formal declaration contained in a class. Has a name and a data
- * type.
+ * A field is a formal declaration contained in a class. Has a name, a data
+ * type, and a visibility modifier.
  */
 
-public class Field extends FormalDeclaration {
-    private ClassObject.visibility vis;
-
-
+public class Field extends VisibleDeclaration {
     /**
      * Creates a new field.
      * @param name the name of the field, which must always match this field's
      *             key in the class
      * @param type the data type of the field
+     * @param vis  the visibility of the field
      */
-    public Field(String name, String type, ClassObject.visibility vis)
+    public Field(String name, String type, VisibleDeclaration.visibility vis)
     {
-        super(name, type);
-        this.vis = vis;
+        super(name, type, vis);
+    }
+
+    /**
+     * Creates a String representation of the field as it would appear in java
+     * @return the String representing this field
+     */
+    public String toString()
+    {
+        return vis.name().toLowerCase() + " " + type + " " + name;
+    }
+
+    /**
+     *  Creates a copy of this field
+     * @return the copy of this field
+     */
+    public Field copy()
+    {
+        return new Field(name, type, vis);
     }
 
     /**
@@ -31,8 +46,8 @@ public class Field extends FormalDeclaration {
     {
         JSONObject jsonField = new JSONObject();
 
-        jsonField.put("name", getName());
-        jsonField.put("type", getType());
+        jsonField.put("name", name);
+        jsonField.put("type", type);
         jsonField.put("visibility", vis.name());
 
         return jsonField;
@@ -48,30 +63,8 @@ public class Field extends FormalDeclaration {
         String name = (String)jsonField.get("name");
         String type = (String)jsonField.get("type");
         String visibilityName = (String)jsonField.get("visibility");
-        ClassObject.visibility vis = ClassObject.stringToVisibility(visibilityName);
+        visibility vis = ClassObject.stringToVisibility(visibilityName);
 
         return new Field(name, type, vis);
-    }
-    public String toString()
-    {
-        return vis.name().toLowerCase() + " " + getType() + " " + getName();
-    }
-
-    public Field copy(){
-        return new Field(getName(), getType(), vis);
-    }
-
-    /**
-     * Changes the visibility of a method.
-     * @param vis the visibility type to change to
-     */
-    public void setVisibility(ClassObject.visibility vis)
-    {
-        this.vis = vis;
-    }
-
-    public ClassObject.visibility getVisibility()
-    {
-        return vis;
     }
 }
