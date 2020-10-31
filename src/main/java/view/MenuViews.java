@@ -1,9 +1,18 @@
 package view;
+
 import java.awt.event.ActionListener;
+import java.io.File;
+
 import model.WorkingProject;
 
 public interface MenuViews extends Observer
 {
+	File getSaveFile();
+
+	File getSaveAsFile();
+
+	File getLoadFile();
+	
 	String getText(String prompt, String title);
 	
 	void alert(String message);
