@@ -98,7 +98,7 @@ public class ClassObjectTest {
     public void TestChangeMethodVisibility()
     {
         c.changeMethodVisibility("Cook", "private");
-        assertTrue(c.getMethod("Cook").getVisibility().name.equals("PUBLIC"));
+        assertTrue(c.getMethod("Cook").getVisibility().equals());
     }
 
     @Test
