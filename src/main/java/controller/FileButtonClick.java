@@ -1,6 +1,11 @@
 package controller;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import view.*;
 
 public class FileButtonClick implements ActionListener
@@ -29,13 +34,55 @@ public class FileButtonClick implements ActionListener
 		}
 		else if(cmd.equals("Save"))
 		{
-			String currFile = view.getText("Save:", cmd);
-			controller.save(currFile);
+			File file = view.getSaveFile();
+            if(file == null)
+            {
+                return;
+            }
+            try
+            {
+				Files.writeString(file.toPath(), controller.save());
+            }
+            catch(IOException error)
+            {
+                view.alert("Error Saving file");
+            }
+		}
+		else if(cmd.equals("Save As"))
+		{
+			File file = view.getSaveAsFile();
+            if(file == null)
+            {
+                return;
+            }
+            try
+            {
+				Files.writeString(file.toPath(), controller.save());
+            }
+            catch(IOException error)
+            {
+                view.alert("Error Saving file");
+            }
 		}
 		else if(cmd.equals("Load"))
 		{
-			String projectToLoad = view.getText("Load:", cmd);
-			controller.load(projectToLoad);
+			File file = view.getLoadFile();
+            if(file == null)
+            {
+                return;
+            }
+            try
+            {
+                controller.load(Files.readString(file.toPath()));
+            }
+            catch(IOException error)
+            {
+                view.alert("Error Loading File");
+            }
+		}
+		else if(cmd.equals("Exit"))
+		{
+			System.exit(0);
 		}
 	}
 }

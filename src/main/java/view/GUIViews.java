@@ -1,13 +1,16 @@
 package view;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -16,6 +19,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.UIManager;
 
 import controller.HelperControllers;
 
@@ -33,6 +39,7 @@ public class GUIViews implements MenuViews{
 	private JMenu relaM;
 	private JMenu fieldM;
 	private JMenu classM;
+	private JFileChooser fileChooser;
 
 	// Map containing the current class panels to display
 	private Map<String, JPanel> classPanels;
@@ -40,22 +47,31 @@ public class GUIViews implements MenuViews{
 	public GUIViews()
 	{
 		this.classPanels = new HashMap<>();
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (Exception e)
+		{
+			// Default Java look and feel will be used
+		}
 	}
 	
 	public void window()
 	{
 		System.out.println("Got to make the window(): GUIViews()");
 
-		   win = new JFrame("UML");
-	       win.setLayout(new GridLayout(5,5));
-	       win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-	       win.setSize(800,750);
-	       win.setVisible(true);
-	       pWindow = win;
-	       makeMenu(win);
-	       pWindow.add(mb);
-	       win.setJMenuBar(mb);
-	   }
+		win = new JFrame("UML");
+		win.setLayout(new GridLayout(5,5));
+		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		win.setSize(800,750);
+		win.setVisible(true);
+		pWindow = win;
+		makeMenu(win);
+		pWindow.add(mb);
+		win.setJMenuBar(mb);
+		setupFileChooser();
+	}
 
 	public JFrame getMainWindow()
 	{
@@ -87,7 +103,48 @@ public class GUIViews implements MenuViews{
 	public void alert(String message)
     {
         JOptionPane.showMessageDialog(pWindow, message);
-    }
+	}
+
+	private void setupFileChooser()
+	{
+		fileChooser = new JFileChooser();
+		FileFilter filter = new FileNameExtensionFilter("JSON file", "json");
+		fileChooser.setFileFilter(filter);
+	}
+	
+	public File getSaveFile()
+	{
+		if (fileChooser.getSelectedFile() == null)
+		{
+			return getSaveAsFile();
+		}
+		return fileChooser.getSelectedFile();
+	}
+
+	public File getSaveAsFile()
+	{
+		if (fileChooser.showSaveDialog(pWindow) == JFileChooser.APPROVE_OPTION)
+		{
+			// If no extension is given, add .json extension
+			String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+			if (!filePath.contains("."))
+			{
+				fileChooser.setSelectedFile(new File(filePath + ".json"));
+			}
+			return fileChooser.getSelectedFile();
+		}
+		return null;
+	}
+	
+	public File getLoadFile()
+	{
+		if (fileChooser.showOpenDialog(pWindow) == JFileChooser.APPROVE_OPTION)
+		{
+			return fileChooser.getSelectedFile();
+		}
+		return null;
+	}
+	
 	
 	private void createFileM(JMenuBar mb)
 	{
@@ -98,28 +155,24 @@ public class GUIViews implements MenuViews{
 		JMenuItem un = new JMenuItem("Undo");
 		JMenuItem re = new JMenuItem("Redo");
 		JMenuItem s = new JMenuItem("Save");
+		JMenuItem sa = new JMenuItem("Save As");
 		JMenuItem l = new JMenuItem("Load...");
 		JMenuItem ex = new JMenuItem("Exit");
 
-		JMenuItem[] arr = {un, re, s, l, ex};
-		String[] txt = {"Undo", "Redo", "Save edited file", "Load selected project", "Exit application"};
-		String[] cmd = {"Undo", "Redo", "Save", "Load", "Exit"};
+		JMenuItem[] arr = {un, re, s, sa, l, ex};
+		String[] txt = {"Undo", "Redo", "Save edited file", "Save edited file as", "Load selected project", "Exit application"};
+		String[] cmd = {"Undo", "Redo", "Save", "Save As", "Load", "Exit"};
 
 		for(int count = 0; count < arr.length; ++count)
 		{
 			fileM.add(arr[count]);
 			arr[count].setToolTipText(txt[count]);
-			if(count < 2)
-			{
-				arr[count].setActionCommand(cmd[count]);
-			}
-			else
-				arr[count].addActionListener((event) -> System.exit(0));
+			arr[count].setActionCommand(cmd[count]);
 		}		
 		mb.add(fileM);
 	}
 	
-	private void FileListener(ActionListener fileL)
+	private void fileListener(ActionListener fileL)
 	{
 		System.out.println("adding Listeners for FileClick: GUIViews()");
 		
@@ -256,7 +309,7 @@ public class GUIViews implements MenuViews{
 	{
 		System.out.println("adding listeners for all the menu buttons: GUIViews()");
 		
-        FileListener(fileL);
+        fileListener(fileL);
         classListener(classL);
         fieldListener(fieldL);
 		relationshipListener(relatL);
@@ -266,7 +319,7 @@ public class GUIViews implements MenuViews{
 	
 	public void start()
     {
-        window();
+		window();
         refresh();
     }
 
