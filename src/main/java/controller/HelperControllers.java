@@ -159,15 +159,15 @@ public class HelperControllers
 	}
 
 	/**********************************OTHERS********************************************/
-	public void load(String projectToLoad) 
+	public void load(String projectJsonString) 
 	{
-		project.loadProject(projectToLoad);		
+		project.loadProject(projectJsonString);		
 		checkStatus();
 	}
 
-	public void save(String projectToSave)
+	public String save()
 	{
-		// TODO Implement save
+		return project.toJSONString();
 	}
 
 	public void undo()

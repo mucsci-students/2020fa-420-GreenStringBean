@@ -34,14 +34,14 @@ public class ClassObject{
     }
 
     /**
-     * Creates a new closed class with no fields or methods.
+     * Creates a new open class with no fields or methods.
      * @param name the name of the class, which must always match this class's
      *             key in the working project
      */
     public ClassObject(String name)
     {
         this.name = name;
-        isOpen = false;
+        isOpen = true;
         fields = new LinkedHashMap<>();
         methods = new LinkedHashMap<>();
 
