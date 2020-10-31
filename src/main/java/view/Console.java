@@ -11,7 +11,6 @@ import java.util.StringTokenizer;
 import model.ClassObject;
 import model.Relationship;
 import java.util.Set;
-import java.util.Iterator;
 import model.WorkingProject;
 import java.io.BufferedReader;
 import controller.WorkingProjectEditor;

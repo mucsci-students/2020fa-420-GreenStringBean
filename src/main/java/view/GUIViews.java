@@ -17,22 +17,29 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 
+import controller.HelperControllers;
+
+import javax.swing.WindowConstants;
+
 import model.ClassObject;
 import model.WorkingProject;
+import model.Relationship;
 
 public class GUIViews implements MenuViews{
 	private JMenuBar mb;
 	private JFrame pWindow;
 	private JFrame win;
-	private Map<String, JPanel> classes;
 	private JMenu fileM;
 	private JMenu relaM;
 	private JMenu fieldM;
 	private JMenu classM;
+
+	// Map containing the current class panels to display
+	private Map<String, JPanel> classPanels;
 	
 	public GUIViews()
 	{
-		this.classes = new HashMap<String, JPanel>();
+		this.classPanels = new HashMap<>();
 	}
 	
 	public void window()
@@ -41,7 +48,7 @@ public class GUIViews implements MenuViews{
 
 		   win = new JFrame("UML");
 	       win.setLayout(new GridLayout(5,5));
-	       win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	       win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	       win.setSize(800,750);
 	       win.setVisible(true);
 	       pWindow = win;
@@ -50,32 +57,31 @@ public class GUIViews implements MenuViews{
 	       win.setJMenuBar(mb);
 	   }
 
-	   public JFrame getMainWindow()
-	   {
-		   return win;
-	   }
-	   
-	   public void makeMenu(JFrame win)
-	   {
-		   System.out.println("made the menu: GUIViews()");
-		   
-		   mb = new JMenuBar();
-		   createFileM(mb);
-		   createClassM(mb);
-		   createFieldM(mb);
-		   createRelatM(mb);
-		   mb.setVisible(true);
-	   }
-	   
-		public JMenuBar getMenuBar()
-		{
-			return mb;
-		}
-	
-	public String getText(String string) 
+	public JFrame getMainWindow()
 	{
-		String str = JOptionPane.showInputDialog(pWindow, string, JOptionPane.PLAIN_MESSAGE);
-		return str;
+		return win;
+	}
+	
+	public void makeMenu(JFrame win)
+	{
+		System.out.println("made the menu: GUIViews()");
+		
+		mb = new JMenuBar();
+		createFileM(mb);
+		createClassM(mb);
+		createFieldM(mb);
+		createRelatM(mb);
+		mb.setVisible(true);
+	}
+	
+	public JMenuBar getMenuBar()
+	{
+		return mb;
+	}
+	
+	public String getText(String prompt, String title) 
+	{
+		return JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE);
 	}
 
 	public void alert(String message)
@@ -99,7 +105,7 @@ public class GUIViews implements MenuViews{
 		String[] txt = {"Undo", "Redo", "Save edited file", "Load selected project", "Exit application"};
 		String[] cmd = {"Undo", "Redo", "Save", "Load", "Exit"};
 
-		for(int count = 0; count < 5; ++count)
+		for(int count = 0; count < arr.length; ++count)
 		{
 			fileM.add(arr[count]);
 			arr[count].setToolTipText(txt[count]);
@@ -131,24 +137,25 @@ public class GUIViews implements MenuViews{
 		classM = new JMenu("Class");
 
 		JMenuItem oClass = new JMenuItem("Open Class");
+		JMenuItem cClass = new JMenuItem("Close Class");
 		JMenuItem aClass = new JMenuItem("Create Class");
 		JMenuItem dClass = new JMenuItem("Delete Class");
 		JMenuItem rClass = new JMenuItem("Rename Class");
 
-		JMenuItem[] arr = {oClass, aClass, dClass, rClass};
-		String[] text = {"Open Class", "Add Class", "Delete Class", "Rename Class"};
-		String[] comd = {"Open", "Add", "Delete", "Rename"};
+		JMenuItem[] arr = {oClass, cClass, aClass, dClass, rClass};
+		String[] txt = {"Open Class","Close Class", "Add Class", "Delete Class", "Rename Class"};
+		String[] cmd = {"Open", "Close", "Add Class", "Remove Class", "Rename Class"};
 
-		for(int i = 0; i < 4; ++i)
+		for(int i = 0; i < arr.length; ++i)
 		{
 			classM.add(arr[i]);
-			arr[i].setToolTipText(text[i]);
-			arr[i].setActionCommand(comd[i]);
+			arr[i].setToolTipText(txt[i]);
+			arr[i].setActionCommand(cmd[i]);
 		}
 		mb.add(classM);	
 	}
 	
-	private void ClassListener(ActionListener classL)
+	private void classListener(ActionListener classL)
 	{
 		System.out.println("adding Listeners for ClassClick: GUIViews()");
 		
@@ -168,31 +175,34 @@ public class GUIViews implements MenuViews{
 		JMenuItem field = new JMenuItem("Create Field");
     	JMenuItem dField = new JMenuItem("Delete Field");
 		JMenuItem rField = new JMenuItem("Rename Field");
-		JMenuItem vField = new JMenuItem("Change Visability of Field");
+		JMenuItem tField = new JMenuItem("Change Field Type");
+		JMenuItem vField = new JMenuItem("Change Field Visibility");
 
 		JMenuItem met = new JMenuItem("Create Method");
     	JMenuItem dMethod = new JMenuItem("Delete Method");
 		JMenuItem rMethod = new JMenuItem("Rename Method");
-		JMenuItem vMethod = new JMenuItem("Change Visability of Method");
+		JMenuItem tMethod = new JMenuItem("Change Method Type");
+		JMenuItem vMethod = new JMenuItem("Change Method Visibility");
 		
 		JMenuItem param = new JMenuItem("Create Parameter");
     	JMenuItem dParam = new JMenuItem("Delete Parameter");
-    	JMenuItem rParam = new JMenuItem("Rename Parameter");
+		JMenuItem rParam = new JMenuItem("Rename Parameter");
+		JMenuItem tParam = new JMenuItem("Change Parameter Type");
 
-		JMenuItem[] arr = {field, dField, rField, vField, met, dMethod, rMethod, vMethod, param, dParam, rParam};
-		String[] text = {"Create Field", "Delete Field", "Rename Field", "Change Visability of Field", "Create Method", "Delete Method", "Rename Method", "Change Visability of Method", "Create Parameter", "Delete Parameter", "Rename Parameter"};
-		String[] command = {"field", "dField", "rField", "vField", "cMethod", "dMethod", "rMethod", "vMethod", "param", "dParam", "rParam"};
+		JMenuItem[] arr = {field, dField, rField, tField, vField, met, dMethod, rMethod, tMethod, vMethod, param, dParam, rParam, tParam};
+		String[] txt = {"Create Field", "Delete Field", "Rename Field", "Change Field Type", "Change Field Visibility", "Create Method", "Delete Method", "Rename Method", "Change Method Type", "Change Method Visability", "Create Parameter", "Delete Parameter", "Rename Parameter", "Change Parameter Type"};
+		String[] cmd = {"Add Field", "Remove Field", "Rename Field", "Change Field Type", "Change Field Visibility", "Add Method", "Remove Method", "Rename Method", "Change Method Type", "Change Method Visibility", "Add Parameter", "Remove Parameter", "Rename Parameter", "Change Parameter Type"};
 
-		for(int count = 0; count < 11; ++count)
+		for(int count = 0; count < arr.length; ++count)
 		{
 			fieldM.add(arr[count]);
-			arr[count].setToolTipText(text[count]);
-			arr[count].setActionCommand(command[count]);	
+			arr[count].setToolTipText(txt[count]);
+			arr[count].setActionCommand(cmd[count]);	
 		}
 		mb.add(fieldM);
 	}
 	
-	private void FieldListener(ActionListener fieldL)
+	private void fieldListener(ActionListener fieldL)
 	{
 		System.out.println("adding listeners for FieldClick: GUIViews()");
 		
@@ -209,27 +219,28 @@ public class GUIViews implements MenuViews{
 		
 		relaM = new JMenu("Relationship");
 
-		JMenuItem in = new JMenuItem("Inheritence");
-		JMenuItem ag = new JMenuItem("Aggregation");
-		JMenuItem comp = new JMenuItem("Composition");
-		JMenuItem re = new JMenuItem("Realization");
-		JMenuItem cRelat = new JMenuItem("Change Relationship");
+		JMenuItem in = new JMenuItem("Create Inheritence");
+		JMenuItem ag = new JMenuItem("Create Aggregation");
+		JMenuItem comp = new JMenuItem("Create Composition");
+		JMenuItem re = new JMenuItem("Create Realization");
+		JMenuItem cRelat = new JMenuItem("Change Type");
 		JMenuItem dRelat = new JMenuItem("Delete Relationship");
+		JMenuItem sRelat = new JMenuItem("Show Relationships");
 
-		JMenuItem[] arr = {in, ag, comp, re, cRelat, dRelat};
-		String[] names = {"Inheritence", "Aggregation", "Composition", "Realization", "Change Relationship", "Delete Relationship"};
-		String[] comd = {"I", "A", "C", "R", "cRelat", "dRelat"};
+		JMenuItem[] arr = {in, ag, comp, re, cRelat, dRelat, sRelat};
+		String[] txt = {"Inheritence", "Aggregation", "Composition", "Realization", "Change Relationship", "Delete Relationship", "Show Relationships"};
+		String[] cmd = {"Add Inheritance", "Add Aggregation", "Add Composition", "Add Realization", "Change Relationship Type", "Remove Relationship", "Show Relationships"};
 
-		for(int i = 0; i < 6; ++i)
+		for(int i = 0; i < arr.length; ++i)
 		{
 			relaM.add(arr[i]);
-			arr[i].setToolTipText(names[i]);
-			arr[i].setActionCommand(comd[i]);
+			arr[i].setToolTipText(txt[i]);
+			arr[i].setActionCommand(cmd[i]);
 		}
 		mb.add(relaM);
 	}
 	
-	private void RelationshipListener(ActionListener relatL)
+	private void relationshipListener(ActionListener relatL)
 	{
 		System.out.println("adding listeners for RelationshipClick: GUIViews()");
 		
@@ -246,9 +257,9 @@ public class GUIViews implements MenuViews{
 		System.out.println("adding listeners for all the menu buttons: GUIViews()");
 		
         FileListener(fileL);
-        ClassListener(classL);
-        FieldListener(fieldL);
-		RelationshipListener(relatL);
+        classListener(classL);
+        fieldListener(fieldL);
+		relationshipListener(relatL);
 		
 		System.out.println("finished listeners: GUIViews()");
     }
@@ -258,102 +269,109 @@ public class GUIViews implements MenuViews{
         window();
         refresh();
     }
-	
-	public void createNewClass(ClassObject className)
-	{
-		classPanel(className);
-		refresh();
-	}
-	
-	public void deleteOldClass(String className)
-	{
-		deleteClassPanel(className);
-		refresh();
-	}
-	
-	/*public void updateNewClass(String oldClassName, String newClassName)
-	{
-		JPanel pn = classes.get(oldClassName);
-		classes.remove(oldClassName);
-		classes.put(newClassName, pn);
-		refresh();
-	}*/
-	
-	private void classPanel(ClassObject aClass)
-	{
-		System.out.println("made the class panel for display: GUIViews()");
-        
-        JPanel classP = new JPanel();
-        classP.setVisible(true);
 
-        JTextArea classTxt = new JTextArea(aClass.getName());
-        classTxt.setEditable(false);
-        classP.add(classTxt);
-        classes.put(aClass.getName(), classP);
-        classP.setSize(classTxt.getSize());
-
-        Border classBd = BorderFactory.createLineBorder(Color.RED);
-        classTxt.setBorder(classBd);
-
-        Border boxBd = BorderFactory.createLineBorder(Color.BLACK);
-        classP.setBorder(boxBd);
-        pWindow.add(classP);	
-	}
-
-	public void onUpdate(WorkingProject p)
+	/**
+	 * Called when an observed project updates. Update all class panels.
+	 * @param project a copy of the observed project
+	 */
+	public void onUpdate(WorkingProject project)
 	{
-		System.out.println("Made it to onUpdate: GUIViews()");
-		Set<String> newClasses = p.getClassNames();
-		for(String className: newClasses)
+		System.out.println("View notified with a project");
+		clearClassPanels();
+
+		for (String className : project.getClassNames())
 		{
-			if(!classes.containsKey(className))
-			{
-				createNewClass(p.getClass(className));
-			}
-			onUpdate(p.getClass(className));
+			createClassPanel(project.getClass(className));
 		}
-		for(String className: classes.keySet())
-		{
-			if(!newClasses.contains(className))
-			{
-				deleteOldClass(className);
-			}
-		}
+
 		refresh();
 	}
 
-	public void onUpdate(ClassObject c)
+	/**
+	 * Called when a single class of an observed project updates. Update the
+	 * associated class panel.
+	 * @param classObj a copy of the class from the observed project
+	 */
+	public void onUpdate(ClassObject classObj)
 	{
-		JPanel panel = classes.get(c.getName());
-        panel.removeAll();
-		JTextArea classTxt = new JTextArea(c.getName());
-        classTxt.setEditable(false);
-        Border classBd = BorderFactory.createLineBorder(Color.RED);
-        Border fieldBd = BorderFactory.createLineBorder(Color.GREEN);
-        Border methodBd = BorderFactory.createLineBorder(Color.BLUE);
-        classTxt.setBorder(classBd);
-        panel.add(classTxt);
-        for (String fieldName : c.getFieldNames())
-        {
-            JTextArea fieldTxt = new JTextArea(c.getField(fieldName).toString());
-            fieldTxt.setEditable(false);
-            fieldTxt.setBorder(fieldBd);
-            panel.add(fieldTxt);
-        }
-        for (String methodName : c.getMethodNames())
-        {
-            JTextArea methodTxt = new JTextArea(c.getMethod(methodName).toString());
-            methodTxt.setEditable(false);
-            methodTxt.setBorder(methodBd);
-            panel.add(methodTxt);
-        }
+		System.out.println("View notified with a class");
+		JPanel panel = classPanels.get(classObj.getName());
+		updateClassPanel(panel, classObj);
         refresh();
 	}
 	
-	private void deleteClassPanel(String aClass)
+	/**
+	 * Creates and adds a new class panel to the view.
+	 * @param classObj the class the new panel should display
+	 */
+	private void createClassPanel(ClassObject classObj)
 	{
-		pWindow.remove(classes.get(aClass));
-		classes.remove(aClass);
+		System.out.println("made the class panel for display: GUIViews()");
+        
+        JPanel panel = new JPanel();
+		panel.setVisible(true);
+		classPanels.put(classObj.getName(), panel);
+		pWindow.add(panel);
+		
+		updateClassPanel(panel, classObj);
+	}
+
+	/**
+	 * Updates the contents of a class panel to match a class object.
+	 * @param panel    the panel to update
+	 * @param classObj the class the panel should display
+	 */
+	private void updateClassPanel(JPanel panel, ClassObject classObj)
+	{
+		panel.removeAll();
+		
+		Border classBd = BorderFactory.createLineBorder(Color.BLACK);
+        Border classNameBd = BorderFactory.createLineBorder(Color.RED);
+        Border fieldBd = BorderFactory.createLineBorder(Color.GREEN);
+		Border methodBd = BorderFactory.createLineBorder(Color.BLUE);
+		panel.setBorder(classBd);
+
+		if(classObj.isOpen())
+		{
+			panel.setBackground(Color.LIGHT_GRAY);
+		}
+		else
+		{
+			panel.setBackground(Color.GRAY);
+		}
+
+		JTextArea classTxt = new JTextArea(classObj.getName());
+		classTxt.setEditable(false);
+        classTxt.setBorder(classNameBd);
+		panel.add(classTxt);
+		
+        for (String fieldName : classObj.getFieldNames())
+        {
+            JTextArea fieldTxt = new JTextArea(classObj.getField(fieldName).toString());
+            fieldTxt.setEditable(false);
+            fieldTxt.setBorder(fieldBd);
+            panel.add(fieldTxt);
+		}
+		
+        for (String methodName : classObj.getMethodNames())
+        {
+            JTextArea methodTxt = new JTextArea(classObj.getMethod(methodName).toString());
+            methodTxt.setEditable(false);
+            methodTxt.setBorder(methodBd);
+            panel.add(methodTxt);
+		}
+	}
+
+	/**
+	 * Removes all class panels from the view.
+	 */
+	private void clearClassPanels()
+	{
+		for (JPanel panel : classPanels.values())
+		{
+			pWindow.remove(panel);
+		}
+		classPanels.clear();
 	}
 	
 	public void refresh() 
@@ -362,22 +380,14 @@ public class GUIViews implements MenuViews{
 		pWindow.repaint();
 	}
 
-	@Override
-	public void createClass(String classes) {
-		// TODO Auto-generated method stub
-		
+	// Temporary until we can display arrows between class boxes
+	public void showRelationships(WorkingProject project)
+	{
+		StringBuilder message = new StringBuilder("Relationships:");
+		for (Relationship relationship : project.getRelationships())
+		{
+			message.append("\n" + relationship.toString());
+		}
+		alert(message.toString());
 	}
-
-	@Override
-	public void delClass(String className) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateClass(String oldClass, String updateClassString) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

@@ -2,8 +2,8 @@ command/AddRelationshipCommand.java
  command.AddRelationshipCommand
 command/RemoveFieldCommand.java
  command.RemoveFieldCommand
-command/AddMethodCommand.java
- command.AddMethodCommand
+view/Console.java
+ view.Console
 command/RemoveParameterCommand.java
  command.RemoveParameterCommand
 command/ChangeMethodVisibilityCommand.java
@@ -37,8 +37,8 @@ command/RenameMethodCommand.java
  command.RenameMethodCommand
 command/Command.java
  command.Command
-command/AddClassCommand.java
- command.AddClassCommand
+controller/UMLConsoleController.java
+ controller.UMLConsoleController
 command/ChangeFieldVisibilityCommand.java
  command.ChangeFieldVisibilityCommand
 command/ChangeParameterTypeCommand.java
@@ -85,7 +85,7 @@ command/RemoveRelationshipCommand.java
  command.RemoveRelationshipCommand
 command/RenameClassCommand.java
  command.RenameClassCommand
-view/Console.java
- view.Console
-controller/UMLConsoleController.java
- controller.UMLConsoleController
+command/AddClassCommand.java
+ command.AddClassCommand
+command/AddMethodCommand.java
+ command.AddMethodCommand

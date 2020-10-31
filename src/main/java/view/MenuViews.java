@@ -1,9 +1,10 @@
 package view;
 import java.awt.event.ActionListener;
+import model.WorkingProject;
 
 public interface MenuViews extends Observer
 {
-	String getText(String string);
+	String getText(String prompt, String title);
 	
 	void alert(String message);
 
@@ -12,10 +13,6 @@ public interface MenuViews extends Observer
 
 	void start();
 
-	void createClass(String classes);
-
-	void delClass(String className);
-
-	void updateClass(String oldClass, String updateClassString);
-	
+	// Temporary until we can display arrows between class boxes
+	void showRelationships(WorkingProject snapshot);
 }
