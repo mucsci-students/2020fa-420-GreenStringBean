@@ -387,6 +387,29 @@ public class Console {
                 }    
                 break;
 
+                //Change a field's visibility
+                case "changeFieldVisibility" :
+                if (commands.size() < 4)
+                    System.out.println("Error: too few arguments for changeFieldVisibility<class, field, newVisibility>");
+                else if (commands.size() > 4)
+                    System.out.println("Error: too many arguments for changeFieldVisiblity<class, field, newVisibility>");
+                else
+                {
+                    projectEditor.changeFieldVisibility (commands.get(1), commands.get(2), commands.get(3));
+                    printStatusMessage();
+                }
+                //Change a method's visiblity
+                case "changeMethodVisibility": 
+                if (commands.size() < 4)
+                    System.out.println("Error: too few arguments for changeMethodVisibility<class, method, newVisibility>");
+                else if (commands.size() > 4)
+                    System.out.println("Error: too many arguments for changeMethodVisibility<class, method, newVisibility>");
+                else
+                {
+                    projectEditor.changeMethodVisibility (commands.get(1), commands.get(2), commands.get(3));
+                    printStatusMessage();
+                }
+
                 //Print the names of each class
                 case "printClasses" :
                     projectEditor.getProjectSnapshot().printClasses();
