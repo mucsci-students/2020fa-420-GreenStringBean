@@ -125,11 +125,14 @@ public class GUIViews implements MenuViews{
 	{
 		if (fileChooser.showSaveDialog(pWindow) == JFileChooser.APPROVE_OPTION)
 		{
-			// If no extension is given, add .json extension
-			String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-			if (!filePath.contains("."))
+			// If JSON filetype is selected (default), ensure .json extension
+			if (fileChooser.getFileFilter() != fileChooser.getAcceptAllFileFilter())
 			{
-				fileChooser.setSelectedFile(new File(filePath + ".json"));
+				String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+				if (!filePath.endsWith(".json"))
+				{
+					fileChooser.setSelectedFile(new File(filePath + ".json"));
+				}
 			}
 			return fileChooser.getSelectedFile();
 		}
