@@ -1,156 +1,193 @@
 import org.json.simple.*;
 import org.junit.Test;
-
-import model.WorkingProject;
+import org.junit.Ignore;
+import static org.junit.Assert.assertTrue;
+import model.*;
+import model.Parameter;
 
 public class WorkingProjectTest {
-    WorkingProject wp;
 
     @Test 
-    public void TestCreateProject()
+    public void testCreateProject()
     {
-        wp = new WorkingProject();
-        AssertTrue(wp);
+        WorkingProject wp = new WorkingProject();
+        assertTrue(wp != null);
     }
 
     @Test
-    public void TestAddClass()
+    public void testAddClass()
     {
+        WorkingProject wp = new WorkingProject();
         wp.addClass("Fruits");
-        AssertTrue(wp.getClass("Fruits"));
+        assertTrue(wp.hasClass("Fruits"));
     }
 
     @Test
-    public void TestAddField()
+    public void testAddField()
     {
+        WorkingProject wp = new WorkingProject();
+        wp.addClass("Fruits");
         wp.addField("Fruits", "mass", "float", "public");
-        AssertTrue(wp.getClass("Fruits").hasField("mass"));
+        assertTrue(wp.getClass("Fruits").hasField("mass"));
     }
 
     @Test
-    public void TestAddMethod()
+    public void testAddMethod()
     {
+        WorkingProject wp = new WorkingProject();
+        wp.addClass("Fruits");
         wp.addMethod("Fruits", "Purchase", "float", "public");
-        AssertTrue(wp.getClass("Fruits").hasMethod("Cost"));
+        assertTrue(wp.getClass("Fruits").hasMethod("Purchase"));
     }
 
     @Test
-    public void TestAddParameter()
+    public void testAddParameter()
     {
-        wp.addParameter("Fruits", "Purchase", "PaymentType", "String");
-        AssertTrue(wp.getClass("Fruits").getMethod("Purchase").hasParameter("PaymentType"));
+        WorkingProject wp = new WorkingProject();
+        wp.addClass("Fruits");
+        wp.addMethod("Fruits", "Purchase", "float", "public");
+        wp.addParameter("Fruits", "Purchase", "paymentType", "String");
+        assertTrue(wp.getClass("Fruits").getMethod("Purchase").hasParameter("paymentType"));
+        assertTrue(wp.getClass("Fruits").getMethod("Purchase").getParameters().get(0).getType().equals("String"));
     }
 
     @Test
-    public void TestChangeFieldType()
+    public void testChangeFieldType()
     {
-        wp.changeFieldType("Fruits", "mass", "double");
-        AssertTrue(wp.getClass("Fruits").getField("mass").getType());
+        WorkingProject wp = buildMockWorkingProject();
+        wp.changeFieldType("Fruits", "nutrients", "double");
+        assertTrue(wp.getClass("Fruits").getField("nutrients").getType() == "double");
     }
 
     @Test
-    public void TestChangeMethodType()
+    public void testChangeMethodType()
     {
-        wp.changeMethodType("Fruits", "Purchase", "int");
-        AssertTrue(wp.getClass("Fruits").getMethod("Purchase").getType().equals("int"));
+        WorkingProject wp = buildMockWorkingProject();
+        wp.changeMethodType("Fruits", "Eat", "Time");
+        assertTrue(wp.getClass("Fruits").getMethod("Eat").getType().equals("Time"));
     }
 
     @Test
-    public void TestChangeParameterType()
+    public void testChangeParameterType()
     {
-        wp.changeParameterType("Fruits", "Purchase", "PaymentType", "int");
+        WorkingProject wp = buildMockWorkingProject();
+        wp.changeParameterType("Fruits", "Eat", "cooked", "int");
         //Note: Can Parameter have a simple getParameter method that takes a name and returns the Parameter object instead of a list?
-        AssertTrue(wp.getClass("Fruits").getMethod("Purchase").getParameters().get(0).getType() == "int");
-    }
-
-
-    @Test
-    public void TestChangeFieldName()
-    {
-        wp.changeFieldType("Fruits", "mass", "weight");
-        AssertTrue(wp.getClass("Fruits").hasField("weight"));
-        AssertTrue(!wp.getClass("Fruits").hasField("mass"));
+        assertTrue(wp.getClass("Fruits").getMethod("Eat").getParameters().get(0).getType().equals("int"));
     }
 
     @Test
-    public void TestChangeMethodName()
+    public void testChangeFieldName()
     {
-        wp.renameMethod("Fruits", "Purchase", "Buy");
-        AssertTrue(wp.getClass("Fruits").hasMethod("Buy"));
-        AssertTrue(wp.getClass("Fruits").hasMethod("Purchase"));
+        WorkingProject wp = buildMockWorkingProject();
+        wp.renameField("Fruits", "nutrients", "nutritionalContent");
+        assertTrue(wp.getClass("Fruits").hasField("nutritionalContent"));
+        assertTrue(!wp.getClass("Fruits").hasField("nutrients"));
     }
 
     @Test
-    public void TestChangeParameterName()
+    public void testChangeMethodName()
     {
-        wp.renameParameter("Fruits", "Buy", "PaymentType", "PaymentOption");
-        AssertTrue(wp.getClass("Fruits").getMethod("Buy").getParameters().get(0).getName() == "PaymentOption");
-        AssertTrue(!(wp.getClass("Fruits").getMethod("Buy").getParameters().get(0).getName() == "PaymentType"));
+        WorkingProject wp = buildMockWorkingProject();
+        wp.renameMethod("Fruits", "Eat", "Digest");
+        assertTrue(wp.getClass("Fruits").hasMethod("Digest"));
+        assertTrue(!wp.getClass("Fruits").hasMethod("Eat"));
+    }
+
+    @Test
+    public void testChangeParameterName()
+    {
+        WorkingProject wp = buildMockWorkingProject();
+        wp.renameParameter("Fruits", "Eat", "cooked", "prepared");
+        assertTrue(wp.getClass("Fruits").getMethod("Eat").getParameters().get(0).getName().equals("prepared"));
+        assertTrue(!(wp.getClass("Fruits").getMethod("Eat").getParameters().get(0).getName().equals("cooked")));
     }
         
 
     @Test
-    public void TestChangeFieldVisibility()
+    public void testChangeFieldVisibility()
     {
-        wp.changeFieldVisibility("Fruits", "weight", "private");
-        AssertTrue(wp.getClass("Fruits").getField("weight").getVisibility() == "private");
+        WorkingProject wp = buildMockWorkingProject();
+        wp.changeFieldVisibility("Fruits", "nutrients", "private");
+        assertTrue(wp.getClass("Fruits").getField("nutrients").getVisibility().name() == VisibleDeclaration.visibility.PRIVATE.toString());
     }
 
     @Test
-    public void TestChangeMethodVisibility()
+    public void testChangeMethodVisibility()
     {
-        wp.changeMethodVisibility("Fruits", "Buy", "private");
-        AssertTrue(wp.getClass("Fruits").getMethod("Buy").getVisibility() == "private");
+        WorkingProject wp = buildMockWorkingProject();
+        wp.changeMethodVisibility("Fruits", "Eat", "private");
+        assertTrue(wp.getClass("Fruits").getMethod("Eat").getVisibility().name() == VisibleDeclaration.visibility.PRIVATE.toString());
     }
 
     @Test
-    public void TestAddRelationship()
+    public void testAddRelationship()
     {
-        wp.addClass("Vegetables");
+        WorkingProject wp = buildMockWorkingProject();
         wp.addRelationship("Fruits", "Vegetables", "A");
-        AssertTrue(wp.hasRelationship("Fruits", "Vegetables"));
+        assertTrue(wp.hasRelationship("Fruits", "Vegetables"));
         //Need to check relationship type
     }
 
     @Test
-    public void TestChangeRelationshipType()
+    public void testChangeRelationshipType()
     {
+        WorkingProject wp = buildMockWorkingProject();
+        wp.addRelationship("Fruits", "Vegetables", "A");
         wp.changeRelationshipType("Fruits", "Vegetables", "C");
+        //Need to check relationship type
     }
 
     @Test
-    public void TestRemoveRelationship()
+    public void testRemoveRelationship()
     {
+        WorkingProject wp = buildMockWorkingProject();
+        wp.addRelationship("Fruits", "Vegeatbles", "A");
         wp.removeRelationship("Fruits", "Vegetables");
-        AssertTrue(!wp.hasRelationship("Fruits", "Vegetables"));
+        assertTrue(!wp.hasRelationship("Fruits", "Vegetables"));
     }
 
     @Test
-    public void TestRemoveField()
+    public void testRemoveField()
     {
-        wp.removeField("Fruits", "weight");
-        AssertTrue(!wp.hasField("weight"));
+        WorkingProject wp = buildMockWorkingProject();
+        wp.removeField("Fruits", "nutrients");
+        assertTrue(!wp.getClass("Fruits").hasField("nutrients"));
     }
 
     @Test
-    public void TestRemoveParameter()
+    public void testRemoveParameter()
     {
-        wp.removeParameter("Fruits", "Buy", "PaymentOption");
-        AssertTrue(!wp.hasParameter("Fruits", "Buy", "PaymentOption"));
+        WorkingProject wp = buildMockWorkingProject();
+        wp.removeParameter("Fruits", "Eat", "cooked");
+        assertTrue(!wp.getClass("Fruits").getMethod("Eat").hasParameter("cooked"));
     }
 
     @Test
-    public void TestRemoveMethod()
+    public void testRemoveMethod()
     {
-        wp.removeMethod("Fruits", "Buy");
-        AssertTrue(!wp.hasMethod("Fruits", "Buy"));
+        WorkingProject wp = buildMockWorkingProject();
+        wp.removeMethod("Fruits", "Eat");
+        assertTrue(!wp.getClass("Fruits").hasMethod("Eat"));
     }
 
     @Test
-    public void TestRemoveClass()
+    public void testRemoveClass()
     {
+        WorkingProject wp = buildMockWorkingProject();
         wp.removeClass("Fruits");
-        AssertTrue(!wp.hasClass("Fruits"));
+        assertTrue(!wp.hasClass("Fruits"));
+    }
+
+    private static WorkingProject buildMockWorkingProject()
+    {
+        WorkingProject wp = new WorkingProject();
+        wp.addClass("Fruits");
+        wp.addField("Fruits", "nutrients", "int", "public");
+        wp.addMethod("Fruits", "Eat", "void", "public");
+        wp.addParameter("Fruits", "Eat", "cooked", "bool");
+        wp.addClass("Vegetables");
+        return wp;
     }
 
 }
