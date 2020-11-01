@@ -10,7 +10,9 @@ import model.Field;
 import model.VisibleDeclaration.visibility;;
 
 public class FieldTest {
-    
+    /**
+     * Test creating a field.
+     */
     @Test
     public void testCreateField()
     {
@@ -20,6 +22,9 @@ public class FieldTest {
         assertEquals("Correct visibility", visibility.PUBLIC, field.getVisibility());
     }
 
+    /**
+     * Test a field's toString() method.
+     */
     @Test
     public void testToString()
     {
@@ -27,6 +32,10 @@ public class FieldTest {
         assertEquals("Correct toString() output", "public int field", field.toString());
     }
 
+    /**
+     * Test copying a field. Ensure the copy is a new object but, has the same
+     * state.
+     */
     @Test
     public void testCopy()
     {
@@ -38,6 +47,9 @@ public class FieldTest {
         assertEquals("Same visibility", field.getVisibility(), fieldCopy.getVisibility());
     }
 
+    /**
+     * Test converting a field to a JSONObject.
+     */
     @Test
     public void testToJSON()
     {
@@ -48,6 +60,9 @@ public class FieldTest {
         assertEquals("JSONObject has correct visibility", field.getVisibility().name(), jsonField.get("visibility"));
     }
 
+    /**
+     * Test converting a JSONObject to a field.
+     */
     @Test
     public void testLoadFromJSON()
     {
@@ -61,6 +76,10 @@ public class FieldTest {
         assertEquals("Loaded correct visibility", jsonField.get("visibility"), field.getVisibility().name());
     }
 
+    /**
+     * Test converting a JSONObject to a field when the JSONObject does not
+     * encode a field.
+     */
     @Ignore
     public void testLoadInvalidJSON()
     {
