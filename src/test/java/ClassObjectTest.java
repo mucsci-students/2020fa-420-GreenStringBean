@@ -5,8 +5,13 @@ import static org.junit.Assert.assertTrue;
 import model.*;
 import model.Parameter;
 
+//Test ClassObject functions
+//TODO: Add edge cases
 public class ClassObjectTest {
 
+    /**
+     * Test creating a ClassObject object
+     */
     @Test
     public void testCreateClassObject ()
     {
@@ -14,6 +19,9 @@ public class ClassObjectTest {
         assertTrue(c != null);
     }
 
+    /**
+     * Test getting a ClassObject name
+     */
     @Test
     public void testGetClassObjectName ()
     {
@@ -21,6 +29,9 @@ public class ClassObjectTest {
         assertTrue(null, c.getName().equals("Watermelon"));
     }
 
+    /**
+     * Test setting a ClassObject name
+     */
     @Test 
     public void testSetClassName ()
     {
@@ -29,6 +40,9 @@ public class ClassObjectTest {
         assertTrue(null, c.getName().equals("Berry"));
     }
 
+    /**
+     * Test adding a Field to ClassObject
+     */
     @Test
     public void testAddField()
     {
@@ -38,6 +52,9 @@ public class ClassObjectTest {
         assertTrue(c.getField("Edible").getType().equals("bool"));
     }
 
+    /**
+     * Test renaming a Field in ClassObject
+     */
     @Test
     public void testRenameField()
     {
@@ -47,6 +64,9 @@ public class ClassObjectTest {
         assertTrue(c.hasField("SeedOrNotToSeed"));
     }
 
+    /**
+     * Test changing a Field type in ClassObject
+     */
     @Test
     public void testChangeFieldType()
     {
@@ -55,6 +75,9 @@ public class ClassObjectTest {
         assertTrue(c.getField("Seedless").getType().equals("int"));
     }
 
+    /** 
+     * Test removing a Field in ClassObject
+     */
     @Test
     public void testRemoveField()
     {
@@ -63,6 +86,9 @@ public class ClassObjectTest {
         assertTrue(!c.hasField("Seedless"));
     }
 
+    /**
+     * Test adding a Method to ClassObject
+     */
     @Test
     public void testAddMethod()
     {
@@ -72,6 +98,9 @@ public class ClassObjectTest {
         assertTrue(c.getMethod("Scoop").getType() == "void");
     }
 
+    /**
+     * Test renaming a Method in ClassObject
+     */
     @Test
     public void testRenameMethod()
     {
@@ -81,6 +110,9 @@ public class ClassObjectTest {
         assertTrue(!c.hasMethod("Eat"));
     }
 
+    /**
+     * Test changing a Method return type in ClassObject
+     */
     @Test
     public void testChangeMethodType()
     {
@@ -89,6 +121,9 @@ public class ClassObjectTest {
         assertTrue(c.getMethod("Eat").getType() == "int");
     }
 
+    /**
+     * Test changing visibility of a Field in ClassObject
+     */
     @Test
     public void testChangeFieldVisibility()
     {
@@ -97,6 +132,9 @@ public class ClassObjectTest {
         assertTrue(c.getField("Seedless").getVisibility().name() == VisibleDeclaration.visibility.PROTECTED.toString());
     }
 
+    /**
+     * Test changing visiblity of a Method in ClassObject
+     */
     @Test
     public void testChangeMethodVisibility()
     {
@@ -105,6 +143,9 @@ public class ClassObjectTest {
         assertTrue(c.getMethod("Eat").getVisibility().name() == VisibleDeclaration.visibility.PRIVATE.toString());
     }
 
+    /**
+     * Test adding a Parameter to a Method in ClassObject
+     */
     @Test
     public void testAddParameter()
     {
@@ -113,6 +154,9 @@ public class ClassObjectTest {
         assertTrue(c.getMethod("Eat").hasParameter("cooked"));
     } 
 
+    /**
+     * Test renaming a Parameter in a Method in ClassObject
+     */
     @Test
     public void testRenameParameter()
     {
@@ -121,6 +165,9 @@ public class ClassObjectTest {
         assertTrue(c.getMethod("Eat").getParameters().get(0).getName().equals("Utensil"));
     }
 
+    /**
+     * Test chaning a Parameter type in a Method in ClassObject
+     */
     @Test
     public void testChangeParameterType()
     {
@@ -129,6 +176,9 @@ public class ClassObjectTest {
         assertTrue(c.getMethod("Eat").getParameters().get(0).getType().equals("int"));
     }
 
+    /**
+     * Test removing a Parameter type from a Method in ClassObject
+     */
     @Test
     public void testRemoveParameter()
     {
@@ -137,6 +187,9 @@ public class ClassObjectTest {
         assertTrue(!c.getMethod("Eat").hasParameter("Spoon"));
     }
 
+    /**
+     * Test removing a Method from a ClassObject
+     */
     @Test
     public void testRemoveMethod()
     {
@@ -145,8 +198,10 @@ public class ClassObjectTest {
         assertTrue(!c.hasMethod("Eat"));
     }
 
-    
-
+    /**
+     * Test converting a ClassObject to JSON
+     * TODO: Finish this test
+     */
     @Ignore
     public void TestToJSON ()
     {
@@ -173,6 +228,10 @@ public class ClassObjectTest {
         assertTrue(null, d.toJSON().equals(expectedC));
     }
 
+    /**
+     * Create an example ClassObject to run tests on
+     * @return A ClassObject with a Field and a Method with a Parameter
+     */
     private static ClassObject buildMockClassObject()
     {
         ClassObject co = new ClassObject("Watermelon");

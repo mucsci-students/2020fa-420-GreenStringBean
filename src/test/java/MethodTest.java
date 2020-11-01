@@ -6,8 +6,15 @@ import model.*;
 import model.Parameter;
 import model.VisibleDeclaration.visibility;
 
+/**
+ * Test method functions
+ * TODO: Add more edge cases
+ */
 public class MethodTest {
 
+    /**
+     * Test creating a Method object
+     */
     @Test
     public void testCreateMethod ()
     {
@@ -15,6 +22,9 @@ public class MethodTest {
         assertTrue(m != null);
     }
 
+    /**
+     * Test getting a Method name
+     */
     @Test
     public void testGetMethodName ()
     {
@@ -22,6 +32,9 @@ public class MethodTest {
         assertTrue(m.getName().equals("doThis"));
     }
 
+    /**
+     * Test getting a Method return type
+     */
     @Test
     public void testGetMethodType ()
     {
@@ -29,6 +42,9 @@ public class MethodTest {
         assertTrue(m.getType().equals("void"));
     }
 
+    /**
+     * Test setting a Method name
+     */
     @Test 
     public void testSetMethodName ()
     {
@@ -38,6 +54,9 @@ public class MethodTest {
         assertTrue(!m.getName().equals("doThis"));
     }
 
+    /**
+     * Test adding a Method Parameter
+     */
     @Test
     public void testAddParameter ()
     {
@@ -46,6 +65,9 @@ public class MethodTest {
         assertTrue(m.hasParameter("thingy"));
     }
 
+    /**
+     * Test renaming a Method Parameter
+     */
     @Test
     public void testRenameParameter()
     {
@@ -54,6 +76,9 @@ public class MethodTest {
         assertTrue(m.hasParameter("integer"));
     }
 
+    /**
+     * Test changing a Method Parameter type
+     */
     @Test
     public void testChangeParameterType()
     {
@@ -62,14 +87,21 @@ public class MethodTest {
         assertTrue(m.getParameters().get(0).getType().equals("short"));
     }
 
+    /**
+     * Test removing a Method Parameter
+     */
     @Test
-    public void testDeleteParameter()
+    public void testRemoveParameter()
     {
         Method m = buildMockMethod();
         m.removeParameter("number");
         assertTrue(!m.hasParameter("number"));
     }
 
+    /**
+     * Test conversion of Method to JSON
+     * TODO: Complete this test
+     */
     @Ignore
     public void testToJSON ()
     {

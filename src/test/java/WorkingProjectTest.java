@@ -5,8 +5,15 @@ import static org.junit.Assert.assertTrue;
 import model.*;
 import model.Parameter;
 
+/**
+ * Test WorkingProject functions
+ * TODO: Add more edge case tests
+ */
 public class WorkingProjectTest {
 
+    /**
+     * Test creating a new WorkingProject
+     */
     @Test 
     public void testCreateProject()
     {
@@ -14,6 +21,9 @@ public class WorkingProjectTest {
         assertTrue(wp != null);
     }
 
+    /**
+     * Test adding a ClassObject to WorkingProject
+     */
     @Test
     public void testAddClass()
     {
@@ -22,6 +32,9 @@ public class WorkingProjectTest {
         assertTrue(wp.hasClass("Fruits"));
     }
 
+    /**
+     * Test adding a Field to ClassObject in WorkingProject
+     */
     @Test
     public void testAddField()
     {
@@ -31,6 +44,9 @@ public class WorkingProjectTest {
         assertTrue(wp.getClass("Fruits").hasField("mass"));
     }
 
+    /**
+     * Test adding a Method to ClassObject in WorkingProject
+     */
     @Test
     public void testAddMethod()
     {
@@ -40,6 +56,9 @@ public class WorkingProjectTest {
         assertTrue(wp.getClass("Fruits").hasMethod("Purchase"));
     }
 
+    /**
+     * Test adding a Parameter to Method in ClassObject in WorkingProject
+     */
     @Test
     public void testAddParameter()
     {
@@ -51,6 +70,9 @@ public class WorkingProjectTest {
         assertTrue(wp.getClass("Fruits").getMethod("Purchase").getParameters().get(0).getType().equals("String"));
     }
 
+    /**
+     * Test changing Field type in ClassObject in WorkingProject
+     */
     @Test
     public void testChangeFieldType()
     {
@@ -59,6 +81,9 @@ public class WorkingProjectTest {
         assertTrue(wp.getClass("Fruits").getField("nutrients").getType() == "double");
     }
 
+    /**
+     * Test changing Method return type in ClassObject in WorkingProject
+     */
     @Test
     public void testChangeMethodType()
     {
@@ -67,6 +92,9 @@ public class WorkingProjectTest {
         assertTrue(wp.getClass("Fruits").getMethod("Eat").getType().equals("Time"));
     }
 
+    /**
+     * Test changing Parameter type in Method in ClassObject in WorkingProject
+     */
     @Test
     public void testChangeParameterType()
     {
@@ -76,6 +104,9 @@ public class WorkingProjectTest {
         assertTrue(wp.getClass("Fruits").getMethod("Eat").getParameters().get(0).getType().equals("int"));
     }
 
+    /**
+     * Test changing Field name in ClassObject in WorkingProject
+     */
     @Test
     public void testChangeFieldName()
     {
@@ -85,6 +116,9 @@ public class WorkingProjectTest {
         assertTrue(!wp.getClass("Fruits").hasField("nutrients"));
     }
 
+    /**
+     * Test changing Method name in ClassObject in WorkingProject
+     */
     @Test
     public void testChangeMethodName()
     {
@@ -94,6 +128,9 @@ public class WorkingProjectTest {
         assertTrue(!wp.getClass("Fruits").hasMethod("Eat"));
     }
 
+    /**
+     * Test changing Parameter name in Method in ClassObject in WorkingProject
+     */
     @Test
     public void testChangeParameterName()
     {
@@ -104,6 +141,9 @@ public class WorkingProjectTest {
     }
         
 
+    /**
+     * Test changing Field visibility in ClassObject in WorkingProject
+     */
     @Test
     public void testChangeFieldVisibility()
     {
@@ -112,6 +152,9 @@ public class WorkingProjectTest {
         assertTrue(wp.getClass("Fruits").getField("nutrients").getVisibility().name() == VisibleDeclaration.visibility.PRIVATE.toString());
     }
 
+    /**
+     * Test changing Method visibility in ClassObject in WorkingProject
+     */
     @Test
     public void testChangeMethodVisibility()
     {
@@ -120,6 +163,9 @@ public class WorkingProjectTest {
         assertTrue(wp.getClass("Fruits").getMethod("Eat").getVisibility().name() == VisibleDeclaration.visibility.PRIVATE.toString());
     }
 
+    /**
+     * Test adding Relationship between two ClassObjects in WorkingProject
+     */
     @Test
     public void testAddRelationship()
     {
@@ -129,6 +175,9 @@ public class WorkingProjectTest {
         //Need to check relationship type
     }
 
+    /**
+     * Test changing Relationship type 
+     */
     @Test
     public void testChangeRelationshipType()
     {
@@ -138,6 +187,9 @@ public class WorkingProjectTest {
         //Need to check relationship type
     }
 
+    /**
+     * Test removing a Relationship in WorkingProject
+     */
     @Test
     public void testRemoveRelationship()
     {
@@ -147,6 +199,9 @@ public class WorkingProjectTest {
         assertTrue(!wp.hasRelationship("Fruits", "Vegetables"));
     }
 
+    /**
+     * Test removing a Field from ClassObject in WorkingProject
+     */
     @Test
     public void testRemoveField()
     {
@@ -155,6 +210,9 @@ public class WorkingProjectTest {
         assertTrue(!wp.getClass("Fruits").hasField("nutrients"));
     }
 
+    /**
+     * Test removing a Parameter from Method in ClassObject in WorkingProject
+     */
     @Test
     public void testRemoveParameter()
     {
@@ -163,6 +221,9 @@ public class WorkingProjectTest {
         assertTrue(!wp.getClass("Fruits").getMethod("Eat").hasParameter("cooked"));
     }
 
+    /**
+     * Test removing Method from ClassObject in WorkingProject
+     */
     @Test
     public void testRemoveMethod()
     {
@@ -171,6 +232,9 @@ public class WorkingProjectTest {
         assertTrue(!wp.getClass("Fruits").hasMethod("Eat"));
     }
 
+    /**
+     * Test removing ClassObject from WorkingProject
+     */
     @Test
     public void testRemoveClass()
     {
@@ -179,6 +243,10 @@ public class WorkingProjectTest {
         assertTrue(!wp.hasClass("Fruits"));
     }
 
+    /**
+     * Create an example WorkingProject object to run tests on
+     * @return A WorkingProject object with a Class with a Field and a Method with a Parameter and a Class without them
+     */
     private static WorkingProject buildMockWorkingProject()
     {
         WorkingProject wp = new WorkingProject();
