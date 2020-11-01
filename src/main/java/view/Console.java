@@ -10,9 +10,8 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import model.ClassObject;
 import model.Relationship;
-import model.WorkingProject;
-
 import java.util.Set;
+import model.WorkingProject;
 import java.io.BufferedReader;
 import controller.WorkingProjectEditor;
 
@@ -60,6 +59,7 @@ public class Console {
                         System.out.print(">");
                         String name = keyboard.nextLine();
                         saveFile (parseLine(name).get(0));
+                        return;
                     }
                     else if (YN.equals("n".toUpperCase()) || YN.equals("n"))
                     {
