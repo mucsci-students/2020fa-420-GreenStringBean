@@ -3,7 +3,8 @@ package model;
 
 import java.util.Set;
 import java.util.HashSet;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
@@ -33,7 +34,7 @@ import org.json.simple.JSONValue;
  */
 
 public class WorkingProject {
-    private HashMap<String, ClassObject> classes;
+    private LinkedHashMap<String, ClassObject> classes;
     private ArrayList<Relationship> relationships;
     
 
@@ -42,7 +43,7 @@ public class WorkingProject {
      */
     public WorkingProject()
     {
-        classes = new HashMap<>();
+        classes = new LinkedHashMap<>();
         relationships = new ArrayList<>();
     }
 
@@ -81,7 +82,7 @@ public class WorkingProject {
     }
     
     /**
-     * Renames a class, if it exists.
+     * Renames a class, if it exists. (Preserves order)
      * @param oldClassName the current name of the class to rename
      * @param newClassName the new name to give to the class
      * @return             0 if successful, error code otherwise
@@ -98,9 +99,22 @@ public class WorkingProject {
             return 8;
         }
 
-        ClassObject renamedClass = classes.remove(oldClassName);
-        renamedClass.setName(newClassName);
-        classes.put(newClassName, renamedClass);
+        LinkedHashMap<String, ClassObject> tempClasses = new LinkedHashMap<>();
+        for (Map.Entry<String, ClassObject> classEntry: classes.entrySet())
+        {
+            if (classEntry.getKey().equals(oldClassName))
+            {
+                ClassObject classObj = classEntry.getValue();
+                classObj.setName(newClassName);
+                tempClasses.put(newClassName, classObj);
+            }
+            else
+            {
+                tempClasses.put(classEntry.getKey(), classEntry.getValue());
+            }
+        }
+        classes = tempClasses;
+
         renameClassInRelationships(oldClassName, newClassName);
         return 0;
     }
@@ -463,7 +477,7 @@ public class WorkingProject {
     {
         for (int i = 0; i < relationships.size(); ++i)
         {
-            if (relationships.get(i).getClassNameFrom() == classNameFrom && relationships.get(i).getClassNameTo() == classNameTo)
+            if (relationships.get(i).getClassNameFrom().equals(classNameFrom) && relationships.get(i).getClassNameTo().equals(classNameTo))
             {
                 return i;
             }
@@ -522,12 +536,12 @@ public class WorkingProject {
         relationships.clear();
 
         JSONObject jsonProject = (JSONObject)JSONValue.parse(jsonString);
-        JSONObject jsonClasses = (JSONObject)jsonProject.get("classes");
+        JSONArray jsonClasses = (JSONArray)jsonProject.get("classes");
         JSONArray jsonRelationships = (JSONArray)jsonProject.get("relationships");
 
-        for (Object className : jsonClasses.keySet())
+        for (Object jsonClass : jsonClasses)
         {
-            classes.put((String)className, ClassObject.loadFromJSON((JSONObject)jsonClasses.get(className)));
+            classes.put((String)(((JSONObject)jsonClass).get("name")), ClassObject.loadFromJSON((JSONObject)jsonClass));
         }
 
         for (Object jsonRelationship : jsonRelationships)
@@ -551,10 +565,10 @@ public class WorkingProject {
     {
         JSONObject jsonProject = new JSONObject();
 
-        JSONObject jsonClasses = new JSONObject();
+        JSONArray jsonClasses = new JSONArray();
         for (String className : classes.keySet())
         {
-            jsonClasses.put(className, classes.get(className).toJSON());
+            jsonClasses.add(classes.get(className).toJSON());
         }
 
         JSONArray jsonRelationships = new JSONArray();
@@ -565,8 +579,6 @@ public class WorkingProject {
 
         jsonProject.put("classes", jsonClasses);
         jsonProject.put("relationships", jsonRelationships);
-
-        System.out.println("Successfully saved");
 
         return jsonProject.toJSONString();
     }

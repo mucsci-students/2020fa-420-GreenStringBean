@@ -24,7 +24,7 @@ public abstract class Command {
 		"Relationship type is not valid",
 		"Error loading project",
 		"Loaded project is not valid",
-		"Visibility Modifier is not valid"
+		"Visibility modifier is not valid"
 	};
 
 	protected Command(WorkingProject project)
