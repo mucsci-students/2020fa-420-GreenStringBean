@@ -41,9 +41,11 @@ public class GUIViews implements MenuViews{
 	private JMenu classM;
 	private JFileChooser fileChooser;
 
-	// Map containing the current class panels to display
 	private Map<String, JPanel> classPanels;
-	
+
+	/**
+	 * Method for making the GUI window a different style
+	 */
 	public GUIViews()
 	{
 		this.classPanels = new HashMap<>();
@@ -57,6 +59,10 @@ public class GUIViews implements MenuViews{
 		}
 	}
 	
+	/**
+	 * Mehtod for creating a window for the all the buttons and panels
+	 * to be displayed for user.
+	 */
 	public void window()
 	{
 		System.out.println("Got to make the window(): GUIViews()");
@@ -73,11 +79,20 @@ public class GUIViews implements MenuViews{
 		setupFileChooser();
 	}
 
+	/**
+	 * Method for returning the window for displaying 
+	 * all buttons for menu bar.
+	 * @return the window
+	 */
 	public JFrame getMainWindow()
 	{
 		return win;
 	}
 	
+	/**
+	 * Method for placing all the seperate buttons onto the menu bar
+	 * @param win is the window for the menu bar to be added on
+	 */
 	public void makeMenu(JFrame win)
 	{
 		System.out.println("made the menu: GUIViews()");
@@ -90,21 +105,37 @@ public class GUIViews implements MenuViews{
 		mb.setVisible(true);
 	}
 	
+	/**
+	 * method for returning menu bar for placing buttons
+	 * @return menu bar
+	 */
 	public JMenuBar getMenuBar()
 	{
 		return mb;
 	}
 	
+	/**
+	 * Method for displaying an input box for a user
+	 * @param prompt 
+	 * @param title
+	 */
 	public String getText(String prompt, String title) 
 	{
 		return JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE);
 	}
 
+	/**
+	 * Method for alerting the user with a prompt after an ilegal action was performed
+	 * @param message is the alert message to be dispalyed to user
+	 */
 	public void alert(String message)
     {
         JOptionPane.showMessageDialog(pWindow, message);
 	}
 
+	/**
+	 * Method for setting a saved file to a .json file
+	 */
 	private void setupFileChooser()
 	{
 		fileChooser = new JFileChooser();
@@ -112,6 +143,10 @@ public class GUIViews implements MenuViews{
 		fileChooser.setFileFilter(filter);
 	}
 	
+	/**
+	 * Method to get a saved file 
+	 * @return the selected file
+	 */
 	public File getSaveFile()
 	{
 		if (fileChooser.getSelectedFile() == null)
@@ -121,24 +156,29 @@ public class GUIViews implements MenuViews{
 		return fileChooser.getSelectedFile();
 	}
 
+	/**
+	 * Method to get text input of file name from user and get a saved file
+	 * @return the selected file
+	 */
 	public File getSaveAsFile()
 	{
 		if (fileChooser.showSaveDialog(pWindow) == JFileChooser.APPROVE_OPTION)
 		{
-			// If JSON filetype is selected (default), ensure .json extension
-			if (fileChooser.getFileFilter() != fileChooser.getAcceptAllFileFilter())
+			// If no extension is given, add .json extension
+			String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+			if (!filePath.contains("."))
 			{
-				String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-				if (!filePath.endsWith(".json"))
-				{
-					fileChooser.setSelectedFile(new File(filePath + ".json"));
-				}
+				fileChooser.setSelectedFile(new File(filePath + ".json"));
 			}
 			return fileChooser.getSelectedFile();
 		}
 		return null;
 	}
 	
+	/**
+	 * Method to get a loaded file from user input
+	 * @return the selected file
+	 */
 	public File getLoadFile()
 	{
 		if (fileChooser.showOpenDialog(pWindow) == JFileChooser.APPROVE_OPTION)
@@ -148,7 +188,10 @@ public class GUIViews implements MenuViews{
 		return null;
 	}
 	
-	
+	/**
+	 * Creates a file drop down menu for undo, redo, save, and load buttons.
+	 * @param mb is the menu bar
+	 */
 	private void createFileM(JMenuBar mb)
 	{
 		System.out.println("made file menu: GUIViews()");
@@ -175,6 +218,10 @@ public class GUIViews implements MenuViews{
 		mb.add(fileM);
 	}
 	
+	/**
+	 * Adds action listeners to file clicks
+	 * @param fileL is all the file action listeners
+	 */
 	private void fileListener(ActionListener fileL)
 	{
 		System.out.println("adding Listeners for FileClick: GUIViews()");
@@ -186,6 +233,11 @@ public class GUIViews implements MenuViews{
 		}
 	}
 	
+	/**
+	 * Creates a class drop down menu for adding, changing,
+	 * and deleting classes.
+	 * @param mb is the menu bar
+	 */
 	private void createClassM(JMenuBar mb)
 	{
 		System.out.println("made class menu: GUIViews()");
@@ -211,6 +263,10 @@ public class GUIViews implements MenuViews{
 		mb.add(classM);	
 	}
 	
+	/**
+	 * Adds action listeners to class clicks
+	 * @param classL is all the class action listeners
+	 */
 	private void classListener(ActionListener classL)
 	{
 		System.out.println("adding Listeners for ClassClick: GUIViews()");
@@ -222,6 +278,11 @@ public class GUIViews implements MenuViews{
 		}
 	}
 	
+	/**
+	 * Creates an attribute drop down menu for adding, changing,
+	 * and deleting attributes.
+	 * @param mb is the menu bar
+	 */
 	private void createFieldM(JMenuBar mb)
 	{
 		System.out.println("made field menu:  GUIView()");
@@ -258,6 +319,10 @@ public class GUIViews implements MenuViews{
 		mb.add(fieldM);
 	}
 	
+	/**
+	 * Adds action listeners to field clicks
+	 * @param fieldL is all the field action listeners
+	 */
 	private void fieldListener(ActionListener fieldL)
 	{
 		System.out.println("adding listeners for FieldClick: GUIViews()");
@@ -269,6 +334,11 @@ public class GUIViews implements MenuViews{
 		}
 	}
 	
+	/**
+	 * Creates a relationship drop down menu for adding, changing,
+	 * deleting, and showing relationships
+	 * @param mb is the menu bar
+	 */
 	private void createRelatM(JMenuBar mb) 
 	{
 		System.out.println("made relationship menu:  GUIView()");
@@ -296,6 +366,10 @@ public class GUIViews implements MenuViews{
 		mb.add(relaM);
 	}
 	
+	/**
+	 * Adds action listeners to relationship clicks
+	 * @param relatL is all the relationship action listeners
+	 */
 	private void relationshipListener(ActionListener relatL)
 	{
 		System.out.println("adding listeners for RelationshipClick: GUIViews()");
@@ -307,6 +381,9 @@ public class GUIViews implements MenuViews{
 		}
 	}
 	
+	/**
+	 * Adds all the action listeners to there respected clicks
+	 */
 	public void addListeners(ActionListener fileL, ActionListener classL, ActionListener fieldL,
 			ActionListener relatL) 
 	{
@@ -320,6 +397,9 @@ public class GUIViews implements MenuViews{
 		System.out.println("finished listeners: GUIViews()");
     }
 	
+	/**
+	 * Starts the program with a clean window for GUI
+	 */
 	public void start()
     {
 		window();
@@ -430,6 +510,9 @@ public class GUIViews implements MenuViews{
 		classPanels.clear();
 	}
 	
+	/**
+	 * Updates view
+	 */
 	public void refresh() 
 	{
 		pWindow.revalidate();
