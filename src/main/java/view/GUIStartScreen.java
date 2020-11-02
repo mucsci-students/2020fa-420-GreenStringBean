@@ -14,6 +14,9 @@ public class GUIStartScreen
     private JButton strtB = new JButton("Lets Get Started!");
     private JButton closeB = new JButton("Close GUI");
 
+    /**
+     * Method that creates a window for a user to start or close GUI
+     */
     public GUIStartScreen()
     {
         //Creates a window 
@@ -30,6 +33,9 @@ public class GUIStartScreen
         win.setVisible(true);    
     }
 
+    /**
+     * Method to add buttons and there listeners to the start window
+     */
     private void windowSetup()
     {
     	strtB.setActionCommand("Start");
@@ -37,7 +43,9 @@ public class GUIStartScreen
     	closeB.setActionCommand("Close");
     }
 
-    //starts or closes GUI
+    /**
+     * Actions for starting or closing GUI
+     */
     private class ButtonClickListener implements ActionListener
     {
     	public void actionPerformed(ActionEvent e) {
