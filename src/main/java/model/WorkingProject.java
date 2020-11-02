@@ -1,13 +1,16 @@
 
 package model;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.LinkedHashMap;
 import java.util.ArrayList;
-import org.json.simple.JSONObject;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.lang.model.SourceVersion;
+
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 /**
@@ -36,7 +39,6 @@ import org.json.simple.JSONValue;
 public class WorkingProject {
     private LinkedHashMap<String, ClassObject> classes;
     private ArrayList<Relationship> relationships;
-    
 
     /**
      * Creates a new working project with no classes or relationships.
@@ -57,6 +59,11 @@ public class WorkingProject {
         if (classes.containsKey(className))
         {
             return 8;
+        }
+
+        if (!isValidName(className))
+        {
+            return 9;
         }
 
         classes.put(className, new ClassObject(className));
@@ -97,6 +104,11 @@ public class WorkingProject {
         if (classes.containsKey(newClassName))
         {
             return 8;
+        }
+
+        if (!isValidName(newClassName))
+        {
+            return 9;
         }
 
         LinkedHashMap<String, ClassObject> tempClasses = new LinkedHashMap<>();
@@ -165,6 +177,11 @@ public class WorkingProject {
             return 2;
         }
 
+        if (!isValidName(fieldName))
+        {
+            return 9;
+        }
+
         return classes.get(className).addField(fieldName, fieldType, fieldVisName);
     }
 
@@ -218,12 +235,20 @@ public class WorkingProject {
         return classes.get(className).changeFieldType(fieldName, newFieldType);
     }
 
+    /**
+     * Changes the visibility of a field, if it exists.
+     * @param className    the name of the class with the field to modify
+     * @param fieldName    the name of hte field to change the visibility of
+     * @param fieldVisName the new visibility to give to the field
+     * @return             0 if successful, error code otherwise
+     */
     public int changeFieldVisibility(String className, String fieldName, String fieldVisName)
     {
         if(!classes.containsKey(className))
         {
             return 2;
         }
+
         return classes.get(className).changeFieldVisibility(fieldName, fieldVisName);
     }
 
@@ -294,12 +319,20 @@ public class WorkingProject {
         return classes.get(className).changeMethodType(methodName, newMethodType);
     }
 
+    /**
+     * Changes the visibility of a method, if it exists.
+     * @param className     the name of the class with the method to modify
+     * @param methodName    the name of the method to change the visibility of
+     * @param methodVisName the new visibility to give to the method
+     * @return              0 if successful, error code otherwise
+     */
     public int changeMethodVisibility(String className, String methodName, String methodVisName)
     {
         if(!classes.containsKey(className))
         {
             return 2;
         }
+
         return classes.get(className).changeMethodVisibility(methodName, methodVisName);
     }
 
@@ -485,7 +518,10 @@ public class WorkingProject {
         return -1;
     }
 
-    // Remove any relationships which contain classObj from the list
+    /**
+     * Remove any relationships which contain a class
+     * @param className the name of the class
+     */
     private void removeRelationshipsByClass(String className)
     {
         for (Relationship relationship : relationships)
@@ -497,16 +533,32 @@ public class WorkingProject {
         }
     }
 
-    private void renameClassInRelationships(String oldClassName, String newClassName){
+    /**
+     * Changes the name of a relationship in all relationships containing it
+     * @param oldClassName the class name to change
+     * @param newClassName the name to change to
+     */
+    private void renameClassInRelationships(String oldClassName, String newClassName)
+    {
         for(Relationship relationship : relationships)
         {
             if (relationship.getClassNameFrom().equals(oldClassName))
+            {
                 relationship.setClassNameFrom(newClassName);
+            }
             if (relationship.getClassNameTo().equals(oldClassName))
-                relationship.setClassNameTo(newClassName);    
+            {
+                relationship.setClassNameTo(newClassName);
+            }
         }
     }
     
+    /**
+     * Converts a one-letter String to the associated relationship type.
+     * @param str a String representing a relationship type
+     * @return    the relationship type represented by the String, or null if
+     *            str does not represent a relationship type
+     */
     public static Relationship.relationshipType stringToRelationshipType(String str)
     {
         str = str.toUpperCase();
@@ -536,12 +588,28 @@ public class WorkingProject {
         relationships.clear();
 
         JSONObject jsonProject = (JSONObject)JSONValue.parse(jsonString);
+
+        if (jsonProject == null)
+        {
+            return 12;
+        }
+
         JSONArray jsonClasses = (JSONArray)jsonProject.get("classes");
         JSONArray jsonRelationships = (JSONArray)jsonProject.get("relationships");
 
+        if (jsonClasses == null || jsonRelationships == null)
+        {
+            return 12;
+        }
+
         for (Object jsonClass : jsonClasses)
         {
-            classes.put((String)(((JSONObject)jsonClass).get("name")), ClassObject.loadFromJSON((JSONObject)jsonClass));
+            ClassObject classObj = ClassObject.loadFromJSON((JSONObject)jsonClass);
+            if (classObj == null)
+            {
+                return 12;
+            }
+            classes.put(classObj.getName(), classObj);
         }
 
         for (Object jsonRelationship : jsonRelationships)
@@ -551,7 +619,16 @@ public class WorkingProject {
             String typeName = (String)((JSONObject)jsonRelationship).get("type");
             typeName = typeName.substring(0, 1);
             Relationship.relationshipType type = stringToRelationshipType(typeName);
+            if (classNameFrom == null || classNameTo == null || type == null)
+            {
+                return 12;
+            }
             relationships.add(new Relationship(classNameFrom, classNameTo, type));
+        }
+
+        if (!validityCheck())
+        {
+            return 13;
         }
 
         return 0;
@@ -583,31 +660,166 @@ public class WorkingProject {
         return jsonProject.toJSONString();
     }
 
+    /**
+     * Checks if a name is a valid name in Java.
+     * @param name the name to check
+     * @return     true if the name is valid, false otherwise
+     */
+    public static boolean isValidName(String name)
+    {
+        return SourceVersion.isName(name);
+    }
+    
+    /**
+     * Checks if a type is a valid data type in Java. A type is valid if it is
+     * a valid name or it is one of the 8 primitive types. A type is also valid
+     * if it is an array of a valid type.
+     * @param type the type to check
+     * @return     true if the type is valid, false otherwise
+     */
+    public static boolean isValidDataType(String type)
+    {
+        boolean isValid = isValidName(type) || 
+                type.equals("byte") ||
+                type.equals("short") ||
+                type.equals("int") ||
+                type.equals("long") ||
+                type.equals("float") ||
+                type.equals("double") ||
+                type.equals("boolean") ||
+                type.equals("char");
+
+        if (type.endsWith("[]"))
+        {
+            isValid = isValidDataType(type.substring(0, type.length() - 2));
+        }
+
+        return isValid;
+    }
+
+    /**
+     * Checks if a type is a valid return type in Java. A return type is valid
+     * if it is a valid data type or it is void.
+     * @param type the type to check
+     * @return     true if the type is valid, false otherwise
+     */
+    public static boolean isValidReturnType(String type)
+    {
+        return isValidDataType(type) || type.equals("void");
+    }
+    
+    /**
+     * Check if this project is valid. To be valid, all names and data types
+     * must be valid. All relationships must also reference classes that are
+     * in the project.
+     * @return true if the project is valid, false otherwise
+     */
+    private boolean validityCheck()
+    {
+        for (String className : classes.keySet())
+        {
+            if (!isValidName(className))
+            {
+                return false;
+            }
+
+            ClassObject classObj = classes.get(className);
+            for (String fieldName : classObj.getFieldNames())
+            {
+                if (!isValidName(fieldName) || !isValidDataType(classObj.getField(fieldName).getType()))
+                {
+                    return false;
+                }
+            }
+
+            for (String methodName : classObj.getMethodNames())
+            {
+                Method method = classObj.getMethod(methodName);
+                if (!isValidName(methodName) || !isValidReturnType(method.getType()))
+                {
+                    return false;
+                }
+                for (Parameter param : method.getParameters())
+                {
+                    if (!isValidName(param.getName()) || !isValidDataType(param.getType()))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        for (Relationship relationship : relationships)
+        {
+            if (!classes.containsKey(relationship.getClassNameFrom()) || 
+                !classes.containsKey(relationship.getClassNameTo()))
+            {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * Check if a project contains a class called className.
+     * @param className the name of the class to search for
+     * @return          true if the project contains the class, false otherwise
+     */
     public boolean hasClass(String className)
     {
         return classes.containsKey(className);
     }
 
-    public Set<String> getClassNames(){
+    /**
+     * Gets a set containing the names of the classes in the project.
+     * @return the set of class names
+     */
+    public Set<String> getClassNames()
+    {
         return classes.keySet();
     }
 
-    public ClassObject getClass(String className){
-        if(classes.containsKey(className)){
+    /**
+     * Accesses a class by name. Should be used after hasClass returned true or
+     * using a member of the set returned by getClassNames. 
+     * @param className the name of the class to return
+     * @return          the class called className, or null if not found
+     */
+    public ClassObject getClass(String className)
+    {
+        if(classes.containsKey(className))
+        {
             return classes.get(className);
         }
         return null;
     }
 
+    /**
+     * Check if a project contains a relationship from one class to another.
+     * @param classNameFrom the name of the "from" class
+     * @param classNameTo   the name of the "to" class
+     * @return              true if the project contains the relationship,
+     *                      false otherwise
+     */
     public boolean hasRelationship(String classNameFrom, String classNameTo)
     {
         return (getRelationshipIndex(classNameFrom, classNameTo) != -1);
     }
 
-    public Set<Relationship> getRelationships(){
+    /**
+     * Gets the set of relationships in the project.
+     * @return the set of relationships
+     */
+    public Set<Relationship> getRelationships()
+    {
         return new HashSet<>(relationships);
     }
 
+    /**
+     * Creates a copy of the project
+     * @return the copy of the project
+     */
     public WorkingProject copy()
     {
         WorkingProject copy = new WorkingProject();
@@ -617,6 +829,4 @@ public class WorkingProject {
         copy.relationships.replaceAll(relationship->relationship.copy());
         return copy;
     }
-
-    
 }
