@@ -61,7 +61,7 @@ public class MethodTest {
     public void testAddParameter ()
     {
         Method m = buildMockMethod();
-        m.addParameter("thingy", "void");
+        m.addParameter("thingy", "int");
         assertTrue(m.hasParameter("thingy"));
     }
 

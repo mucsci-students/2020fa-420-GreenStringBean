@@ -1,13 +1,13 @@
 package model;
 
-import java.util.Set;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import model.VisibleDeclaration.visibility;
 import view.Observer;
@@ -141,6 +141,16 @@ public class ClassObject{
             return 8;
         }
 
+        if (!WorkingProject.isValidName(fieldName))
+        {
+            return 9;
+        }
+
+        if (!WorkingProject.isValidDataType(fieldType))
+        {
+            return 10;
+        }
+
         fields.put(fieldName, new Field(fieldName, fieldType, fieldVis));
         notifyAllObservers();
         return 0;
@@ -191,6 +201,11 @@ public class ClassObject{
             return 8;
         }
 
+        if (!WorkingProject.isValidName(newFieldName))
+        {
+            return 9;
+        }
+
         LinkedHashMap<String, Field> tempFields = new LinkedHashMap<>();
         for (Map.Entry<String, Field> fieldEntry: fields.entrySet())
         {
@@ -228,6 +243,11 @@ public class ClassObject{
             return 3;
         }
 
+        if (!WorkingProject.isValidDataType(newFieldType))
+        {
+            return 10;
+        }
+
         fields.get(fieldName).setType(newFieldType);
         notifyAllObservers();
         return 0;
@@ -245,6 +265,7 @@ public class ClassObject{
         {
             return 1;
         }
+
         visibility newFieldVis = stringToVisibility(newFieldVisName);
         if(newFieldVis == null)
         {
@@ -285,6 +306,16 @@ public class ClassObject{
         if (methods.containsKey(methodName))
         {
             return 8;
+        }
+
+        if (!WorkingProject.isValidName(methodName))
+        {
+            return 9;
+        }
+
+        if (!WorkingProject.isValidReturnType(methodType))
+        {
+            return 10;
         }
 
         methods.put(methodName, new Method(methodName, methodType, methodVis));
@@ -337,6 +368,11 @@ public class ClassObject{
             return 8;
         }
 
+        if (!WorkingProject.isValidName(newMethodName))
+        {
+            return 9;
+        }
+
         LinkedHashMap<String, Method> tempMethods = new LinkedHashMap<>();
         for (Map.Entry<String, Method> methodEntry: methods.entrySet())
         {
@@ -372,6 +408,11 @@ public class ClassObject{
         if (!methods.containsKey(methodName))
         {
             return 4;
+        }
+
+        if (!WorkingProject.isValidReturnType(newMethodType))
+        {
+            return 10;
         }
 
         methods.get(methodName).setType(newMethodType);
@@ -541,26 +582,49 @@ public class ClassObject{
     /**
      * Converts a JSONObject into a class.
      * @param jsonClass a JSONObject representing a class
-     * @return          the class represented by the JSONObject
+     * @return          the class represented by the JSONObject, or null if the
+     *                  JSONObject does not encode a class object
      */
     public static ClassObject loadFromJSON(JSONObject jsonClass)
     {
         String name = (String)jsonClass.get("name");
+        // Use the Boolean object rather than the primitive, so that it can be null if not found
+        Boolean isOpen = (Boolean)jsonClass.get("isOpen");
+
+        if (name == null || isOpen == null)
+        {
+            return null;
+        }
         
         ClassObject classObj = new ClassObject(name);
-        classObj.isOpen = (boolean)jsonClass.get("isOpen");
+        classObj.isOpen = isOpen;
         
         JSONArray jsonFields = (JSONArray)jsonClass.get("fields");
         JSONArray jsonMethods = (JSONArray)jsonClass.get("methods");
 
+        if (jsonFields == null || jsonMethods == null)
+        {
+            return null;
+        }
+
         for (Object jsonField : jsonFields)
         {
-            classObj.fields.put((String)(((JSONObject)jsonField).get("name")), Field.loadFromJSON((JSONObject)jsonField));
+            Field field = Field.loadFromJSON((JSONObject)jsonField);
+            if (field == null)
+            {
+                return null;
+            }
+            classObj.fields.put(field.getName(), field);
         }
 
         for (Object jsonMethod : jsonMethods)
         {
-            classObj.methods.put((String)(((JSONObject)jsonMethod).get("name")), Method.loadFromJSON((JSONObject)jsonMethod));
+            Method method = Method.loadFromJSON((JSONObject)jsonMethod);
+            if (method == null)
+            {
+                return null;
+            }
+            classObj.methods.put(method.getName(), method);
         }
 
         return classObj;

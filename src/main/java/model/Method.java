@@ -1,7 +1,7 @@
 package model;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -41,6 +41,16 @@ public class Method extends VisibleDeclaration {
         if (getParamIndex(paramName) != -1)
         {
             return 8;
+        }
+
+        if (!WorkingProject.isValidName(paramName))
+        {
+            return 9;
+        }
+
+        if (!WorkingProject.isValidDataType(paramType))
+        {
+            return 10;
         }
 
         parameters.add(new Parameter(paramName, paramType));
@@ -84,6 +94,11 @@ public class Method extends VisibleDeclaration {
             return 8;
         }
 
+        if (!WorkingProject.isValidName(newParamName))
+        {
+            return 9;
+        }
+
         parameters.get(oldIndex).setName(newParamName);
         return 0;
     }
@@ -100,6 +115,11 @@ public class Method extends VisibleDeclaration {
         if (index == -1)
         {
             return 5;
+        }
+
+        if (!WorkingProject.isValidDataType(newType))
+        {
+            return 10;
         }
 
         parameters.get(index).setType(newType);
@@ -182,23 +202,45 @@ public class Method extends VisibleDeclaration {
     /**
      * Converts a JSONObject into a method.
      * @param jsonMethod a JSONObject representing a method
-     * @return           the method represented by the JSONObject
+     * @return           the method represented by the JSONObject, or null if
+     *                   the JSONObject does not encode a method
      */
     public static Method loadFromJSON(JSONObject jsonMethod)
     {
         String name = (String)jsonMethod.get("name");
         String type = (String)jsonMethod.get("type");
         String visName = (String)jsonMethod.get("visibility");
+
+        if (name == null || type == null || visName == null)
+        {
+            return null;
+        }
+
         visibility vis = ClassObject.stringToVisibility(visName);
 
-        Method method = new Method(name, type, vis);
+        if (vis == null)
+        {
+            return null;
+        }
 
+        Method method = new Method(name, type, vis);
         JSONArray jsonParameters = (JSONArray)jsonMethod.get("parameters");
+
+        if (jsonParameters == null)
+        {
+            return null;
+        }
 
         for (Object jsonParameter : jsonParameters)
         {
             String paramName = (String)((JSONObject)jsonParameter).get("name");
             String paramType = (String)((JSONObject)jsonParameter).get("type");
+
+            if (paramName == null || paramType == null)
+            {
+                return null;
+            }
+
             method.parameters.add(new Parameter(paramName, paramType));
         }
 

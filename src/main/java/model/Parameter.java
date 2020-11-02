@@ -19,6 +19,25 @@ public class Parameter extends FormalDeclaration {
     }
 
     /**
+     * Creates a String representation of the parameter as it would appear in
+     * Java.
+     * @return the String representing this parameter
+     */
+    public String toString()
+    {
+        return getType() + " " + getName();
+    }
+
+    /**
+     * Creates a copy of this parameter
+     * @return the copy of this parameter
+     */
+    public Parameter copy()
+    {
+        return new Parameter(getName(), getType());
+    }
+
+    /**
      * Converts this parameter to a JSONObject.
      * @return a JSONObject representing ths parameter
      */
@@ -30,12 +49,5 @@ public class Parameter extends FormalDeclaration {
         jsonParameter.put("type", getType());
 
         return jsonParameter;
-    }
-    public String toString()
-    {
-        return getType() + " " + getName();
-    }
-    public Parameter copy(){
-        return new Parameter(getName(), getType());
     }
 }

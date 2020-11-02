@@ -3,7 +3,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
 import org.json.simple.JSONObject;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import model.Field;
@@ -80,7 +79,7 @@ public class FieldTest {
      * Test converting a JSONObject to a field when the JSONObject does not
      * encode a field.
      */
-    @Ignore
+    @Test
     public void testLoadInvalidJSON()
     {
         JSONObject emptyJsonObject = new JSONObject();
