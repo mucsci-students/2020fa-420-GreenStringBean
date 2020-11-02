@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 import model.ClassObject;
 import model.Relationship;
 import java.util.Set;
-import model.WorkingProject;
+import java.util.Iterator;
 import java.io.BufferedReader;
 import controller.WorkingProjectEditor;
 
@@ -59,7 +59,6 @@ public class Console {
                         System.out.print(">");
                         String name = keyboard.nextLine();
                         saveFile (parseLine(name).get(0));
-                        return;
                     }
                     else if (YN.equals("n".toUpperCase()) || YN.equals("n"))
                     {
@@ -401,6 +400,8 @@ public class Console {
                     projectEditor.changeFieldVisibility (commands.get(1), commands.get(2), commands.get(3));
                     printStatusMessage();
                 }
+                break;
+
                 //Change a method's visiblity
                 case "changeMethodVisibility": 
                 if (commands.size() < 4)
@@ -412,6 +413,7 @@ public class Console {
                     projectEditor.changeMethodVisibility (commands.get(1), commands.get(2), commands.get(3));
                     printStatusMessage();
                 }
+                break;
 
                 //Print the names of each class
                 case "printClasses" :
@@ -570,9 +572,11 @@ public class Console {
      */
     private static void printRelationships()
     {
-        Set<Relationship> relationships = projectEditor.getProjectSnapshot().getRelationships();
-        for (Relationship rel : relationships)
+        Set<Relationship> r = projectEditor.getProjectSnapshot().getRelationships();
+        Iterator iter = r.iterator();
+        while(iter.hasNext())
         {
+            Relationship rel = (Relationship)iter.next();
             System.out.println(rel.getClassNameFrom() + " -> " + rel.getClassNameTo() + " " + rel.getType());
         }
     }
@@ -584,13 +588,9 @@ public class Console {
      */
     private static void printClass(String className)
     {
-        WorkingProject snapshot = projectEditor.getProjectSnapshot();
-        if (snapshot.hasClass(className))
-        {
-            ClassObject c = snapshot.getClass(className);
-            c.printFields();
-            c.printMethods();
-        }
+        ClassObject c = projectEditor.getProjectSnapshot().getClass(className);
+        c.printFields();
+        c.printMethods();
     }
 
     public static void main(String[] args)
