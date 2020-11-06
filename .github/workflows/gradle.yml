@@ -24,3 +24,10 @@ jobs:
       run: gradle build
     - name: Test with Gradle
       run: gradle test
+    - name: Report code coverage
+      run: gradle test jacocoTestReport
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
