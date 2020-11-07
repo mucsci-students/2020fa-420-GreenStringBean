@@ -24,3 +24,12 @@ jobs:
       run: gradle build
     - name: Test with Gradle
       run: gradle test
+    - name: Report code coverage
+      run: gradle test jacocoTestReport
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./build/reports/jacoco/test/jacocoTestReport.xml
+        name: codecov-umbrella
+        fail_ci_if_error: true
