@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +24,7 @@ import javax.swing.border.Border;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.UIManager;
+import javax.swing.KeyStroke;
 
 import controller.HelperControllers;
 
@@ -204,6 +207,18 @@ public class GUIViews implements MenuViews{
 		JMenuItem sa = new JMenuItem("Save As");
 		JMenuItem l = new JMenuItem("Load...");
 		JMenuItem ex = new JMenuItem("Exit");
+
+		KeyStroke undoKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke redoKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke loadKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke saveKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke saveAsKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK + InputEvent.SHIFT_DOWN_MASK);
+
+		un.setAccelerator(undoKeyStroke);
+		re.setAccelerator(redoKeyStroke);
+		s.setAccelerator(saveKeyStroke);
+		sa.setAccelerator(saveAsKeyStroke);
+		l.setAccelerator(loadKeyStroke);
 
 		JMenuItem[] arr = {un, re, s, sa, l, ex};
 		String[] txt = {"Undo", "Redo", "Save edited file", "Save edited file as", "Load selected project", "Exit application"};
