@@ -130,7 +130,7 @@ public class ClassObjectTest {
     /**
      * Test adding a field with a name that is not valid.
      */
-    @Ignore
+    @Test
     public void testAddFieldInvalidName()
     {
         ClassObject classObj = new ClassObject("ClassObj");
@@ -142,7 +142,7 @@ public class ClassObjectTest {
     /**
      * Test adding a field with a data type that is not valid.
      */
-    @Ignore
+    @Test
     public void testAddFieldInvalidType()
     {
         ClassObject classObj = new ClassObject("ClassObj");
@@ -253,7 +253,7 @@ public class ClassObjectTest {
     /**
      * Test renaming a field to a name that is not valid.
      */
-    @Ignore
+    @Test
     public void testRenameFieldInvalidName()
     {
         ClassObject classObj = new ClassObject("ClassObj");
@@ -282,7 +282,7 @@ public class ClassObjectTest {
     /**
      * Test changing the data type of a field to one that is not valid.
      */
-    @Ignore
+    @Test
     public void testChangeFieldInvalidType()
     {
         ClassObject classObj = new ClassObject("ClassObj");

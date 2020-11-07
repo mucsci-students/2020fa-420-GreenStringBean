@@ -21,7 +21,7 @@ public class Field extends VisibleDeclaration {
     }
 
     /**
-     * Creates a String representation of the field as it would appear in java
+     * Creates a String representation of the field as it would appear in Java.
      * @return the String representing this field
      */
     public String toString()
@@ -56,14 +56,26 @@ public class Field extends VisibleDeclaration {
    /**
     * Converts a JSONObject into a field.
     * @param jsonField a JSONObject representing a field
-    * @return          the field represented by the JSONObject
+    * @return          the field represented by the JSONObject, or null if the
+                       JSONObject does not encode a field
     */
     public static Field loadFromJSON(JSONObject jsonField)
     {
         String name = (String)jsonField.get("name");
         String type = (String)jsonField.get("type");
         String visibilityName = (String)jsonField.get("visibility");
+
+        if (name == null || type == null || visibilityName == null)
+        {
+            return null;
+        }
+
         visibility vis = ClassObject.stringToVisibility(visibilityName);
+
+        if (vis == null)
+        {
+            return null;
+        }
 
         return new Field(name, type, vis);
     }

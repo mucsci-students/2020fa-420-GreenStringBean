@@ -14,8 +14,16 @@ plugins {
     id 'application'
 
     id 'com.github.johnrengelman.shadow' version '6.0.0'
+
+    id 'jacoco'
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
+}
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
