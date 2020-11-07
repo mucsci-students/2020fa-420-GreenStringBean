@@ -46,7 +46,7 @@ public class FieldClick implements ActionListener
         if (cmd.equals("Add Field")) 
         {
             // TODO Choose from options instead of raw input
-            String fieldVis = view.getText("Visibility (public / protected / private):", cmd);
+            String fieldVis = view.getVis("Visibility:", cmd);
             if (fieldVis == null)
             {
                 return;
@@ -107,7 +107,7 @@ public class FieldClick implements ActionListener
             {
                 return;
             }
-            String newFieldVis = view.getText("New visibility (public / protected / private):", cmd);
+            String newFieldVis = view.getVis("New visibility:", cmd);
             if (newFieldVis == null)
             {
                 return;
@@ -118,7 +118,7 @@ public class FieldClick implements ActionListener
         //Methods
         else if (cmd.equals("Add Method"))
         {
-            String methodVis = view.getText("Visibility (public / protected / private):", cmd);
+            String methodVis = view.getVis("Visibility:", cmd);
             if (methodVis == null)
             {
                 return;
@@ -179,7 +179,7 @@ public class FieldClick implements ActionListener
             {
                 return;
             }
-            String newMethodVis = view.getText("New visibility (public / protected / private):", cmd);
+            String newMethodVis = view.getVis("New visibility:", cmd);
             if (newMethodVis == null)
             {
                 return;

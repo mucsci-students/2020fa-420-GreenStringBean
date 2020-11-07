@@ -43,41 +43,30 @@ public class RelationshipClick implements ActionListener
 			return;
 		}
 
-		String classNameFrom = view.getText("\"From\" class:", cmd);
+		String classNameFrom = view.getClass("\"From\" class:", cmd);
 		if (classNameFrom == null)
 		{
 			return;
 		}
-		String classNameTo = view.getText("\"To\" class:", cmd);
+		String classNameTo = view.getClass("\"To\" class:", cmd);
 		if (classNameTo == null)
 		{
 			return;
 		}
 		
-        if (cmd.equals("Add Inheritance"))
+        if (cmd.equals("Create Relationship"))
         {
-        	controller.addRelationship(classNameFrom, classNameTo, "I");
+			String typeName = view.getRelation("Relationship type:", cmd);
+			if (typeName == null)
+			{
+				return;
+			}
+        	controller.addRelationship(classNameFrom, classNameTo, typeName);
         }
-		
-        else if (cmd.equals("Add Aggregation"))
-        {
-        	controller.addRelationship(classNameFrom, classNameTo, "A");
-        }
-		
-        else if (cmd.equals("Add Composition"))
-        {
-        	controller.addRelationship(classNameFrom, classNameTo, "C");
-        }
-		
-        else if (cmd.equals("Add Realization"))
-        {
-        	controller.addRelationship(classNameFrom, classNameTo, "R");
-		}
 		
         else if (cmd.equals("Change Relationship Type")) 
         {
-            // TODO Choose from options instead of raw input
-			String newTypeName = view.getText("New relationship type (I / A / C / R):", cmd);
+			String newTypeName = view.getRelation("New relationship type:", cmd);
 			if (newTypeName == null)
 			{
 				return;

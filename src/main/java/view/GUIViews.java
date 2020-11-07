@@ -128,6 +128,62 @@ public class GUIViews implements MenuViews{
 	}
 
 	/**
+	 * Method for displaying an input box for a user
+	 * @param  
+	 * @param 
+	 */
+	public String getVis(String prompt, String title) 
+	{
+		Object[] possibleValues = { "Public", "Private", "Protected" };
+
+ 		Object selectedValue = JOptionPane.showInputDialog(pWindow,
+             prompt, title,
+             JOptionPane.PLAIN_MESSAGE, null,
+			 possibleValues, possibleValues[0]);
+			 
+		return (String) selectedValue;	
+	}
+
+	/**
+	 * Method for displaying an input box for a user
+	 * @param  pr
+	 * @param 
+	 */
+	public String getRelation(String prompt, String title)
+	{
+		Object[] possibleValues = { "Inheritance", "Aggregation", "Composition", "Realization" };
+
+ 		Object selectedValue = JOptionPane.showInputDialog(pWindow,
+             prompt, title,
+             JOptionPane.PLAIN_MESSAGE, null,
+			 possibleValues, possibleValues[0]);
+			 
+		return ((String)selectedValue).substring(0, 1);
+	}
+
+	/**
+	 * Method for displaying an input box for a user
+	 * @param  
+	 * @param 
+	 */
+	public String getClass(String prompt, String title)
+	{
+		if(classPanels.keySet().isEmpty())
+		{
+			alert("No classes exist");
+			return null;
+		}
+		Object[] possibleValues = classPanels.keySet().toArray();
+
+		Object selectedValue = JOptionPane.showInputDialog(pWindow,
+		prompt, title,
+		JOptionPane.PLAIN_MESSAGE, null,
+		possibleValues, possibleValues[0]);
+
+		return (String) selectedValue;
+	}
+
+	/**
 	 * Method for alerting the user with a prompt after an ilegal action was performed
 	 * @param message is the alert message to be dispalyed to user
 	 */
@@ -360,17 +416,14 @@ public class GUIViews implements MenuViews{
 		
 		relaM = new JMenu("Relationship");
 
-		JMenuItem in = new JMenuItem("Create Inheritence");
-		JMenuItem ag = new JMenuItem("Create Aggregation");
-		JMenuItem comp = new JMenuItem("Create Composition");
-		JMenuItem re = new JMenuItem("Create Realization");
+		JMenuItem in = new JMenuItem("Create Relationship");
 		JMenuItem cRelat = new JMenuItem("Change Type");
 		JMenuItem dRelat = new JMenuItem("Delete Relationship");
 		JMenuItem sRelat = new JMenuItem("Show Relationships");
 
-		JMenuItem[] arr = {in, ag, comp, re, cRelat, dRelat, sRelat};
-		String[] txt = {"Inheritence", "Aggregation", "Composition", "Realization", "Change Relationship", "Delete Relationship", "Show Relationships"};
-		String[] cmd = {"Add Inheritance", "Add Aggregation", "Add Composition", "Add Realization", "Change Relationship Type", "Remove Relationship", "Show Relationships"};
+		JMenuItem[] arr = {in, cRelat, dRelat, sRelat};
+		String[] txt = {"Create Relationship", "Change Relationship", "Delete Relationship", "Show Relationships"};
+		String[] cmd = {"Create Relationship", "Change Relationship Type", "Remove Relationship", "Show Relationships"};
 
 		for(int i = 0; i < arr.length; ++i)
 		{

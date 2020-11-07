@@ -10,6 +10,21 @@ public interface MenuViews extends Observer
 	/**
 	 * Gets file from user to be saved
 	 */
+	String getVis(String p, String t);
+
+	/**
+	 * Gets file from user to be saved
+	 */
+	String getClass(String p, String t);
+
+	/**
+	 * Gets file from user to be saved
+	 */
+	String getRelation(String p, String t);
+
+	/**
+	 * Gets file from user to be saved
+	 */
 	File getSaveFile();
 
 	/**
