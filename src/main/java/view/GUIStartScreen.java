@@ -6,9 +6,11 @@ import javax.swing.JButton;
 import controller.HelperControllers;
 import java.awt.event.*;
 import java.awt.FlowLayout;
+import controller.ModelEditor;
 
 public class GUIStartScreen 
 {
+    private ModelEditor project;
     private JFrame win = new JFrame("UML");
     private JPanel bPanel = new JPanel();
     private JButton strtB = new JButton("Lets Get Started!");
@@ -17,8 +19,9 @@ public class GUIStartScreen
     /**
      * Method that creates a window for a user to start or close GUI
      */
-    public GUIStartScreen()
+    public GUIStartScreen(ModelEditor project)
     {
+        this.project = project;
         //Creates a window 
         windowSetup();
         win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +56,7 @@ public class GUIStartScreen
     		if(cmd.equals("Start")) 
     		{
                  GUIEditor uml = new GUIEditor();
-                 HelperControllers hc = new HelperControllers(uml);
+                 HelperControllers hc = new HelperControllers(uml, project);
                  win.setVisible(false);
     		}else if(cmd.equals("Close")){
     			System.exit(0);

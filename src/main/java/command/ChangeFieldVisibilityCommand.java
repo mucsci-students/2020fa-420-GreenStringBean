@@ -1,13 +1,13 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class ChangeFieldVisibilityCommand extends Command {
     private String className;
     private String fieldName;
     private String newFieldVisName;
 
-    public ChangeFieldVisibilityCommand (WorkingProject project, String className, String fieldName, String newFieldVisName )
+    public ChangeFieldVisibilityCommand (Model project, String className, String fieldName, String newFieldVisName )
     {
         super(project);
         this.className = className;

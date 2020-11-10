@@ -3,7 +3,7 @@ package view;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import model.WorkingProject;
+import model.Model;
 
 public interface MenuViews extends Observer
 {
@@ -59,5 +59,5 @@ public interface MenuViews extends Observer
 	void start();
 
 	// Temporary until we can display arrows between class boxes
-	void showRelationships(WorkingProject snapshot);
+	void showRelationships(Model snapshot);
 }

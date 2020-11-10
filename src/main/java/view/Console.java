@@ -13,7 +13,7 @@ import model.Relationship;
 import java.util.Set;
 import java.util.Iterator;
 import java.io.BufferedReader;
-import controller.WorkingProjectEditor;
+import controller.ModelEditor;
 
 /**
  * The Console allows a user to interface with a UML model
@@ -25,9 +25,22 @@ public class Console {
     static boolean helpfilePresent = true;
     static BufferedReader brHelp;
     static BufferedReader brProject;
-    static WorkingProjectEditor projectEditor;
+    static ModelEditor projectEditor;
 
     //Methods
+    public Console(ModelEditor m)
+    {
+        try {
+            brHelp = new BufferedReader (new FileReader ("HelpDocument.txt"));
+            brHelp.mark(5000);
+        }
+        catch (Exception FileNotFoundException) {
+            helpfilePresent = false;
+        }
+        projectEditor = m;
+        console ();
+        System.exit(0);
+    }
 
     /**
      * Repeatedly prompt the user for input until the program is exited via 'quit'.
@@ -591,19 +604,5 @@ public class Console {
         ClassObject c = projectEditor.getProjectSnapshot().getClass(className);
         c.printFields();
         c.printMethods();
-    }
-
-    public static void main(String[] args)
-    {
-        try {
-            brHelp = new BufferedReader (new FileReader ("HelpDocument.txt"));
-            brHelp.mark(5000);
-        }
-        catch (Exception FileNotFoundException) {
-            helpfilePresent = false;
-        }
-        projectEditor = new WorkingProjectEditor();
-        console ();
-        System.exit(0);
     }
 }

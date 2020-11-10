@@ -1,9 +1,11 @@
 package controller;
 import view.*;
 
+
+
 public class HelperControllers 
 {
-	private WorkingProjectEditor project;
+	private ModelEditor project;
 	private MenuViews view;
 	
 	/**
@@ -11,9 +13,9 @@ public class HelperControllers
 	 * the WorkingProjectEditor to move data around to its respected parts
      * @param v view of the GUI that is to be updated occordingly 
      */
-	public HelperControllers(MenuViews v) 
+	public HelperControllers(MenuViews v, ModelEditor m) 
 	{
-		this.project = new WorkingProjectEditor();
+		this.project = m;
 		this.view = v;
 		project.attach(v);
 		addListeners();
