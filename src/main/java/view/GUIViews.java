@@ -31,7 +31,7 @@ import controller.HelperControllers;
 import javax.swing.WindowConstants;
 
 import model.ClassObject;
-import model.WorkingProject;
+import model.Model;
 import model.Relationship;
 
 public class GUIViews implements MenuViews{
@@ -478,7 +478,7 @@ public class GUIViews implements MenuViews{
 	 * Called when an observed project updates. Update all class panels.
 	 * @param project a copy of the observed project
 	 */
-	public void onUpdate(WorkingProject project)
+	public void onUpdate(Model project)
 	{
 		System.out.println("View notified with a project");
 		clearClassPanels();
@@ -588,7 +588,7 @@ public class GUIViews implements MenuViews{
 	}
 
 	// Temporary until we can display arrows between class boxes
-	public void showRelationships(WorkingProject project)
+	public void showRelationships(Model project)
 	{
 		StringBuilder message = new StringBuilder("Relationships:");
 		for (Relationship relationship : project.getRelationships())

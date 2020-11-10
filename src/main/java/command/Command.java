@@ -1,10 +1,10 @@
 package command;
-import model.WorkingProject;
+import model.Model;
 
 public abstract class Command {
 	private boolean status;
 	private String statusMsg;
-	protected WorkingProject project;
+	protected Model project;
 	private String projectState;
 	
 
@@ -27,7 +27,7 @@ public abstract class Command {
 		"Visibility modifier is not valid"
 	};
 
-	protected Command(WorkingProject project)
+	protected Command(Model project)
 	{
 		status = false;
 		statusMsg = "Not yet executed";

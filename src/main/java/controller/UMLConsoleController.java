@@ -1,6 +1,8 @@
 package controller;
 import view.GUIStartScreen;
 import view.Console;
+import model.Model;
+import model.WorkingProject;
 
 public class UMLConsoleController {
 
@@ -9,13 +11,15 @@ public class UMLConsoleController {
 		 * @param args is input from a user to decide to use GUI or CLI
 		 */
 		public static void main(String[] args) {
+			Model model = new WorkingProject();
+			ModelEditor editor = new WorkingProjectEditor(model);
 			//start in console
 			if(args.length == 1 && args[0].equals("--cli"))
 			{
-				Console.main(args);
+				new Console(editor);
 			}
 
 			//Starts the app with a prompt to start GUI 
-			GUIStartScreen uml = new GUIStartScreen();
+			GUIStartScreen uml = new GUIStartScreen(editor);
 		}
 }

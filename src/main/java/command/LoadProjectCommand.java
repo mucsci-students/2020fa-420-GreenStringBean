@@ -1,11 +1,11 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class LoadProjectCommand extends Command {
     private String jsonString;
 
-    public LoadProjectCommand (WorkingProject project, String jsonString)
+    public LoadProjectCommand (Model project, String jsonString)
     {
         super(project);
         this.jsonString = jsonString;

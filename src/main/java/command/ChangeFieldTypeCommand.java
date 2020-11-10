@@ -1,13 +1,13 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class ChangeFieldTypeCommand extends Command {
     private String className;
     private String fieldName;
     private String newFieldType;
 
-    public ChangeFieldTypeCommand (WorkingProject project, String className, String fieldName, String newFieldType)
+    public ChangeFieldTypeCommand (Model project, String className, String fieldName, String newFieldType)
     {
         super(project);
         this.className = className;
