@@ -7,13 +7,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashMap;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -36,7 +38,7 @@ import model.Relationship;
 
 public class GUIViews implements MenuViews{
 	private JMenuBar mb;
-	private JFrame pWindow;
+	private JLayeredPane pWindow;
 	private JFrame win;
 	private JMenu fileM;
 	private JMenu relaM;
@@ -47,7 +49,7 @@ public class GUIViews implements MenuViews{
 	private Map<String, JPanel> classPanels;
 
 	/**
-	 * Method for making the GUI window a different style
+	 * Constructor for creating a new GUI view
 	 */
 	public GUIViews()
 	{
@@ -71,11 +73,15 @@ public class GUIViews implements MenuViews{
 		System.out.println("Got to make the window(): GUIViews()");
 
 		win = new JFrame("UML");
-		win.setLayout(new GridLayout(5,5));
+		win.setLayout(null);
 		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		win.setSize(800,750);
 		win.setVisible(true);
-		pWindow = win;
+		pWindow = new JLayeredPane();
+		pWindow.setLayout(null);
+		pWindow.setSize(800, 750);
+		pWindow.setVisible(true);
+		win.add(pWindow);
 		makeMenu(win);
 		pWindow.add(mb);
 		win.setJMenuBar(mb);
@@ -450,7 +456,7 @@ public class GUIViews implements MenuViews{
 	}
 	
 	/**
-	 * Adds all the action listeners to there respected clicks
+	 * Adds all the action listeners to their respective clicks
 	 */
 	public void addListeners(ActionListener fileL, ActionListener classL, ActionListener fieldL,
 			ActionListener relatL) 
@@ -463,8 +469,8 @@ public class GUIViews implements MenuViews{
 		relationshipListener(relatL);
 		
 		System.out.println("finished listeners: GUIViews()");
-    }
-	
+	}
+
 	/**
 	 * Starts the program with a clean window for GUI
 	 */
@@ -478,16 +484,65 @@ public class GUIViews implements MenuViews{
 	 * Called when an observed project updates. Update all class panels.
 	 * @param project a copy of the observed project
 	 */
-	public void onUpdate(Model project)
+	public void onUpdate(Model project, boolean newLoadedProject)
 	{
-		System.out.println("View notified with a project");
-		clearClassPanels();
-
-		for (String className : project.getClassNames())
+		if (newLoadedProject)
 		{
-			createClassPanel(project.getClass(className));
-		}
+			System.out.println("View notified with a loaded project");
+			clearClassPanels();
 
+			for (String className : project.getClassNames())
+			{
+				createClassPanel(project.getClass(className));
+			}
+		}
+		else
+		{
+			System.out.println("View notified with a non-loaded project");
+			String missingClassName = "";
+			String foundClassName = "";
+			Set<String> existingClassNames = classPanels.keySet();
+			Set<String> notifClassNames = project.getClassNames();
+			for (String existingClassName : existingClassNames)
+			{
+				if (!notifClassNames.contains(existingClassName))
+				{
+					missingClassName = existingClassName;
+				}
+			}
+			for (String notifClassName : notifClassNames)
+			{
+				if (!existingClassNames.contains(notifClassName))
+				{
+					foundClassName = notifClassName;
+				}
+			}
+
+			if (!missingClassName.isEmpty() && !foundClassName.isEmpty())
+			{
+				// Class has been renamed
+
+				JPanel panel = classPanels.remove(missingClassName);
+				classPanels.put(foundClassName, panel);
+				pWindow.moveToFront(panel);
+			}
+			else if (!missingClassName.isEmpty())
+			{
+				// Class has been removed
+				pWindow.remove(classPanels.get(missingClassName));
+				classPanels.remove(missingClassName);
+			}
+			else if (!foundClassName.isEmpty())
+			{
+				// Class has been added
+				createClassPanel(project.getClass(foundClassName));
+			}
+
+			for (Map.Entry<String, JPanel> panelEntry : classPanels.entrySet())
+			{
+				updateClassPanel(panelEntry.getValue(), project.getClass(panelEntry.getKey()));
+			}
+		}
 		refresh();
 	}
 
@@ -501,6 +556,7 @@ public class GUIViews implements MenuViews{
 		System.out.println("View notified with a class");
 		JPanel panel = classPanels.get(classObj.getName());
 		updateClassPanel(panel, classObj);
+		pWindow.moveToFront(panel);
         refresh();
 	}
 	
@@ -510,12 +566,26 @@ public class GUIViews implements MenuViews{
 	 */
 	private void createClassPanel(ClassObject classObj)
 	{
-		System.out.println("made the class panel for display: GUIViews()");
-        
-        JPanel panel = new JPanel();
+		JPanel panel = new JPanel();
+		panel.setLocation(0, 0);
+		boolean goodLocation = false;
+		while (!goodLocation)
+		{
+			panel.setLocation(panel.getX() + 10, panel.getY() + 10);
+			goodLocation = true;
+			for (JPanel other : classPanels.values())
+			{
+				if (other.getLocation().equals(panel.getLocation()))
+				{
+					goodLocation = false;
+				}
+			}
+		}
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setVisible(true);
 		classPanels.put(classObj.getName(), panel);
 		pWindow.add(panel);
+		pWindow.moveToFront(panel);
 		
 		updateClassPanel(panel, classObj);
 	}
@@ -530,40 +600,32 @@ public class GUIViews implements MenuViews{
 		panel.removeAll();
 		
 		Border classBd = BorderFactory.createLineBorder(Color.BLACK);
-        Border classNameBd = BorderFactory.createLineBorder(Color.RED);
-        Border fieldBd = BorderFactory.createLineBorder(Color.GREEN);
-		Border methodBd = BorderFactory.createLineBorder(Color.BLUE);
 		panel.setBorder(classBd);
 
-		if(classObj.isOpen())
-		{
-			panel.setBackground(Color.LIGHT_GRAY);
-		}
-		else
-		{
-			panel.setBackground(Color.GRAY);
-		}
+		Color bgColor = classObj.isOpen() ? Color.WHITE : Color.GRAY;
 
 		JTextArea classTxt = new JTextArea(classObj.getName());
 		classTxt.setEditable(false);
-        classTxt.setBorder(classNameBd);
+		classTxt.setBackground(bgColor);
 		panel.add(classTxt);
 		
         for (String fieldName : classObj.getFieldNames())
         {
             JTextArea fieldTxt = new JTextArea(classObj.getField(fieldName).toString());
             fieldTxt.setEditable(false);
-            fieldTxt.setBorder(fieldBd);
-            panel.add(fieldTxt);
+			fieldTxt.setBackground(bgColor);
+			panel.add(fieldTxt);
 		}
 		
         for (String methodName : classObj.getMethodNames())
         {
             JTextArea methodTxt = new JTextArea(classObj.getMethod(methodName).toString());
             methodTxt.setEditable(false);
-            methodTxt.setBorder(methodBd);
-            panel.add(methodTxt);
+			methodTxt.setBackground(bgColor);
+			panel.add(methodTxt);
 		}
+
+		panel.setSize(panel.getPreferredSize());
 	}
 
 	/**

@@ -65,9 +65,9 @@ public class WorkingProjectEditor implements ModelEditor{
     /**
      * Let the Observer know each time the project updates
      */
-    private void notifyAllObservers()
+    private void notifyAllObservers(boolean load)
     {
-        observers.forEach(o -> o.onUpdate(getProjectSnapshot()));
+        observers.forEach(o -> o.onUpdate(getProjectSnapshot(), load));
     }
 
     /**
@@ -109,7 +109,6 @@ public class WorkingProjectEditor implements ModelEditor{
 
         if(cmd.getStatus())
             observers.forEach(o -> addedClass.attach(o));
-
     }
 
     /**
@@ -157,8 +156,18 @@ public class WorkingProjectEditor implements ModelEditor{
      */
     public void loadProject(String jsonString)
     {
+        for (String className : project.getClassNames())
+        {
+            ClassObject classObj = project.getClass(className);
+            observers.forEach(o -> classObj.detach(o));
+        }
         Command cmd = new LoadProjectCommand(project, jsonString);
         executeProjectCommand(cmd);
+        for (String className : project.getClassNames())
+        {
+            ClassObject classObj = project.getClass(className);
+            observers.forEach(o -> classObj.attach(o));
+        }
     }
 
     /**
@@ -394,8 +403,6 @@ public class WorkingProjectEditor implements ModelEditor{
                 executedCommands.removeLast();
             }
             executedCommands.push(cmd);
-
-            notifyAllObservers();
         }
         lastCommandStatus = cmd.getStatus();
         lastCommandStatusMsg = cmd.getStatusMessage();
@@ -410,7 +417,7 @@ public class WorkingProjectEditor implements ModelEditor{
         executeCommand(cmd);
         if(cmd.getStatus())
         {
-            notifyAllObservers();
+            notifyAllObservers(cmd instanceof LoadProjectCommand);
         }
     }
 
@@ -442,7 +449,7 @@ public class WorkingProjectEditor implements ModelEditor{
             Command cmd = executedCommands.pop();
             cmd.undo();
             undoneCommands.push(cmd);
-            notifyAllObservers();
+            notifyAllObservers(cmd instanceof LoadProjectCommand);
         }
     }
 
@@ -465,7 +472,7 @@ public class WorkingProjectEditor implements ModelEditor{
             Command cmd = undoneCommands.pop();
             cmd.execute();
             executedCommands.push(cmd);
-            notifyAllObservers();
+            notifyAllObservers(cmd instanceof LoadProjectCommand);
         }
     }
 
