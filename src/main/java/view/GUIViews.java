@@ -28,6 +28,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.UIManager;
 import javax.swing.KeyStroke;
 
+import controller.ClassPanelClick;
 import controller.HelperControllers;
 
 import javax.swing.WindowConstants;
@@ -567,6 +568,8 @@ public class GUIViews implements MenuViews{
 	private void createClassPanel(ClassObject classObj)
 	{
 		JPanel panel = new JPanel();
+		ClassPanelClick listener = new ClassPanelClick(panel);
+		addDragListener(panel, listener);
 		panel.setLocation(0, 0);
 		boolean goodLocation = false;
 		while (!goodLocation)
@@ -591,42 +594,58 @@ public class GUIViews implements MenuViews{
 	}
 
 	/**
-	 * Updates the contents of a class panel to match a class object.
-	 * @param panel    the panel to update
-	 * @param classObj the class the panel should display
+	 * 
+	 * @param panel
 	 */
-	private void updateClassPanel(JPanel panel, ClassObject classObj)
+	public void addDragListener(Component component, ClassPanelClick listener)
 	{
-		panel.removeAll();
-		
-		Border classBd = BorderFactory.createLineBorder(Color.BLACK);
-		panel.setBorder(classBd);
+		component.addMouseListener(listener);
+		component.addMouseMotionListener(listener);
+	}
 
-		Color bgColor = classObj.isOpen() ? Color.WHITE : Color.GRAY;
+	/**
+     * Updates the contents of a class panel to match a class object.
+     * @param panel    the panel to update
+     * @param classObj the class the panel should display
+     */
+    private void updateClassPanel(JPanel panel, ClassObject classObj)
+    {
+        panel.removeAll();
+		ClassPanelClick listener =  (ClassPanelClick) panel.getMouseListeners()[0];
+        Border classBd = BorderFactory.createLineBorder(Color.BLACK);
+        panel.setBorder(classBd);
+
+        panel.setBackground(classObj.isOpen() ? Color.WHITE : Color.GRAY);
 
 		JTextArea classTxt = new JTextArea(classObj.getName());
-		classTxt.setEditable(false);
-		classTxt.setBackground(bgColor);
+        classTxt.setEditable(false);
+        classTxt.setFocusable(false);
+        classTxt.setOpaque(false);
 		panel.add(classTxt);
-		
+		addDragListener(classTxt, listener);
+        
         for (String fieldName : classObj.getFieldNames())
         {
             JTextArea fieldTxt = new JTextArea(classObj.getField(fieldName).toString());
             fieldTxt.setEditable(false);
-			fieldTxt.setBackground(bgColor);
+            fieldTxt.setFocusable(false);
+            fieldTxt.setOpaque(false);
 			panel.add(fieldTxt);
-		}
-		
+			addDragListener(fieldTxt, listener);
+        }
+        
         for (String methodName : classObj.getMethodNames())
         {
             JTextArea methodTxt = new JTextArea(classObj.getMethod(methodName).toString());
             methodTxt.setEditable(false);
-			methodTxt.setBackground(bgColor);
+            methodTxt.setFocusable(false);
+            methodTxt.setOpaque(false);
 			panel.add(methodTxt);
-		}
+			addDragListener(methodTxt, listener);
+        }
 
-		panel.setSize(panel.getPreferredSize());
-	}
+        panel.setSize(panel.getPreferredSize());
+    }
 
 	/**
 	 * Removes all class panels from the view.
