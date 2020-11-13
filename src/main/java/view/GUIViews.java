@@ -2,14 +2,15 @@ package view;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridLayout;
+import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -22,17 +23,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.UIManager;
-import javax.swing.KeyStroke;
 
 import controller.ClassPanelClick;
-import controller.HelperControllers;
-
-import javax.swing.WindowConstants;
-
 import model.ClassObject;
 import model.Model;
 import model.Relationship;
@@ -46,6 +44,7 @@ public class GUIViews implements MenuViews{
 	private JMenu fieldM;
 	private JMenu classM;
 	private JFileChooser fileChooser;
+	private Font font;
 
 	private Map<String, JPanel> classPanels;
 
@@ -63,6 +62,7 @@ public class GUIViews implements MenuViews{
 		{
 			// Default Java look and feel will be used
 		}
+		font = new Font(Font.MONOSPACED, Font.PLAIN, 15);
 	}
 	
 	/**
@@ -74,13 +74,12 @@ public class GUIViews implements MenuViews{
 		System.out.println("Got to make the window(): GUIViews()");
 
 		win = new JFrame("UML");
-		win.setLayout(null);
 		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		win.setSize(800,750);
 		win.setVisible(true);
+		win.addComponentListener(new WindowResizeListener(this));
 		pWindow = new JLayeredPane();
 		pWindow.setLayout(null);
-		pWindow.setSize(800, 750);
 		pWindow.setVisible(true);
 		win.add(pWindow);
 		makeMenu(win);
@@ -129,7 +128,7 @@ public class GUIViews implements MenuViews{
 	 * @param prompt 
 	 * @param title
 	 */
-	public String getText(String prompt, String title) 
+	public String promptForString(String prompt, String title) 
 	{
 		return JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE);
 	}
@@ -139,7 +138,7 @@ public class GUIViews implements MenuViews{
 	 * @param  
 	 * @param 
 	 */
-	public String getVis(String prompt, String title) 
+	public String promptForVis(String prompt, String title) 
 	{
 		Object[] possibleValues = { "Public", "Private", "Protected" };
 
@@ -156,7 +155,7 @@ public class GUIViews implements MenuViews{
 	 * @param  pr
 	 * @param 
 	 */
-	public String getRelation(String prompt, String title)
+	public String promptForRelType(String prompt, String title)
 	{
 		Object[] possibleValues = { "Inheritance", "Aggregation", "Composition", "Realization" };
 
@@ -173,7 +172,7 @@ public class GUIViews implements MenuViews{
 	 * @param  
 	 * @param 
 	 */
-	public String getClass(String prompt, String title)
+	public String promptForClassName(String prompt, String title)
 	{
 		if(classPanels.keySet().isEmpty())
 		{
@@ -266,26 +265,32 @@ public class GUIViews implements MenuViews{
 
 		JMenuItem un = new JMenuItem("Undo");
 		JMenuItem re = new JMenuItem("Redo");
+		JMenuItem zi = new JMenuItem("Zoom In");
+		JMenuItem zo = new JMenuItem("Zoom Out");
 		JMenuItem s = new JMenuItem("Save");
 		JMenuItem sa = new JMenuItem("Save As");
-		JMenuItem l = new JMenuItem("Load...");
+		JMenuItem l = new JMenuItem("Load");
 		JMenuItem ex = new JMenuItem("Exit");
 
 		KeyStroke undoKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke redoKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke zoomInKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke zoomOutKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke loadKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke saveKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
-		KeyStroke saveAsKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK + InputEvent.SHIFT_DOWN_MASK);
+		KeyStroke saveAsKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
 
 		un.setAccelerator(undoKeyStroke);
 		re.setAccelerator(redoKeyStroke);
+		zi.setAccelerator(zoomInKeyStroke);
+		zo.setAccelerator(zoomOutKeyStroke);
 		s.setAccelerator(saveKeyStroke);
 		sa.setAccelerator(saveAsKeyStroke);
 		l.setAccelerator(loadKeyStroke);
 
-		JMenuItem[] arr = {un, re, s, sa, l, ex};
-		String[] txt = {"Undo", "Redo", "Save edited file", "Save edited file as", "Load selected project", "Exit application"};
-		String[] cmd = {"Undo", "Redo", "Save", "Save As", "Load", "Exit"};
+		JMenuItem[] arr = {un, re, zi, zo, s, sa, l, ex};
+		String[] txt = {"Undo", "Redo", "Zoom In", "Zoom Out", "Save edited file", "Save edited file as", "Load selected project", "Exit application"};
+		String[] cmd = {"Undo", "Redo", "Zoom In", "Zoom Out", "Save", "Save As", "Load", "Exit"};
 
 		for(int count = 0; count < arr.length; ++count)
 		{
@@ -568,13 +573,14 @@ public class GUIViews implements MenuViews{
 	private void createClassPanel(ClassObject classObj)
 	{
 		JPanel panel = new JPanel();
-		ClassPanelClick listener = new ClassPanelClick(panel);
+		ClassPanelClick listener = new ClassPanelClick(this, panel);
 		addDragListener(panel, listener);
 		panel.setLocation(0, 0);
 		boolean goodLocation = false;
 		while (!goodLocation)
 		{
-			panel.setLocation(panel.getX() + 10, panel.getY() + 10);
+			int offset = font.getSize() * 4 / 3;
+			panel.setLocation(panel.getX() + offset, panel.getY() + offset);
 			goodLocation = true;
 			for (JPanel other : classPanels.values())
 			{
@@ -612,7 +618,7 @@ public class GUIViews implements MenuViews{
     {
         panel.removeAll();
 		ClassPanelClick listener =  (ClassPanelClick) panel.getMouseListeners()[0];
-        Border classBd = BorderFactory.createLineBorder(Color.BLACK);
+        Border classBd = BorderFactory.createLineBorder(Color.BLACK, 2);
         panel.setBorder(classBd);
 
         panel.setBackground(classObj.isOpen() ? Color.WHITE : Color.GRAY);
@@ -620,7 +626,8 @@ public class GUIViews implements MenuViews{
 		JTextArea classTxt = new JTextArea(classObj.getName());
         classTxt.setEditable(false);
         classTxt.setFocusable(false);
-        classTxt.setOpaque(false);
+		classTxt.setOpaque(false);
+		classTxt.setFont(font);
 		panel.add(classTxt);
 		addDragListener(classTxt, listener);
         
@@ -630,6 +637,7 @@ public class GUIViews implements MenuViews{
             fieldTxt.setEditable(false);
             fieldTxt.setFocusable(false);
             fieldTxt.setOpaque(false);
+			fieldTxt.setFont(font);
 			panel.add(fieldTxt);
 			addDragListener(fieldTxt, listener);
         }
@@ -640,11 +648,14 @@ public class GUIViews implements MenuViews{
             methodTxt.setEditable(false);
             methodTxt.setFocusable(false);
             methodTxt.setOpaque(false);
+			methodTxt.setFont(font);
 			panel.add(methodTxt);
 			addDragListener(methodTxt, listener);
         }
 
-        panel.setSize(panel.getPreferredSize());
+		panel.setSize(panel.getPreferredSize());
+		
+		contain(panel);
     }
 
 	/**
@@ -658,6 +669,44 @@ public class GUIViews implements MenuViews{
 		}
 		classPanels.clear();
 	}
+
+	/**
+	 * Increases the size of elements on screen, with a maximum of 60pt font
+	 * @return true if the size was increased, false if not
+	 */
+	public boolean zoomIn()
+	{
+		if (font.getSize() < 60)
+		{
+			font = font.deriveFont(font.getSize2D() + 3);
+			for (JPanel panel : classPanels.values())
+			{
+				panel.setLocation(panel.getX() + 4, panel.getY() + 4);
+			}
+			containAll();
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Decreases the size of elements on screen, with a minimum of 6pt font
+	 * @return true if the size was increased, false if not
+	 */
+	public boolean zoomOut()
+	{
+		if (font.getSize() > 6)
+		{
+			font = font.deriveFont(font.getSize2D() - 3);
+			for (JPanel panel : classPanels.values())
+			{
+				panel.setLocation(panel.getX() - 4, panel.getY() - 4);
+			}
+			containAll();
+			return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * Updates view
@@ -666,6 +715,52 @@ public class GUIViews implements MenuViews{
 	{
 		pWindow.revalidate();
 		pWindow.repaint();
+	}
+
+	/**
+	 * Ensures a panel is within the bounds of the window. If a panel does not
+	 * fit in the window, it is kept on the left or top of the window.
+	 * @param panel
+	 */
+	public void contain(JPanel panel)
+	{
+		int panelX = panel.getX();
+		int panelY = panel.getY();
+		int panelWidth = panel.getWidth();
+		int panelHeight = panel.getHeight();
+		int windowWidth = pWindow.getWidth();
+		int windowHeight = pWindow.getHeight();
+
+		if (panelX + panelWidth > windowWidth)
+		{
+			panelX = windowWidth - panelWidth;
+		}
+		if (panelX < 0)
+		{
+			panelX = 0;
+		}
+
+		if (panelY + panelHeight > windowHeight)
+		{
+			panelY = windowHeight - panelHeight;
+		}
+		if (panelY < 0)
+		{
+			panelY = 0;
+		}
+
+		panel.setLocation(panelX, panelY);
+	}
+
+	/**
+	 * Contain all panels within the window.
+	 */
+	public void containAll()
+	{
+		for (JPanel panel : classPanels.values())
+		{
+			contain(panel);
+		}
 	}
 
 	// Temporary until we can display arrows between class boxes

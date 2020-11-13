@@ -3,27 +3,32 @@ package controller;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JLayeredPane;
 import view.MenuViews;
+
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 
 public class ClassPanelClick implements MouseListener, MouseMotionListener
 {
     private int dragX, dragY;
-	//private MenuViews view;
+	private MenuViews view;
     //private HelperControllers controller;
     private JPanel panel;
 
-    public ClassPanelClick(JPanel panel)
+    public ClassPanelClick(MenuViews view, JPanel panel)
 	{
-		//this.view = v;
+		this.view = view;
         //this.controller = c;
         this.panel = panel;
 	}
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        // TODO Auto-generated method stub
-        panel.setLocation((e.getXOnScreen()-dragX), (e.getYOnScreen()-dragY));
+        Point parentPos = panel.getParent().getLocationOnScreen();
+        panel.setLocation((e.getXOnScreen() - parentPos.x - dragX), (e.getYOnScreen() - parentPos.y - dragY));
+        view.contain(panel);
     }
 
     @Override
@@ -40,10 +45,17 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
-        System.out.println("Got to ClassPanelClick() setting coords");
         dragX = e.getX();
         dragY = e.getY();
+
+        if (e.getComponent() instanceof JTextArea)
+        {
+            Point childPos = e.getComponent().getLocation();
+            dragX += childPos.x;
+            dragY += childPos.y;
+        }
+
+        ((JLayeredPane)panel.getParent()).moveToFront(panel);
     }
 
     @Override
