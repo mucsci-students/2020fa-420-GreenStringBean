@@ -43,12 +43,12 @@ public class RelationshipClick implements ActionListener
 			return;
 		}
 
-		String classNameFrom = view.getClass("\"From\" class:", cmd);
+		String classNameFrom = view.promptForClassName("\"From\" class:", cmd);
 		if (classNameFrom == null)
 		{
 			return;
 		}
-		String classNameTo = view.getClass("\"To\" class:", cmd);
+		String classNameTo = view.promptForClassName("\"To\" class:", cmd);
 		if (classNameTo == null)
 		{
 			return;
@@ -56,7 +56,7 @@ public class RelationshipClick implements ActionListener
 		
         if (cmd.equals("Create Relationship"))
         {
-			String typeName = view.getRelation("Relationship type:", cmd);
+			String typeName = view.promptForRelType("Relationship type:", cmd);
 			if (typeName == null)
 			{
 				return;
@@ -66,7 +66,7 @@ public class RelationshipClick implements ActionListener
 		
         else if (cmd.equals("Change Relationship Type")) 
         {
-			String newTypeName = view.getRelation("New relationship type:", cmd);
+			String newTypeName = view.promptForRelType("New relationship type:", cmd);
 			if (newTypeName == null)
 			{
 				return;

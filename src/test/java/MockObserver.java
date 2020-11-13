@@ -21,7 +21,7 @@ public class MockObserver implements Observer {
         wasNotifiedWithClass = false;
     }
 
-    public void onUpdate(Model project)
+    public void onUpdate(Model project, boolean newLoadedProject)
     {
         wasNotified = true;
         wasNotifiedWithProject = true;

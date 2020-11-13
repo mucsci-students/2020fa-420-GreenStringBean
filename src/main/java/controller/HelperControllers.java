@@ -1,4 +1,6 @@
 package controller;
+
+import model.Model;
 import view.*;
 
 
@@ -328,6 +330,11 @@ public class HelperControllers
 	public void redo()
 	{
 		project.redo();
+	}
+
+	public Model getProjectSnapshot()
+	{
+		return project.getProjectSnapshot();
 	}
 	
 	/**
