@@ -34,6 +34,7 @@ import controller.ClassPanelClick;
 import model.ClassObject;
 import model.Model;
 import model.Relationship;
+import model.Relationship.relationshipType;
 
 public class GUIViews implements MenuViews{
 	private JMenuBar mb;
@@ -47,6 +48,7 @@ public class GUIViews implements MenuViews{
 	private Font font;
 
 	private Map<String, JPanel> classPanels;
+	private Map<Relationship, RelationArrow> relationArrows; 
 
 	/**
 	 * Constructor for creating a new GUI view
@@ -54,6 +56,7 @@ public class GUIViews implements MenuViews{
 	public GUIViews()
 	{
 		this.classPanels = new HashMap<>();
+		this.relationArrows = new HashMap<>();
 		try
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -549,6 +552,17 @@ public class GUIViews implements MenuViews{
 				updateClassPanel(panelEntry.getValue(), project.getClass(panelEntry.getKey()));
 			}
 		}
+		relationArrows.clear();
+
+		for (Component c : pWindow.getComponentsInLayer(JLayeredPane.DEFAULT_LAYER))
+		{
+			pWindow.remove(c);
+		}
+
+		for (Relationship r : project.getRelationships())
+		{
+			createRelationArrow(r);
+		}
 		refresh();
 	}
 
@@ -594,6 +608,7 @@ public class GUIViews implements MenuViews{
 		panel.setVisible(true);
 		classPanels.put(classObj.getName(), panel);
 		pWindow.add(panel);
+		pWindow.setLayer(panel, JLayeredPane.PALETTE_LAYER);
 		pWindow.moveToFront(panel);
 		
 		updateClassPanel(panel, classObj);
@@ -607,6 +622,67 @@ public class GUIViews implements MenuViews{
 	{
 		component.addMouseListener(listener);
 		component.addMouseMotionListener(listener);
+	}
+
+	/**
+	 * 
+	 */
+	public void createRelationArrow(Relationship relat)
+	{
+		System.out.println("Got to createRelationArrow: GUIViews()");
+
+		JPanel panelFrom = classPanels.get(relat.getClassNameFrom());
+		JPanel panelTo = classPanels.get(relat.getClassNameTo());
+
+		int xDist = panelTo.getX() - panelFrom.getX();
+		int yDist = panelTo.getY() - panelFrom.getY();
+
+		Point arrowStart = new Point();
+		Point arrowFin = new Point();
+
+		if(Math.abs(xDist) > Math.abs(yDist))
+		{
+			//Arrow is mostly horizontal
+			if(xDist > 0)
+			{
+				//Left to right
+				arrowStart.x = panelFrom.getX() + panelFrom.getWidth();
+				arrowFin.x = panelTo.getX();
+			}
+			else
+			{
+				//Right to left
+				arrowStart.x = panelFrom.getX();
+				arrowFin.x = panelTo.getX() + panelTo.getWidth();
+
+			}
+			arrowFin.y = panelTo.getX() + (panelTo.getHeight() / 2);
+			arrowStart.y = panelFrom.getY() + (panelFrom.getHeight() / 2);
+		}
+		else
+		{
+			//Arrow mostly vertical
+			if(yDist > 0)
+			{
+				//Top to bottom 
+				arrowStart.y = panelFrom.getY() + panelFrom.getWidth();
+				arrowFin.y = panelTo.getY();
+			}
+			else
+			{
+				//Bottom to top
+				arrowStart.y = panelFrom.getY();
+				arrowFin.y = panelTo.getY() + panelTo.getWidth();
+			}
+			arrowStart.x = panelFrom.getX() + (panelFrom.getWidth() / 2);
+			arrowFin.x = panelTo.getX() + (panelTo.getWidth() / 2);
+		}
+		RelationArrow arrow = new RelationArrow(arrowStart, arrowFin, relat.getType());
+		relationArrows.put(relat, arrow);
+		pWindow.add(arrow);
+		//pWindow.setLayer(arrow, JLayeredPane.DEFAULT_LAYER);
+		arrow.setVisible(true);
+		pWindow.moveToFront(arrow);
 	}
 
 	/**
