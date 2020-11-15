@@ -1,6 +1,6 @@
 package controller;
 import view.GUIStartScreen;
-import view.Console;
+import view.CLI;
 
 public class UMLConsoleController {
 
@@ -12,7 +12,7 @@ public class UMLConsoleController {
 			//start in console
 			if(args.length == 1 && args[0].equals("--cli"))
 			{
-				Console.main(args);
+				CLI.main(args);
 			}
 
 			//Starts the app with a prompt to start GUI 

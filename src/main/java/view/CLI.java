@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 import model.ClassObject;
 import model.Relationship;
@@ -15,31 +14,62 @@ import java.util.Iterator;
 import java.io.BufferedReader;
 import controller.WorkingProjectEditor;
 
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.*;
+import org.jline.terminal.Terminal;
+import org.jline.reader.impl.history.*;
+import org.jline.reader.History;
+import org.jline.reader.impl.DefaultParser;
+import org.jline.terminal.impl.jna.*;
+import org.jline.terminal.impl.jna.win.JnaWinSysTerminal;
+
 /**
  * The Console allows a user to interface with a UML model
  * containing classes and relationships between those classes.
  */
-public class Console {
+public class CLI {
 
     //Fields
-    static boolean helpfilePresent = true;
-    static BufferedReader brHelp;
-    static BufferedReader brProject;
-    static WorkingProjectEditor projectEditor;
+    boolean helpfilePresent = true;
+    BufferedReader brHelp;
+    BufferedReader brProject;
+    WorkingProjectEditor projectEditor;
+    private Terminal terminal;
+    private LineReader lineReader;
+    private CommandCompleter completer;
+    private History history;
+    private DefaultParser parser; 
 
     //Methods
 
+    /**
+     * Constructor
+     */
+    public CLI (WorkingProjectEditor wpe) {
+        try {
+            terminal = TerminalBuilder.builder().system(true).build();
+            //terminal = TerminalBuilder.builder().jna(true).system(true).build();
+        } catch (IOException e) {
+            System.out.println("Unable to build terminal");
+        }
+        parser = new DefaultParser();
+        history = new DefaultHistory(lineReader);
+        //lineReader = LineReaderBuilder.builder().terminal(terminal).build();
+        completer = new CommandCompleter();
+        projectEditor = wpe;
+        updateReaderAndCompleter();
+    }
     /**
      * Repeatedly prompt the user for input until the program is exited via 'quit'.
      * If a valid command to modify or view the model is given, then that command is executed.
      * If an invalid command is given, then an error message is given.
      */
-    public static void console() {
-        Scanner keyboard = new Scanner(System.in);
+    public void console() {
+        //Scanner keyboard = new Scanner(System.in);
         //Continue to prompt user for input
         while (true) {
-            System.out.print(">");
-            String command = keyboard.nextLine();
+            String command = lineReader.readLine("gsb>");
             ArrayList<String> commands = parseLine(command);
             if (commands == null)
                 continue;
@@ -49,25 +79,23 @@ public class Console {
 
                 //Exit the program
                 case "quit":
-                    System.out.println("Do you want to save before you go? (Y/N)");
-                    System.out.print(">");
-                    String YN = keyboard.nextLine();
+                    terminal.writer().println("Do you want to save before you go? (Y/N)");
+                    String YN = lineReader.readLine("gsb>");
 
                     if (YN.equals("y".toUpperCase()) || YN.equals("y"))
                     {
-                        System.out.println("What do you want to name the project?");
-                        System.out.print(">");
-                        String name = keyboard.nextLine();
+                        terminal.writer().println("What do you want to name the project?");
+                        String name = lineReader.readLine("gsb>");
                         saveFile (parseLine(name).get(0));
                     }
                     else if (YN.equals("n".toUpperCase()) || YN.equals("n"))
                     {
-                        keyboard.close();
+                        //terminal.close();
                         return;
                     }
                     else
                     {
-                        System.out.println("Y/N not entered. Resuming...");
+                        terminal.writer().println("Y/N not entered. Resuming...");
                     }
 
                     break;
@@ -75,9 +103,9 @@ public class Console {
                 //Save the working project into a named file
                 case "save":
                     if (commands.size() < 2)
-                        System.out.println("Error: too few arguments for save<filename>");
+                        terminal.writer().println("Error: too few arguments for save<filename>");
                     else if (commands.size() > 2)
-                        System.out.println("Error: too many arguments for save<filename>");
+                        terminal.writer().println("Error: too many arguments for save<filename>");
                     else
                     {
                         saveFile(commands.get(1));
@@ -88,18 +116,19 @@ public class Console {
                 //Load a project from a file
                 case "load":
                     if (commands.size() < 2)
-                        System.out.println("Error: too few arguments for load<filename.txt>");
+                        terminal.writer().println("Error: too few arguments for load<filename.txt>");
                     else if (commands.size() > 2)
-                        System.out.println("Error: too many arguments for load<filename.txt>");
+                        terminal.writer().println("Error: too many arguments for load<filename.txt>");
                     else
                     {
                         try 
                         {
                             loadFile(commands.get(1));
+                            updateReaderAndCompleter();
                         }
                         catch (FileNotFoundException f)
                         {
-                            System.out.println("Error: File could not be found.");
+                            terminal.writer().println("Error: File could not be found.");
                         }
                     }
                     break;
@@ -117,58 +146,63 @@ public class Console {
                 //Undo a previous action
                 case "undo":
                     projectEditor.undo();
+                    updateReaderAndCompleter();
                     break;
 
                 //Redo a recently undone action
                 case "redo":
                     projectEditor.redo();
+                    updateReaderAndCompleter();
                     break;
 
                 //Add a named class to the working project
                 case "addClass" :   
                     if (commands.size() < 2)
-                        System.out.println ("Error: too few arguments for addClass<name>");
+                        terminal.writer().println ("Error: too few arguments for addClass<name>");
                     else if (commands.size() > 2)
-                        System.out.println ("Error: too many arguments for addClass<name>");
+                        terminal.writer().println ("Error: too many arguments for addClass<name>");
                     else
                     {
                         projectEditor.addClass(commands.get(1));
                         printStatusMessage();
+                        updateReaderAndCompleter();
                     }
                         break;
 
                 //Delete a named class from the working project
-                case "deleteClass" :
+                case "removeClass" :
                     if (commands.size() < 2)
-                        System.out.println ("Error: too few arguments for deleteClass<class>");
+                        terminal.writer().println ("Error: too few arguments for deleteClass<class>");
                     else if (commands.size() > 2)
-                        System.out.println ("Error: too many arguents for deleteClass<class>");
+                        terminal.writer().println ("Error: too many arguents for deleteClass<class>");
                     else 
                     {
                         projectEditor.removeClass(commands.get(1));
                         printStatusMessage();
+                        updateReaderAndCompleter();
                     }
                     break;
 
                 //Rename a named class in the working project
                 case "renameClass" :
                     if (commands.size() < 3)
-                        System.out.println ("Error: too few arguments for renameClass<class, newName>");
+                        terminal.writer().println ("Error: too few arguments for renameClass<class, newName>");
                     else if (commands.size() > 3)
-                        System.out.println ("Error: too many arguments for renameClass<class, newName>");
+                        terminal.writer().println ("Error: too many arguments for renameClass<class, newName>");
                     else
                     {
                         projectEditor.renameClass(commands.get(1), commands.get(2));
                         printStatusMessage();
+                        updateReaderAndCompleter();
                     }
                     break;
 
                 //Open a named class for editing
                 case "open" : 
                     if (commands.size() < 2)
-                        System.out.println ("Error: too few arguments for open<class>");
+                        terminal.writer().println ("Error: too few arguments for open<class>");
                     else if (commands.size() > 2)
-                        System.out.println ("Error: too many arguments for open<class>");
+                        terminal.writer().println ("Error: too many arguments for open<class>");
                     else
                     {
                         projectEditor.openClass(commands.get(1));
@@ -179,9 +213,9 @@ public class Console {
                 //Close a named class to editing
                 case "close" :
                     if (commands.size() < 2)
-                        System.out.println ("Error: too few arugments for close<class>");
+                        terminal.writer().println ("Error: too few arugments for close<class>");
                     else if (commands.size() > 2)
-                        System.out.println ("Error: too many arguments for close<class>");
+                        terminal.writer().println ("Error: too many arguments for close<class>");
                     else
                     {
                         projectEditor.closeClass(commands.get(1));
@@ -192,9 +226,9 @@ public class Console {
                 //Add a relationship of two named classes
                 case "addRelationship" :
                     if (commands.size() < 4)
-                        System.out.println("Error: too few arguments for addRelation. <class, class, type>");
+                        terminal.writer().println("Error: too few arguments for addRelation. <class, class, type>");
                     else if (commands.size() > 4)
-                        System.out.println("Error: too many arguments for addRelation. <class, class, type>");
+                        terminal.writer().println("Error: too many arguments for addRelation. <class, class, type>");
                     else
                     {
                         switch (commands.get(3)) {
@@ -215,17 +249,17 @@ public class Console {
                                 printStatusMessage();
                                 break;
                             default :
-                                System.out.println("Error: no relationship type given. <class, class, type>");
+                                terminal.writer().println("Error: no relationship type given. <class, class, type>");
                         }
                     }
                     break;
 
                 //Delete a relationship of two named classes
-                case "deleteRelationship" :
+                case "removeRelationship" :
                     if (commands.size() < 3)
-                        System.out.println("Error: too few arguments for deleteRelation<class, class>");
+                        terminal.writer().println("Error: too few arguments for deleteRelation<class, class>");
                     else if (commands.size() > 3)
-                        System.out.println("Error: too many arguments for deleteRelation<class, class>");
+                        terminal.writer().println("Error: too many arguments for deleteRelation<class, class>");
                     else
                     {
                         projectEditor.removeRelationship (commands.get(1), commands.get(2));
@@ -236,126 +270,135 @@ public class Console {
                 //Add a new field attribute to named class
                 case "addField" :
                     if (commands.size() < 5)
-                        System.out.println("Error: too few arguments for addField <class, name, data type, visibility>");
+                        terminal.writer().println("Error: too few arguments for addField <class, visiblity, data type, name>");
                     else if (commands.size() > 5)
-                        System.out.println("Error: too many arguments for addField class <class, name, data type, visibility>");
+                        terminal.writer().println("Error: too many arguments for addField class <class, visibility, data type, name>");
                     else 
                     {
-                        projectEditor.addField(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
+                        projectEditor.addField(commands.get(1), commands.get(4), commands.get(3), commands.get(2));
                         printStatusMessage();
+                        //updateReaderAndCompleter();
                     }
                     break;
 
                 //Add a new method attribute to named class
                 case "addMethod" :
                     if (commands.size() < 5)
-                        System.out.println("Error: too few arguments for addMethod <class, name, return type, visibility>");
+                        terminal.writer().println("Error: too few arguments for addMethod <class, visibility, return type, name>");
                     else if (commands.size() > 5)
-                        System.out.println("Error: too many arguments for addMethod class <class, name, return type, visibility>");
+                        terminal.writer().println("Error: too many arguments for addMethod class <class, visibility, return type, name>");
                     else
                     {
-                        projectEditor.addMethod(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
+                        projectEditor.addMethod(commands.get(1), commands.get(4), commands.get(3), commands.get(2));
                         printStatusMessage();
+                        //updateReaderAndCompleter();
                     }
                     break;
 
                 //Add a new parameter to a method in a class
                 case "addParameter" :
                     if (commands.size() < 5)
-                        System.out.println("Error: too few arguments for addParameter<class, method, paramName, paramType>");
+                        terminal.writer().println("Error: too few arguments for addParameter<class, method, paramType, paramName>");
                     else if (commands.size() > 5)
-                        System.out.println("Error: too many arguments for addParameter<class, method, paramName, paramType");
+                        terminal.writer().println("Error: too many arguments for addParameter<class, method, paramType, paramName");
                     else
                     {
-                        projectEditor.addParameter(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
+                        projectEditor.addParameter(commands.get(1), commands.get(2), commands.get(4), commands.get(3));
                         printStatusMessage();
+                        //updateReaderAndCompleter();
                     }
                     break;
 
                 //Delete a named field from a named class
-                case "deleteField" :
+                case "removeField" :
                     if (commands.size() < 3)
-                        System.out.println("Error: too few arguments for deleteAttribute<class, attribute>");
+                        terminal.writer().println("Error: too few arguments for deleteAttribute<class, attribute>");
                     else if (commands.size() > 3)
-                        System.out.println("Error: too many arguments for deleteAttribute<class, attribute>");
+                        terminal.writer().println("Error: too many arguments for deleteAttribute<class, attribute>");
                     else
                     {
                         projectEditor.removeField(commands.get(1), commands.get(2));
                         printStatusMessage();
+                        //updateReaderAndCompleter();
                     }
                     break;
 
                 //Delete a named method from a named class
-                case "deleteMethod" :
+                case "removeMethod" :
                 if (commands.size() < 3)
-                    System.out.println("Error: too few arguments for deleteAttribute<class, attribute>");
+                    terminal.writer().println("Error: too few arguments for deleteAttribute<class, attribute>");
                 else if (commands.size() > 3)
-                    System.out.println("Error: too many arguments for deleteAttribute<class, attribute>");
+                    terminal.writer().println("Error: too many arguments for deleteAttribute<class, attribute>");
                 else
                 {
                     projectEditor.removeMethod(commands.get(1), commands.get(2));
                     printStatusMessage();
+                    //updateReaderAndCompleter();
                 }
                 break;   
 
                 //Deleter a named parameter from a named method
-                case "deleteParameter" :
+                case "removeParameter" :
                 if (commands.size() < 4)
-                    System.out.println("Error: too few arguments for deleteParameter<class, method, param>");
+                    terminal.writer().println("Error: too few arguments for deleteParameter<class, method, param>");
                 else if (commands.size() > 4)
-                    System.out.println("Error: too many arguments for deleteParameter<class, method, param");
+                    terminal.writer().println("Error: too many arguments for deleteParameter<class, method, param");
                 else
                 {
                     projectEditor.removeParameter(commands.get(1), commands.get(2), commands.get(3));
                     printStatusMessage();
+                    //updateReaderAndCompleter();
                 }
                 break;
                 
                 //Rename a named field from a named class
                 case "renameField" :
                     if (commands.size() < 4)
-                        System.out.println("Error: too few arguments for renameField<class, oldName, newName>");
+                        terminal.writer().println("Error: too few arguments for renameField<class, oldName, newName>");
                     else if (commands.size() > 4)
-                        System.out.println("Error: too many arguments for renameField<class, oldName, newName>");
+                        terminal.writer().println("Error: too many arguments for renameField<class, oldName, newName>");
                     else
                     {
                         projectEditor.renameField(commands.get(1), commands.get(2), commands.get(3));
                         printStatusMessage();
+                        //updateReaderAndCompleter();
                     }
                     break;
                 
                 //Rename a named method from a named class
                 case "renameMethod" :
                 if (commands.size() < 4)
-                    System.out.println("Error: too few arguments for renameMethod<class, oldName, newName>");
+                    terminal.writer().println("Error: too few arguments for renameMethod<class, oldName, newName>");
                 else if (commands.size() > 4)
-                    System.out.println("Error: too many arguments for renameMethod <class, oldName, newName>");
+                    terminal.writer().println("Error: too many arguments for renameMethod <class, oldName, newName>");
                 else
                 {
                     projectEditor.renameMethod(commands.get(1), commands.get(2), commands.get(3));
                     printStatusMessage();
+                    //updateReaderAndCompleter();
                 }
                 break;
 
                 //Rename a parameter 
                 case "renameParameter" :
                 if (commands.size() < 5)
-                    System.out.println("Error: too few arguments for renameParameter<class, method, parameter, newName>");
+                    terminal.writer().println("Error: too few arguments for renameParameter<class, method, parameter, newName>");
                 else if (commands.size() > 5)
-                    System.out.println("Error: too many arguments for renameParameter<class, method, parameter, newName>");
+                    terminal.writer().println("Error: too many arguments for renameParameter<class, method, parameter, newName>");
                 else
                 {
                     projectEditor.renameParameter(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
                     printStatusMessage();
+                    //updateReaderAndCompleter();
                 }
                 break;
 
                 //Change a field's type
                 case "changeFieldType" :
                 if (commands.size() < 4)
-                    System.out.println("Error: too few arguments for changeFieldType<class, field, newType>");
+                    terminal.writer().println("Error: too few arguments for changeFieldType<class, field, newType>");
                 else if (commands.size() > 4)
-                    System.out.println("Error: too many arguments for changeFieldType<class, field, newType>");
+                    terminal.writer().println("Error: too many arguments for changeFieldType<class, field, newType>");
                 else 
                 {
                     projectEditor.changeFieldType (commands.get(1), commands.get(2), commands.get(3));
@@ -366,9 +409,9 @@ public class Console {
                 //Change a method's return type
                 case "changeMethodType" :
                 if (commands.size() < 4)
-                    System.out.println("Error: too few arguments for changeMethodType<class, method, newType>");
+                    terminal.writer().println("Error: too few arguments for changeMethodType<class, method, newType>");
                 else if (commands.size() > 4)
-                    System.out.println("Error: too many arguments for changeMethodType<class, method, newType>");
+                    terminal.writer().println("Error: too many arguments for changeMethodType<class, method, newType>");
                 else 
                 {
                     projectEditor.changeMethodType (commands.get(1), commands.get(2), commands.get(3));
@@ -379,9 +422,9 @@ public class Console {
                 //Change a parameter's type
                 case "changeParameterType" :
                 if (commands.size() < 5)
-                    System.out.println("Error: too few arguments for changeParameterType<class, method, parameter, newType>");
+                    terminal.writer().println("Error: too few arguments for changeParameterType<class, method, parameter, newType>");
                 else if (commands.size() > 5)
-                    System.out.println("Error: too many arguments for changeParameterType<class, method, parameter, newType>");
+                    terminal.writer().println("Error: too many arguments for changeParameterType<class, method, parameter, newType>");
                 else
                 {
                     projectEditor.changeParameterType (commands.get(1), commands.get(2), commands.get(3), commands.get(4));
@@ -392,9 +435,9 @@ public class Console {
                 //Change a field's visibility
                 case "changeFieldVisibility" :
                 if (commands.size() < 4)
-                    System.out.println("Error: too few arguments for changeFieldVisibility<class, field, newVisibility>");
+                    terminal.writer().println("Error: too few arguments for changeFieldVisibility<class, field, newVisibility>");
                 else if (commands.size() > 4)
-                    System.out.println("Error: too many arguments for changeFieldVisiblity<class, field, newVisibility>");
+                    terminal.writer().println("Error: too many arguments for changeFieldVisiblity<class, field, newVisibility>");
                 else
                 {
                     projectEditor.changeFieldVisibility (commands.get(1), commands.get(2), commands.get(3));
@@ -405,9 +448,9 @@ public class Console {
                 //Change a method's visiblity
                 case "changeMethodVisibility": 
                 if (commands.size() < 4)
-                    System.out.println("Error: too few arguments for changeMethodVisibility<class, method, newVisibility>");
+                    terminal.writer().println("Error: too few arguments for changeMethodVisibility<class, method, newVisibility>");
                 else if (commands.size() > 4)
-                    System.out.println("Error: too many arguments for changeMethodVisibility<class, method, newVisibility>");
+                    terminal.writer().println("Error: too many arguments for changeMethodVisibility<class, method, newVisibility>");
                 else
                 {
                     projectEditor.changeMethodVisibility (commands.get(1), commands.get(2), commands.get(3));
@@ -423,9 +466,9 @@ public class Console {
                 //Print a named class with fields and methods
                 case "printClass" :
                     if (commands.size() < 2)
-                        System.out.println("Error: too few arguments for printClass<class>");
+                        terminal.writer().println("Error: too few arguments for printClass<class>");
                     else if (commands.size() > 2)
-                        System.out.println("Error: too many arguments for printClass<class>");
+                        terminal.writer().println("Error: too many arguments for printClass<class>");
                     else
                         printClass(commands.get(1));
                     break;
@@ -435,21 +478,21 @@ public class Console {
                  * //Print the fields of a named class
                  * case "printFields" :
                  *   if (commands.size() < 2)
-                 *       System.out.println("Error: too few arguments for printFields<class>");
+                 *       terminal.writer().println("Error: too few arguments for printFields<class>");
                  *   else if (commands.size() > 2)
-                 *       System.out.println("Error: too many arguments for printFields<class>");
+                 *       terminal.writer().println("Error: too many arguments for printFields<class>");
                  *   else
-                 *       System.out.println("No longer supported");
+                 *       terminal.writer().println("No longer supported");
                  *   break;
                  *
                  *   //Print the methods of a named class
                  *   case "printMethods" :
                  *   if (commands.size() < 2)
-                 *       System.out.println("Error: too few arguments for printFields<class>");
+                 *       terminal.writer().println("Error: too few arguments for printFields<class>");
                  *   else if (commands.size() > 2)
-                 *       System.out.println("Error: too many arguments for printFields<class>");
+                 *       terminal.writer().println("Error: too many arguments for printFields<class>");
                  *   else
-                 *       System.out.println("No longer supported");
+                 *       terminal.writer().println("No longer supported");
                  *   break;
                  * 
                  */
@@ -462,17 +505,18 @@ public class Console {
                 
                 //If the input did not match any known command, then print an error message
                 default :
-                    System.out.println("Error: command \"" + commands.get(0) + "\" is not recognized");
+                    terminal.writer().println("Error: command \"" + commands.get(0) + "\" is not recognized");
             }
         }
-    }
+    } 
+    
 
     /**
      * Reads input from the user and parses it for tokens.
      * @param command   a single string containing the full command 
      * @return          Returns an ArrayList of said tokens.
      */
-    public static ArrayList<String> parseLine(String command)
+    public ArrayList<String> parseLine(String command)
     {
         ArrayList<String> commandList = new ArrayList<String>();
         StringTokenizer st = new StringTokenizer(command);
@@ -489,26 +533,26 @@ public class Console {
     /*
      * Reads information from a help file.
     */
-    public static void readHelpFile() throws Exception
+    public void readHelpFile() throws Exception
     {
         if (!helpfilePresent)
         {
-            System.out.println("HelpDocument.txt was not found in the local directory.");
+            terminal.writer().println("HelpDocument.txt was not found in the local directory.");
             return;
         }
         int i;
         while ((i = brHelp.read()) != -1)
-            System.out.print((char) i);
+            terminal.writer().print((char) i);
         
         brHelp.reset();
-        System.out.print("\n");
+        terminal.writer().print("\n");
     }
 
     /**
      * Save the working project into a json file
      * @param projectName The name that will be given to the file
      */
-    public static void saveFile (String projectName)
+    public void saveFile (String projectName)
     {
         String filename = projectName + ".json";
         try {
@@ -529,10 +573,10 @@ public class Console {
             }
             else 
             {
-                System.out.println("For some reason, nothing saved. That's too bad.");
+                terminal.writer().println("For some reason, nothing saved. That's too bad.");
             }
         } catch (IOException e) {
-            System.out.println ("It's broke, man.");
+            terminal.writer().println ("It's broke, man.");
         }
     }
 
@@ -541,7 +585,7 @@ public class Console {
      * @param filename The name of the file to be loaded
      * @throws FileNotFoundException
      */
-    public static void loadFile (String filename) throws FileNotFoundException
+    public void loadFile (String filename) throws FileNotFoundException
     {
         
         try {
@@ -554,30 +598,30 @@ public class Console {
             projectEditor.loadProject(projectString.toString());
         } catch (IOException e)
         {
-            System.out.println("Error: File could not be read.");
+            terminal.writer().println("Error: File could not be read.");
         }
     }
 
     /**
      * Print getLastCommandStatusMessage in the Console
      */
-    public static void printStatusMessage()
+    public void printStatusMessage()
     {
-        System.out.println(projectEditor.getLastCommandStatusMessage());
+        terminal.writer().println(projectEditor.getLastCommandStatusMessage());
     }
 
     /**
      * Print the relationships in the WorkingProject
      * TODO: Have the WorkingProjectEditor return a string representing the relationships
      */
-    private static void printRelationships()
+    private void printRelationships()
     {
         Set<Relationship> r = projectEditor.getProjectSnapshot().getRelationships();
         Iterator iter = r.iterator();
         while(iter.hasNext())
         {
             Relationship rel = (Relationship)iter.next();
-            System.out.println(rel.getClassNameFrom() + " -> " + rel.getClassNameTo() + " " + rel.getType());
+            terminal.writer().println(rel.getClassNameFrom() + " -> " + rel.getClassNameTo() + " " + rel.getType());
         }
     }
 
@@ -586,24 +630,27 @@ public class Console {
      * @param className
      * TODO: Have WorkingProjectEditor return a string representing a class, and print the string
      */
-    private static void printClass(String className)
+    private void printClass(String className)
     {
         ClassObject c = projectEditor.getProjectSnapshot().getClass(className);
         c.printFields();
         c.printMethods();
     }
 
-    public static void main(String[] args)
+    /**
+     * Update the state of the lineReader and its Completer whenever the model is changed
+     */
+    private void updateReaderAndCompleter()
     {
-        try {
-            brHelp = new BufferedReader (new FileReader ("HelpDocument.txt"));
-            brHelp.mark(5000);
-        }
-        catch (Exception FileNotFoundException) {
-            helpfilePresent = false;
-        }
-        projectEditor = new WorkingProjectEditor();
-        console ();
+        completer.updateCompleter(projectEditor.getProjectSnapshot().getClassNames());
+        lineReader = LineReaderBuilder.builder().terminal(terminal).completer(completer.getCompleter()).parser(parser).history(history).build();
+    }
+
+    public static void main(String[] args)
+    {        
+        WorkingProjectEditor wpe = new WorkingProjectEditor();
+        CLI cli = new CLI(wpe);
+        cli.console();
         System.exit(0);
     }
 }
