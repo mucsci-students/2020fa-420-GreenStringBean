@@ -167,6 +167,10 @@ public class GUIViews implements MenuViews{
              JOptionPane.PLAIN_MESSAGE, null,
 			 possibleValues, possibleValues[0]);
 			 
+		if (selectedValue == null)
+		{
+			return null;
+		}
 		return ((String)selectedValue).substring(0, 1);
 	}
 
@@ -552,8 +556,8 @@ public class GUIViews implements MenuViews{
 				updateClassPanel(panelEntry.getValue(), project.getClass(panelEntry.getKey()));
 			}
 		}
-		relationArrows.clear();
 
+		relationArrows.clear();
 		for (Component c : pWindow.getComponentsInLayer(JLayeredPane.DEFAULT_LAYER))
 		{
 			pWindow.remove(c);
@@ -563,6 +567,7 @@ public class GUIViews implements MenuViews{
 		{
 			createRelationArrow(r);
 		}
+
 		refresh();
 	}
 
@@ -629,60 +634,18 @@ public class GUIViews implements MenuViews{
 	 */
 	public void createRelationArrow(Relationship relat)
 	{
-		System.out.println("Got to createRelationArrow: GUIViews()");
-
 		JPanel panelFrom = classPanels.get(relat.getClassNameFrom());
 		JPanel panelTo = classPanels.get(relat.getClassNameTo());
 
-		int xDist = panelTo.getX() - panelFrom.getX();
-		int yDist = panelTo.getY() - panelFrom.getY();
-
-		Point arrowStart = new Point();
-		Point arrowFin = new Point();
-
-		if(Math.abs(xDist) > Math.abs(yDist))
-		{
-			//Arrow is mostly horizontal
-			if(xDist > 0)
-			{
-				//Left to right
-				arrowStart.x = panelFrom.getX() + panelFrom.getWidth();
-				arrowFin.x = panelTo.getX();
-			}
-			else
-			{
-				//Right to left
-				arrowStart.x = panelFrom.getX();
-				arrowFin.x = panelTo.getX() + panelTo.getWidth();
-
-			}
-			arrowFin.y = panelTo.getX() + (panelTo.getHeight() / 2);
-			arrowStart.y = panelFrom.getY() + (panelFrom.getHeight() / 2);
-		}
-		else
-		{
-			//Arrow mostly vertical
-			if(yDist > 0)
-			{
-				//Top to bottom 
-				arrowStart.y = panelFrom.getY() + panelFrom.getWidth();
-				arrowFin.y = panelTo.getY();
-			}
-			else
-			{
-				//Bottom to top
-				arrowStart.y = panelFrom.getY();
-				arrowFin.y = panelTo.getY() + panelTo.getWidth();
-			}
-			arrowStart.x = panelFrom.getX() + (panelFrom.getWidth() / 2);
-			arrowFin.x = panelTo.getX() + (panelTo.getWidth() / 2);
-		}
-		RelationArrow arrow = new RelationArrow(arrowStart, arrowFin, relat.getType());
-		relationArrows.put(relat, arrow);
-		pWindow.add(arrow);
-		//pWindow.setLayer(arrow, JLayeredPane.DEFAULT_LAYER);
+		RelationArrow arrow = new RelationArrow(panelFrom, panelTo, relat.getType());
 		arrow.setVisible(true);
+		arrow.setOpaque(false);
+		arrow.setLocation(0, 0);
+		arrow.setSize(pWindow.getSize());
+		pWindow.add(arrow);
+		pWindow.setLayer(arrow, JLayeredPane.DEFAULT_LAYER);
 		pWindow.moveToFront(arrow);
+		relationArrows.put(relat, arrow);
 	}
 
 	/**
@@ -836,6 +799,10 @@ public class GUIViews implements MenuViews{
 		for (JPanel panel : classPanels.values())
 		{
 			contain(panel);
+		}
+		for (RelationArrow arrow : relationArrows.values())
+		{
+			arrow.setSize(pWindow.getSize());
 		}
 	}
 
