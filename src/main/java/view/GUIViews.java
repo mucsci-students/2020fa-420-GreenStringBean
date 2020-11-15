@@ -34,6 +34,7 @@ import controller.ClassPanelClick;
 import model.ClassObject;
 import model.Model;
 import model.Relationship;
+import model.Relationship.relationshipType;
 
 public class GUIViews implements MenuViews{
 	private JMenuBar mb;
@@ -47,6 +48,7 @@ public class GUIViews implements MenuViews{
 	private Font font;
 
 	private Map<String, JPanel> classPanels;
+	private Map<Relationship, RelationArrow> relationArrows; 
 
 	/**
 	 * Constructor for creating a new GUI view
@@ -54,6 +56,7 @@ public class GUIViews implements MenuViews{
 	public GUIViews()
 	{
 		this.classPanels = new HashMap<>();
+		this.relationArrows = new HashMap<>();
 		try
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -164,6 +167,10 @@ public class GUIViews implements MenuViews{
              JOptionPane.PLAIN_MESSAGE, null,
 			 possibleValues, possibleValues[0]);
 			 
+		if (selectedValue == null)
+		{
+			return null;
+		}
 		return ((String)selectedValue).substring(0, 1);
 	}
 
@@ -549,6 +556,18 @@ public class GUIViews implements MenuViews{
 				updateClassPanel(panelEntry.getValue(), project.getClass(panelEntry.getKey()));
 			}
 		}
+
+		relationArrows.clear();
+		for (Component c : pWindow.getComponentsInLayer(JLayeredPane.DEFAULT_LAYER))
+		{
+			pWindow.remove(c);
+		}
+
+		for (Relationship r : project.getRelationships())
+		{
+			createRelationArrow(r);
+		}
+
 		refresh();
 	}
 
@@ -594,6 +613,7 @@ public class GUIViews implements MenuViews{
 		panel.setVisible(true);
 		classPanels.put(classObj.getName(), panel);
 		pWindow.add(panel);
+		pWindow.setLayer(panel, JLayeredPane.PALETTE_LAYER);
 		pWindow.moveToFront(panel);
 		
 		updateClassPanel(panel, classObj);
@@ -607,6 +627,25 @@ public class GUIViews implements MenuViews{
 	{
 		component.addMouseListener(listener);
 		component.addMouseMotionListener(listener);
+	}
+
+	/**
+	 * 
+	 */
+	public void createRelationArrow(Relationship relat)
+	{
+		JPanel panelFrom = classPanels.get(relat.getClassNameFrom());
+		JPanel panelTo = classPanels.get(relat.getClassNameTo());
+
+		RelationArrow arrow = new RelationArrow(panelFrom, panelTo, relat.getType());
+		arrow.setVisible(true);
+		arrow.setOpaque(false);
+		arrow.setLocation(0, 0);
+		arrow.setSize(pWindow.getSize());
+		pWindow.add(arrow);
+		pWindow.setLayer(arrow, JLayeredPane.DEFAULT_LAYER);
+		pWindow.moveToFront(arrow);
+		relationArrows.put(relat, arrow);
 	}
 
 	/**
@@ -760,6 +799,10 @@ public class GUIViews implements MenuViews{
 		for (JPanel panel : classPanels.values())
 		{
 			contain(panel);
+		}
+		for (RelationArrow arrow : relationArrows.values())
+		{
+			arrow.setSize(pWindow.getSize());
 		}
 	}
 

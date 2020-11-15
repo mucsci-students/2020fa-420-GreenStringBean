@@ -29,6 +29,7 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
         Point parentPos = panel.getParent().getLocationOnScreen();
         panel.setLocation((e.getXOnScreen() - parentPos.x - dragX), (e.getYOnScreen() - parentPos.y - dragY));
         view.contain(panel);
+        view.refresh();
     }
 
     @Override

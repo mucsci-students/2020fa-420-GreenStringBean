@@ -84,6 +84,8 @@ public interface MenuViews extends Observer
 	 */
 	void containAll();
 
+	void refresh();
+
 	// Temporary until we can display arrows between class boxes
 	void showRelationships(Model snapshot);
 }
