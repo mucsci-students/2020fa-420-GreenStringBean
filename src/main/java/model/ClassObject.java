@@ -610,7 +610,7 @@ public class ClassObject{
         for (Object jsonField : jsonFields)
         {
             Field field = Field.loadFromJSON((JSONObject)jsonField);
-            if (field == null)
+            if (field == null || classObj.fields.containsKey(field.getName()))
             {
                 return null;
             }
@@ -620,7 +620,7 @@ public class ClassObject{
         for (Object jsonMethod : jsonMethods)
         {
             Method method = Method.loadFromJSON((JSONObject)jsonMethod);
-            if (method == null)
+            if (method == null || classObj.methods.containsKey(method.getName()))
             {
                 return null;
             }

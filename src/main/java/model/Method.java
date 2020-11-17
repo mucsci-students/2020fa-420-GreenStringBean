@@ -236,7 +236,7 @@ public class Method extends VisibleDeclaration {
             String paramName = (String)((JSONObject)jsonParameter).get("name");
             String paramType = (String)((JSONObject)jsonParameter).get("type");
 
-            if (paramName == null || paramType == null)
+            if (paramName == null || paramType == null || method.getParamIndex(paramName)!=-1)
             {
                 return null;
             }

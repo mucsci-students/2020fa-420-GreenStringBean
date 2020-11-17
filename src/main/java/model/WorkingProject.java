@@ -35,7 +35,7 @@ import org.json.simple.JSONValue;
  *     10 - Data type is not valid
  *     11 - Relationship type is not valid
  *     12 - Error loading project
- *     13 - Loaded project is not valid
+ *     13 - Parameter name and data type counts do not match
  *     14 - Visibility Modifier is not valid
  */
 
@@ -588,54 +588,60 @@ public class WorkingProject implements Model{
      */
     public int loadFromJSON(String jsonString)
     {
-        classes.clear();
-        relationships.clear();
+        try{
+            classes.clear();
+            relationships.clear();
 
-        JSONObject jsonProject = (JSONObject)JSONValue.parse(jsonString);
+            JSONObject jsonProject = (JSONObject)JSONValue.parse(jsonString);
 
-        if (jsonProject == null)
-        {
-            return 12;
-        }
-
-        JSONArray jsonClasses = (JSONArray)jsonProject.get("classes");
-        JSONArray jsonRelationships = (JSONArray)jsonProject.get("relationships");
-
-        if (jsonClasses == null || jsonRelationships == null)
-        {
-            return 12;
-        }
-
-        for (Object jsonClass : jsonClasses)
-        {
-            ClassObject classObj = ClassObject.loadFromJSON((JSONObject)jsonClass);
-            if (classObj == null)
+            if (jsonProject == null)
             {
                 return 12;
             }
-            classes.put(classObj.getName(), classObj);
-        }
 
-        for (Object jsonRelationship : jsonRelationships)
-        {
-            String classNameFrom = (String)((JSONObject)jsonRelationship).get("from");
-            String classNameTo = (String)((JSONObject)jsonRelationship).get("to");
-            String typeName = (String)((JSONObject)jsonRelationship).get("type");
-            typeName = typeName.substring(0, 1);
-            Relationship.relationshipType type = stringToRelationshipType(typeName);
-            if (classNameFrom == null || classNameTo == null || type == null)
+            JSONArray jsonClasses = (JSONArray)jsonProject.get("classes");
+            JSONArray jsonRelationships = (JSONArray)jsonProject.get("relationships");
+
+            if (jsonClasses == null || jsonRelationships == null)
             {
                 return 12;
             }
-            relationships.add(new Relationship(classNameFrom, classNameTo, type));
-        }
 
-        if (!validityCheck())
-        {
-            return 13;
-        }
+            for (Object jsonClass : jsonClasses)
+            {
+                ClassObject classObj = ClassObject.loadFromJSON((JSONObject)jsonClass);
+                if (classObj == null || classes.containsKey(classObj.getName()))
+                {
+                    return 12;
+                }
+                classes.put(classObj.getName(), classObj);
+            }
 
-        return 0;
+            for (Object jsonRelationship : jsonRelationships)
+            {
+                String classNameFrom = (String)((JSONObject)jsonRelationship).get("from");
+                String classNameTo = (String)((JSONObject)jsonRelationship).get("to");
+                String typeName = (String)((JSONObject)jsonRelationship).get("type");
+                typeName = typeName.substring(0, 1);
+                Relationship.relationshipType type = stringToRelationshipType(typeName);
+                if (classNameFrom == null || classNameTo == null || type == null || getRelationshipIndex(classNameFrom, classNameTo)!=-1)
+                {
+                    return 12;
+                }
+                relationships.add(new Relationship(classNameFrom, classNameTo, type));
+            }
+
+            if (!validityCheck())
+            {
+                return 12;
+            }
+
+            return 0;
+        }
+        catch(ClassCastException e){
+            return 12;
+        }
+        
     }
     
     /**
