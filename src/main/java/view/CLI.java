@@ -45,6 +45,7 @@ public class CLI {
      * Constructor
      */
     public CLI (ModelEditor me) {
+        //Initialize the help file and the terminal for jline
         try {
             brHelp = new BufferedReader (new FileReader ("HelpDocument.txt"));
             brHelp.mark(5000);
@@ -52,11 +53,13 @@ public class CLI {
         } catch (Exception e) {
             helpfilePresent = false;
         }
+        //Initialize the Completer that will be use for tab-completion
         parser = new DefaultParser();
         history = new DefaultHistory(lineReader);
         completer = new CommandCompleter();
         projectEditor = me;
         updateReaderAndCompleter();
+        //Begin prompting input
         console();
         System.exit(0);
     }
@@ -66,7 +69,6 @@ public class CLI {
      * If an invalid command is given, then an error message is given.
      */
     public void console() {
-        //Scanner keyboard = new Scanner(System.in);
         //Continue to prompt user for input
         while (true) {
             String command = lineReader.readLine("gsb>");
@@ -90,7 +92,12 @@ public class CLI {
                     }
                     else if (YN.equals("n".toUpperCase()) || YN.equals("n"))
                     {
-                        //terminal.close();
+                        try {
+                            terminal.close();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                         return;
                     }
                     else
