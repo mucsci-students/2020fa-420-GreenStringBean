@@ -35,7 +35,7 @@ public class CommandCompleter
         completer = new AggregateCompleter();
         typeCompleter = new StringsCompleter("byte", "short", "int", "long", "float", "double", "boolean", "char");
         visibilityCompleter = new StringsCompleter("public", "private", "protected");
-        relationshipTypeCompleter = new StringsCompleter("AGREGATE", "COMPOSITION", "INHERITANCE", "REALIZATION");
+        relationshipTypeCompleter = new StringsCompleter("AGGREGATE", "COMPOSITION", "INHERITANCE", "REALIZATION");
         classCompleter = new StringsCompleter();
     }
 
