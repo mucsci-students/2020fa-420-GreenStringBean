@@ -120,18 +120,17 @@ public class CommandCompleter
     private ArgumentCompleter addFieldCompleter()
     {
         return new ArgumentCompleter(new StringsCompleter("addField"), classCompleter, 
-            visibilityCompleter, typeCompleter, /*field name*/new NullCompleter());
+            visibilityCompleter, typeCompleter, new NullCompleter());
     }
     private ArgumentCompleter addMethodCompleter()
     {
         return new ArgumentCompleter(new StringsCompleter("addMethod"), classCompleter, 
-            visibilityCompleter, typeCompleter, /*method name*/new NullCompleter());
+            visibilityCompleter, typeCompleter, new NullCompleter());
     }
-    //TODO: Find how to make a methodCompleter and add it to this completer
     private ArgumentCompleter addParameterCompleter(String UMLClass, String UMLMethod)
     {
-        return new ArgumentCompleter(new StringsCompleter("addParameter"), classCompleter, 
-        /*methodCompleter*//*status completer*/new NullCompleter());
+        return new ArgumentCompleter(new StringsCompleter("addParameter"), new StringsCompleter(UMLClass), 
+            new StringsCompleter(UMLMethod), typeCompleter, new NullCompleter());
     }
     private ArgumentCompleter addRelationshipCompleter()
     {
