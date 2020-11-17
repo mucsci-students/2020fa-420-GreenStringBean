@@ -1,6 +1,9 @@
 package controller;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
+
 import view.MenuViews;
 
 /**
@@ -63,22 +66,28 @@ public class ClassRightClick implements ActionListener
         }
         else if(cmd.equals("Add Field")) 
         {
-            String fieldVis = view.promptForVis("Visibility:", cmd);
-            if (fieldVis == null)
+            // String fieldVis = view.promptForVis("Visibility:", cmd);
+            // if (fieldVis == null)
+            // {
+            //     return;
+            // }
+            // String fieldType = view.promptForString("Data type:", cmd);
+            // if (fieldType == null)
+            // {
+            //     return;
+            // }
+            // String fieldName = view.promptForString("Field name:", cmd);
+            // if (fieldName == null)
+            // {
+            //     return;
+            // }
+            
+            Map<String, String> fieldData = view.promptForNewField(cmd);
+            if (fieldData == null)
             {
                 return;
             }
-            String fieldType = view.promptForString("Data type:", cmd);
-            if (fieldType == null)
-            {
-                return;
-            }
-            String fieldName = view.promptForString("Field name:", cmd);
-            if (fieldName == null)
-            {
-                return;
-            }
-            controller.addField(className, fieldName, fieldType, fieldVis);
+            controller.addField(className, fieldData.get("Name"), fieldData.get("Type"), fieldData.get("Visibility"));
         }
         else if(cmd.equals("Add Method"))
         {

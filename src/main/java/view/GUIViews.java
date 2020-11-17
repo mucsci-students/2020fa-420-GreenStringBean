@@ -13,9 +13,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -24,7 +27,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
@@ -195,6 +200,51 @@ public class GUIViews implements MenuViews{
 		possibleValues, possibleValues[0]);
 
 		return (String) selectedValue;
+	}
+
+	/**
+	 * Displays a dialog box to fill in all the information for a new field
+	 * @param title the window title of the dialog box
+	 * @return      a map of the field's properties to their values, or null if incomplete
+	 */
+	public Map<String, String> promptForNewField(String title)
+	{
+		String[] possibleVisValues = { "Public", "Protected", "Private" };
+		JComboBox<String> visField = new JComboBox<>(possibleVisValues);
+		visField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JTextField typeField = new JTextField();
+		typeField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JTextField nameField = new JTextField();
+		nameField.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JPanel fieldPrompt = new JPanel();
+		fieldPrompt.setLayout(new BoxLayout(fieldPrompt, BoxLayout.Y_AXIS));
+		JLabel visLabel = new JLabel("Visibility:");
+		visLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		fieldPrompt.add(visLabel);
+		fieldPrompt.add(visField);
+		fieldPrompt.add(Box.createVerticalStrut(10));
+		JLabel typeLabel = new JLabel("Data Type:");
+		typeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		fieldPrompt.add(typeLabel);
+		fieldPrompt.add(typeField);
+		fieldPrompt.add(Box.createVerticalStrut(10));
+		JLabel nameLabel = new JLabel("Field Name:");
+		nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		fieldPrompt.add(nameLabel);
+		fieldPrompt.add(nameField);
+  
+		int option = JOptionPane.showConfirmDialog(null, fieldPrompt, title, JOptionPane.OK_CANCEL_OPTION);
+		if (option == JOptionPane.OK_OPTION)
+		{
+			Map<String, String> fieldData = new HashMap<>();
+			fieldData.put("Visibility", (String)visField.getSelectedItem());
+			fieldData.put("Type", typeField.getText());
+			fieldData.put("Name", nameField.getText());
+			return fieldData;
+		}
+
+		return null;
 	}
 
 	/**

@@ -2,6 +2,7 @@ package view;
 
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -29,6 +30,13 @@ public interface MenuViews extends Observer
 	 * Gets file from user to be saved
 	 */
 	String promptForClassName(String p, String t);
+
+	/**
+	 * Displays a dialog box to fill in all the information for a new field
+	 * @param title the window title of the dialog box
+	 * @return      a map of the field's properties to their values, or null if incomplete
+	 */
+	Map<String, String> promptForNewField(String title);
 
 	/**
 	 * Gets file from user to be saved
