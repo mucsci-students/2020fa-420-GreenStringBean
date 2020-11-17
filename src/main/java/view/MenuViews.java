@@ -83,4 +83,6 @@ public interface MenuViews extends Observer
 	 * Contain all panels within the window.
 	 */
 	void containAll();
+
+	void refresh();
 }
