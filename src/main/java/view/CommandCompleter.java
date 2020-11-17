@@ -99,7 +99,7 @@ public class CommandCompleter
             renameClassCompleter(), new AggregateCompleter(renameFieldComp), new AggregateCompleter(renameMethComp), 
             new AggregateCompleter(renameParamComp), new AggregateCompleter(changeFieldTypeComp), new AggregateCompleter(changeFieldVisComp), 
             new AggregateCompleter(changeMethTypeComp), new AggregateCompleter(changeMethVisComp), new AggregateCompleter(changeParamTypeComp), 
-            changeRelationshipTypeCompleter());
+            changeRelationshipTypeCompleter(), printClassCompleter(), printClassesCompleter());
     }
 
 
@@ -308,5 +308,21 @@ public class CommandCompleter
     {
         return new ArgumentCompleter(new StringsCompleter("changeRelationshipType"), classCompleter, classCompleter, 
             relationshipTypeCompleter, new NullCompleter());
+    }
+
+    /**
+     * @return A new Completer for the printClass command
+     */
+    private ArgumentCompleter printClassCompleter()
+    {
+        return new ArgumentCompleter(new StringsCompleter("printClass"), classCompleter, new NullCompleter());
+    }
+
+    /**
+     * @return A new Completer for the printClasses command
+     */
+    private ArgumentCompleter printClassesCompleter()
+    {
+        return new ArgumentCompleter(new StringsCompleter("printClasses"), new NullCompleter());
     }
 }

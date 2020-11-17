@@ -628,7 +628,7 @@ public class CLI {
     {
         
         try {
-            brProject = new BufferedReader(new FileReader(filename + ".json"));
+            brProject = new BufferedReader(new FileReader(filename));
             int i;
             StringBuilder projectString = new StringBuilder();
             while ((i = brProject.read()) != -1)
