@@ -1,12 +1,12 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class RemoveFieldCommand extends Command {
     private String className;
     private String fieldName;
 
-    public RemoveFieldCommand (WorkingProject project, String className, String fieldName)
+    public RemoveFieldCommand (Model project, String className, String fieldName)
     {
         super(project);
         this.className = className;

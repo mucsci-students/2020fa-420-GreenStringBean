@@ -1,11 +1,11 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class RemoveClassCommand extends Command {
     private String className;
 
-    public RemoveClassCommand (WorkingProject project, String className)
+    public RemoveClassCommand (Model project, String className)
     {
         super(project);
         this.className = className;

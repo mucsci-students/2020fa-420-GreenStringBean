@@ -1,6 +1,6 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class AddFieldCommand extends Command {
     
@@ -9,7 +9,7 @@ public class AddFieldCommand extends Command {
     private String fieldType;
     private String fieldVisName;
 
-    public AddFieldCommand (WorkingProject project, String className, String fieldName, String fieldType, String fieldVisName)
+    public AddFieldCommand (Model project, String className, String fieldName, String fieldType, String fieldVisName)
     {
         super(project);
         this.className = className;

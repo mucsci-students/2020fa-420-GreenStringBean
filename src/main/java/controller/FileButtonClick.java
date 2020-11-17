@@ -50,6 +50,20 @@ public class FileButtonClick implements ActionListener
 		{
 			controller.redo();
 		}
+		else if(cmd.equals("Zoom In"))
+		{
+			if (view.zoomIn())
+			{
+				view.onUpdate(controller.getProjectSnapshot(), false);
+			}
+		}
+		else if(cmd.equals("Zoom Out"))
+		{
+			if (view.zoomOut())
+			{
+				view.onUpdate(controller.getProjectSnapshot(), false);
+			}
+		}
 		else if(cmd.equals("Save"))
 		{
 			File file = view.getSaveFile();
@@ -61,9 +75,9 @@ public class FileButtonClick implements ActionListener
             {
 				Files.writeString(file.toPath(), controller.save());
             }
-            catch(IOException error)
+            catch(IOException ex)
             {
-                view.alert("Error Saving file");
+                view.alert("Error saving file");
             }
 		}
 		else if(cmd.equals("Save As"))
@@ -77,9 +91,9 @@ public class FileButtonClick implements ActionListener
             {
 				Files.writeString(file.toPath(), controller.save());
             }
-            catch(IOException error)
+            catch(IOException ex)
             {
-                view.alert("Error Saving file");
+                view.alert("Error saving file");
             }
 		}
 		else if(cmd.equals("Load"))
@@ -93,9 +107,9 @@ public class FileButtonClick implements ActionListener
             {
                 controller.load(Files.readString(file.toPath()));
             }
-            catch(IOException error)
+            catch(IOException ex)
             {
-                view.alert("Error Loading File");
+                view.alert("Error loading File");
             }
 		}
 		else if(cmd.equals("Exit"))

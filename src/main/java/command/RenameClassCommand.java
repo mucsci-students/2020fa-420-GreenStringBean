@@ -1,12 +1,12 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class RenameClassCommand extends Command {
     private String oldClassName;
     private String newClassName;
 
-    public RenameClassCommand (WorkingProject project, String oldClassName, String newClassName)
+    public RenameClassCommand (Model project, String oldClassName, String newClassName)
     {
         super(project);
         this.oldClassName = oldClassName;

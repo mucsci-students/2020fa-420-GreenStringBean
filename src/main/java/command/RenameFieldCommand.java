@@ -1,13 +1,13 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class RenameFieldCommand extends Command {
     private String className;
     private String oldFieldName;
     private String newFieldName;
 
-    public RenameFieldCommand (WorkingProject project, String className, String oldFieldName, String newFieldName)
+    public RenameFieldCommand (Model project, String className, String oldFieldName, String newFieldName)
     {
         super(project);
         this.className = className;

@@ -8,8 +8,8 @@ import org.jline.reader.impl.completer.AggregateCompleter;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.NullCompleter;
 
-import model.WorkingProject;
-import java.util.Set;
+import model.Model;
+
 
 public class CommandCompleter
 {
@@ -21,7 +21,7 @@ public class CommandCompleter
     //Find the Completer that corresponds to the previous argument, and then use that to make the completion for the current argument
     //There needs to be a strings completer for every class' fields and methods, and each method needs a string completer for its parameters
 
-    private WorkingProject workingProject;
+    private Model model;
     private AggregateCompleter completer;
     private StringsCompleter typeCompleter;
     private StringsCompleter visibilityCompleter;
@@ -35,7 +35,7 @@ public class CommandCompleter
         completer = new AggregateCompleter();
         typeCompleter = new StringsCompleter("byte", "short", "int", "long", "float", "double", "boolean", "char");
         visibilityCompleter = new StringsCompleter("public", "private", "protected");
-        relationshipTypeCompleter = new StringsCompleter("-a", "-c", "-i", "-r");
+        relationshipTypeCompleter = new StringsCompleter("AGREGATE", "COMPOSITION", "INHERITANCE", "REALIZATION");
         classCompleter = new StringsCompleter();
     }
 
@@ -48,10 +48,10 @@ public class CommandCompleter
      * @param classes All class names in the project
      * @return An AggregateCompleter made of the completer for every command
      */
-    public void updateCompleter(WorkingProject workingProject)
+    public void updateCompleter(Model model)
     {
-        this.workingProject = workingProject;
-        this.classCompleter = new StringsCompleter(workingProject.getClassNames());
+        this.model = model;
+        this.classCompleter = new StringsCompleter(model.getClassNames());
 
         ArrayList<Completer> addParamComp = new ArrayList<Completer>();
         ArrayList<Completer> remFieldComp = new ArrayList<Completer>();
@@ -65,9 +65,9 @@ public class CommandCompleter
         ArrayList<Completer> changeFieldTypeComp = new ArrayList<Completer>();
         ArrayList<Completer> changeMethTypeComp = new ArrayList<Completer>();
         ArrayList<Completer> changeParamTypeComp = new ArrayList<Completer>();
-        for (String UMLClass : workingProject.getClassNames())
+        for (String UMLClass : model.getClassNames())
         {
-            for (String UMLMethod : workingProject.getClass(UMLClass).getMethodNames())
+            for (String UMLMethod : model.getClass(UMLClass).getMethodNames())
             {
                 addParamComp.add(addParameterCompleter(UMLClass, UMLMethod));
                 remParamComp.add(removeParameterCompleter(UMLClass, UMLMethod));
@@ -76,9 +76,9 @@ public class CommandCompleter
             }
             remFieldComp.add(removeFieldCompleter(UMLClass));
             remMethComp.add(removeMethodCompleter(UMLClass));
-            renameFieldComp.add(renameMethodCompleter(UMLClass));
+            renameFieldComp.add(renameFieldCompleter(UMLClass));
             renameMethComp.add(renameMethodCompleter(UMLClass));
-            changeFieldVisComp.add(changeFieldTypeCompleter(UMLClass));
+            changeFieldVisComp.add(changeFieldVisibilityCompleter(UMLClass));
             changeMethVisComp.add(changeMethodVisibilityCompleter(UMLClass));
             changeFieldTypeComp.add(changeFieldTypeCompleter(UMLClass));
             changeMethTypeComp.add(changeMethodTypeCompleter(UMLClass));
@@ -142,23 +142,20 @@ public class CommandCompleter
     {
         return new ArgumentCompleter(new StringsCompleter("removeClass"), classCompleter, new NullCompleter());
     }
-    //TODO: Find how to make a completer for fields and add it to this completer
     private ArgumentCompleter removeFieldCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("removeField"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(workingProject.getClass(UMLClass).getFieldNames()), new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getFieldNames()), new NullCompleter());
     }
-    //TODO: Find how to make a completer for methods and add it to this completer
     private ArgumentCompleter removeMethodCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("removeMethod"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(workingProject.getClass(UMLClass).getMethodNames()), new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getMethodNames()), new NullCompleter());
     }
-    //TODO: Find how to make a completer for methods and for parameters and add them to this method
     private ArgumentCompleter removeParameterCompleter(String UMLClass, String UMLMethod)
     {
         return new ArgumentCompleter(new StringsCompleter("removeParameter"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(UMLMethod), new StringsCompleter(workingProject.getClass(UMLClass).getMethod(UMLMethod).getParameterNames()),
+            new StringsCompleter(UMLMethod), new StringsCompleter(model.getClass(UMLClass).getMethod(UMLMethod).getParameterNames()),
             new NullCompleter());
     }
     
@@ -173,49 +170,49 @@ public class CommandCompleter
     private ArgumentCompleter renameFieldCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("renameField"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(workingProject.getClass(UMLClass).getFieldNames()), new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getFieldNames()), new NullCompleter());
     }
     private ArgumentCompleter renameMethodCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("renameMethod"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(workingProject.getClass(UMLClass).getMethodNames()), new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getMethodNames()), new NullCompleter());
     }
     private ArgumentCompleter renameParameterCompleter(String UMLClass, String UMLMethod)
     {
         return new ArgumentCompleter(new StringsCompleter("renameParameter"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(UMLMethod), new StringsCompleter(workingProject.getClass(UMLClass).getMethod(UMLMethod).getParameterNames()), 
+            new StringsCompleter(UMLMethod), new StringsCompleter(model.getClass(UMLClass).getMethod(UMLMethod).getParameterNames()), 
             new NullCompleter());
     }
 
     private ArgumentCompleter changeFieldVisibilityCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("changeFieldVisibility"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(workingProject.getClass(UMLClass).getFieldNames()), visibilityCompleter, new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getFieldNames()), visibilityCompleter, new NullCompleter());
     }
     private ArgumentCompleter changeMethodVisibilityCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("changeMethodVisibility"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(workingProject.getClass(UMLClass).getMethodNames()), visibilityCompleter, new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getMethodNames()), visibilityCompleter, new NullCompleter());
     }
 
     private ArgumentCompleter changeFieldTypeCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("changeFieldType"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(workingProject.getClass(UMLClass).getFieldNames()), typeCompleter, new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getFieldNames()), typeCompleter, new NullCompleter());
     }
     private ArgumentCompleter changeMethodTypeCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("changeMethodType"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(workingProject.getClass(UMLClass).getMethodNames()), typeCompleter, new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getMethodNames()), typeCompleter, new NullCompleter());
     }
     private ArgumentCompleter changeParameterTypeCompleter(String UMLClass, String UMLMethod)
     {
         return new ArgumentCompleter(new StringsCompleter("changeParameterType"), new StringsCompleter(UMLClass), new StringsCompleter(UMLMethod), 
-            new StringsCompleter(workingProject.getClass(UMLClass).getMethod(UMLMethod).getParameterNames()), typeCompleter, new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getMethod(UMLMethod).getParameterNames()), typeCompleter, new NullCompleter());
     }
     private ArgumentCompleter changeRelationshipTypeCompleter()
     {
         return new ArgumentCompleter(new StringsCompleter("changeRelationshipType"), classCompleter, classCompleter, 
-            new StringsCompleter("-a", "-c", "-i", "-r"), new NullCompleter());
+            relationshipTypeCompleter, new NullCompleter());
     }
 }

@@ -37,7 +37,7 @@ public class FieldClick implements ActionListener
 		System.out.println("succesfully got to FieldClick actions: FieldClick()");
 		
 		String cmd = e.getActionCommand();
-        String className = view.getText("Name of class to modify:", cmd);
+        String className = view.promptForString("Name of class to modify:", cmd);
         if (className == null)
         {
             return;
@@ -46,17 +46,17 @@ public class FieldClick implements ActionListener
         if (cmd.equals("Add Field")) 
         {
             // TODO Choose from options instead of raw input
-            String fieldVis = view.getVis("Visibility:", cmd);
+            String fieldVis = view.promptForVis("Visibility:", cmd);
             if (fieldVis == null)
             {
                 return;
             }
-            String fieldType = view.getText("Data type:", cmd);
+            String fieldType = view.promptForString("Data type:", cmd);
             if (fieldType == null)
             {
                 return;
             }
-            String fieldName = view.getText("Field name:", cmd);
+            String fieldName = view.promptForString("Field name:", cmd);
             if (fieldName == null)
             {
                 return;
@@ -65,7 +65,7 @@ public class FieldClick implements ActionListener
         } 
         else if (cmd.equals("Remove Field")) 
         {
-            String fieldName = view.getText("Name of field to remove:", cmd);
+            String fieldName = view.promptForString("Name of field to remove:", cmd);
             if (fieldName == null)
             {
                 return;
@@ -74,12 +74,12 @@ public class FieldClick implements ActionListener
         }
         else if (cmd.equals("Rename Field"))
         {
-            String oldFieldName = view.getText("Old field name:", cmd);
+            String oldFieldName = view.promptForString("Old field name:", cmd);
             if (oldFieldName == null)
             {
                 return;
             }
-            String newFieldName = view.getText("New field name:", cmd);
+            String newFieldName = view.promptForString("New field name:", cmd);
             if (newFieldName == null)
             {
                 return;
@@ -88,12 +88,12 @@ public class FieldClick implements ActionListener
         }
         else if (cmd.equals("Change Field Type"))
         {
-            String fieldName = view.getText("Name of field to modify:", cmd);
+            String fieldName = view.promptForString("Name of field to modify:", cmd);
             if (fieldName == null)
             {
                 return;
             }
-            String newFieldType = view.getText("New data type:", cmd);
+            String newFieldType = view.promptForString("New data type:", cmd);
             if (newFieldType == null)
             {
                 return;
@@ -102,12 +102,12 @@ public class FieldClick implements ActionListener
         }
         else if (cmd.equals("Change Field Visibility"))
         {
-            String fieldName = view.getText("Name of field to modify:", cmd);
+            String fieldName = view.promptForString("Name of field to modify:", cmd);
             if (fieldName == null)
             {
                 return;
             }
-            String newFieldVis = view.getVis("New visibility:", cmd);
+            String newFieldVis = view.promptForVis("New visibility:", cmd);
             if (newFieldVis == null)
             {
                 return;
@@ -118,17 +118,17 @@ public class FieldClick implements ActionListener
         //Methods
         else if (cmd.equals("Add Method"))
         {
-            String methodVis = view.getVis("Visibility:", cmd);
+            String methodVis = view.promptForVis("Visibility:", cmd);
             if (methodVis == null)
             {
                 return;
             }
-            String methodType = view.getText("Return type:", cmd);
+            String methodType = view.promptForString("Return type:", cmd);
             if (methodType == null)
             {
                 return;
             }
-            String methodName = view.getText("Method name:", cmd);
+            String methodName = view.promptForString("Method name:", cmd);
             if (methodName == null)
             {
                 return;
@@ -137,7 +137,7 @@ public class FieldClick implements ActionListener
         }
         else if (cmd.equals("Remove Method"))
         {
-            String methodName = view.getText("Name of method to remove:", cmd);
+            String methodName = view.promptForString("Name of method to remove:", cmd);
             if (methodName == null)
             {
                 return;
@@ -146,12 +146,12 @@ public class FieldClick implements ActionListener
         }
         else if (cmd.equals("Rename Method"))
         {
-            String oldMethodName = view.getText("Old method name:", cmd);
+            String oldMethodName = view.promptForString("Old method name:", cmd);
             if (oldMethodName == null)
             {
                 return;
             }
-            String newMethodName = view.getText("New method name:", cmd);
+            String newMethodName = view.promptForString("New method name:", cmd);
             if (newMethodName == null)
             {
                 return;
@@ -160,12 +160,12 @@ public class FieldClick implements ActionListener
         }
         else if (cmd.equals("Change Method Type"))
         {
-            String methodName = view.getText("Name of method to modify:", cmd);
+            String methodName = view.promptForString("Name of method to modify:", cmd);
             if (methodName == null)
             {
                 return;
             }
-            String newMethodType = view.getText("New return type:", cmd);
+            String newMethodType = view.promptForString("New return type:", cmd);
             if (newMethodType == null)
             {
                 return;
@@ -174,12 +174,12 @@ public class FieldClick implements ActionListener
         }
         else if (cmd.equals("Change Method Visibility"))
         {
-            String methodName = view.getText("Name of method to modify:", cmd);
+            String methodName = view.promptForString("Name of method to modify:", cmd);
             if (methodName == null)
             {
                 return;
             }
-            String newMethodVis = view.getVis("New visibility:", cmd);
+            String newMethodVis = view.promptForVis("New visibility:", cmd);
             if (newMethodVis == null)
             {
                 return;
@@ -189,19 +189,19 @@ public class FieldClick implements ActionListener
         else
         {
             //Params
-            String methodName = view.getText("Name of method to modify:", cmd);
+            String methodName = view.promptForString("Name of method to modify:", cmd);
             if (methodName == null)
             {
                 return;
             }
             if (cmd.equals("Add Parameter"))
             {
-                String paramName = view.getText("Parameter name:", cmd);
+                String paramName = view.promptForString("Parameter name:", cmd);
                 if (paramName == null)
                 {
                     return;
                 }
-                String paramType = view.getText("Data type:", cmd);
+                String paramType = view.promptForString("Data type:", cmd);
                 if (paramType == null)
                 {
                     return;
@@ -210,7 +210,7 @@ public class FieldClick implements ActionListener
             }
             else if (cmd.equals("Remove Parameter"))
             {
-                String paramName = view.getText("Name of parameter to remove:", cmd);
+                String paramName = view.promptForString("Name of parameter to remove:", cmd);
                 if (paramName == null)
                 {
                     return;
@@ -219,12 +219,12 @@ public class FieldClick implements ActionListener
             }
             else if (cmd.equals("Rename Parameter"))
             {
-                String oldParamName = view.getText("Old parameter name:", cmd);
+                String oldParamName = view.promptForString("Old parameter name:", cmd);
                 if (oldParamName == null)
                 {
                     return;
                 }
-                String newParamName = view.getText("New parameter name:", cmd);
+                String newParamName = view.promptForString("New parameter name:", cmd);
                 if (newParamName == null)
                 {
                     return;
@@ -233,12 +233,12 @@ public class FieldClick implements ActionListener
             }
             else if (cmd.equals("Change Parameter Type"))
             {
-                String paramName = view.getText("Name of parameter to modify:", cmd);
+                String paramName = view.promptForString("Name of parameter to modify:", cmd);
                 if (paramName == null)
                 {
                     return;
                 }
-                String newParamType = view.getText("New data type:", cmd);
+                String newParamType = view.promptForString("New data type:", cmd);
                 if (newParamType == null)
                 {
                     return;

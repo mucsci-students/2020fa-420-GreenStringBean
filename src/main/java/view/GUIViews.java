@@ -2,56 +2,61 @@ package view;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.GridLayout;
+import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.UIManager;
-import javax.swing.KeyStroke;
 
-import controller.HelperControllers;
-
-import javax.swing.WindowConstants;
-
+import controller.ClassPanelClick;
 import model.ClassObject;
-import model.WorkingProject;
+import model.Model;
 import model.Relationship;
+import model.Relationship.relationshipType;
 
 public class GUIViews implements MenuViews{
 	private JMenuBar mb;
-	private JFrame pWindow;
+	private JLayeredPane pWindow;
 	private JFrame win;
 	private JMenu fileM;
 	private JMenu relaM;
 	private JMenu fieldM;
 	private JMenu classM;
 	private JFileChooser fileChooser;
+	private Font font;
 
 	private Map<String, JPanel> classPanels;
+	private Map<Relationship, RelationArrow> relationArrows; 
 
 	/**
-	 * Method for making the GUI window a different style
+	 * Constructor for creating a new GUI view
 	 */
 	public GUIViews()
 	{
 		this.classPanels = new HashMap<>();
+		this.relationArrows = new HashMap<>();
 		try
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -60,6 +65,7 @@ public class GUIViews implements MenuViews{
 		{
 			// Default Java look and feel will be used
 		}
+		font = new Font(Font.MONOSPACED, Font.PLAIN, 15);
 	}
 	
 	/**
@@ -71,11 +77,14 @@ public class GUIViews implements MenuViews{
 		System.out.println("Got to make the window(): GUIViews()");
 
 		win = new JFrame("UML");
-		win.setLayout(new GridLayout(5,5));
 		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		win.setSize(800,750);
 		win.setVisible(true);
-		pWindow = win;
+		win.addComponentListener(new WindowResizeListener(this));
+		pWindow = new JLayeredPane();
+		pWindow.setLayout(null);
+		pWindow.setVisible(true);
+		win.add(pWindow);
 		makeMenu(win);
 		pWindow.add(mb);
 		win.setJMenuBar(mb);
@@ -122,7 +131,7 @@ public class GUIViews implements MenuViews{
 	 * @param prompt 
 	 * @param title
 	 */
-	public String getText(String prompt, String title) 
+	public String promptForString(String prompt, String title) 
 	{
 		return JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE);
 	}
@@ -132,7 +141,7 @@ public class GUIViews implements MenuViews{
 	 * @param  
 	 * @param 
 	 */
-	public String getVis(String prompt, String title) 
+	public String promptForVis(String prompt, String title) 
 	{
 		Object[] possibleValues = { "Public", "Private", "Protected" };
 
@@ -149,7 +158,7 @@ public class GUIViews implements MenuViews{
 	 * @param  pr
 	 * @param 
 	 */
-	public String getRelation(String prompt, String title)
+	public String promptForRelType(String prompt, String title)
 	{
 		Object[] possibleValues = { "Inheritance", "Aggregation", "Composition", "Realization" };
 
@@ -158,6 +167,10 @@ public class GUIViews implements MenuViews{
              JOptionPane.PLAIN_MESSAGE, null,
 			 possibleValues, possibleValues[0]);
 			 
+		if (selectedValue == null)
+		{
+			return null;
+		}
 		return ((String)selectedValue).substring(0, 1);
 	}
 
@@ -166,7 +179,7 @@ public class GUIViews implements MenuViews{
 	 * @param  
 	 * @param 
 	 */
-	public String getClass(String prompt, String title)
+	public String promptForClassName(String prompt, String title)
 	{
 		if(classPanels.keySet().isEmpty())
 		{
@@ -259,26 +272,32 @@ public class GUIViews implements MenuViews{
 
 		JMenuItem un = new JMenuItem("Undo");
 		JMenuItem re = new JMenuItem("Redo");
+		JMenuItem zi = new JMenuItem("Zoom In");
+		JMenuItem zo = new JMenuItem("Zoom Out");
 		JMenuItem s = new JMenuItem("Save");
 		JMenuItem sa = new JMenuItem("Save As");
-		JMenuItem l = new JMenuItem("Load...");
+		JMenuItem l = new JMenuItem("Load");
 		JMenuItem ex = new JMenuItem("Exit");
 
 		KeyStroke undoKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke redoKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke zoomInKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke zoomOutKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke loadKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke saveKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
-		KeyStroke saveAsKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK + InputEvent.SHIFT_DOWN_MASK);
+		KeyStroke saveAsKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
 
 		un.setAccelerator(undoKeyStroke);
 		re.setAccelerator(redoKeyStroke);
+		zi.setAccelerator(zoomInKeyStroke);
+		zo.setAccelerator(zoomOutKeyStroke);
 		s.setAccelerator(saveKeyStroke);
 		sa.setAccelerator(saveAsKeyStroke);
 		l.setAccelerator(loadKeyStroke);
 
-		JMenuItem[] arr = {un, re, s, sa, l, ex};
-		String[] txt = {"Undo", "Redo", "Save edited file", "Save edited file as", "Load selected project", "Exit application"};
-		String[] cmd = {"Undo", "Redo", "Save", "Save As", "Load", "Exit"};
+		JMenuItem[] arr = {un, re, zi, zo, s, sa, l, ex};
+		String[] txt = {"Undo", "Redo", "Zoom In", "Zoom Out", "Save edited file", "Save edited file as", "Load selected project", "Exit application"};
+		String[] cmd = {"Undo", "Redo", "Zoom In", "Zoom Out", "Save", "Save As", "Load", "Exit"};
 
 		for(int count = 0; count < arr.length; ++count)
 		{
@@ -450,7 +469,7 @@ public class GUIViews implements MenuViews{
 	}
 	
 	/**
-	 * Adds all the action listeners to there respected clicks
+	 * Adds all the action listeners to their respective clicks
 	 */
 	public void addListeners(ActionListener fileL, ActionListener classL, ActionListener fieldL,
 			ActionListener relatL) 
@@ -463,8 +482,8 @@ public class GUIViews implements MenuViews{
 		relationshipListener(relatL);
 		
 		System.out.println("finished listeners: GUIViews()");
-    }
-	
+	}
+
 	/**
 	 * Starts the program with a clean window for GUI
 	 */
@@ -478,14 +497,75 @@ public class GUIViews implements MenuViews{
 	 * Called when an observed project updates. Update all class panels.
 	 * @param project a copy of the observed project
 	 */
-	public void onUpdate(WorkingProject project)
+	public void onUpdate(Model project, boolean newLoadedProject)
 	{
-		System.out.println("View notified with a project");
-		clearClassPanels();
-
-		for (String className : project.getClassNames())
+		if (newLoadedProject)
 		{
-			createClassPanel(project.getClass(className));
+			System.out.println("View notified with a loaded project");
+			clearClassPanels();
+
+			for (String className : project.getClassNames())
+			{
+				createClassPanel(project.getClass(className));
+			}
+		}
+		else
+		{
+			System.out.println("View notified with a non-loaded project");
+			String missingClassName = "";
+			String foundClassName = "";
+			Set<String> existingClassNames = classPanels.keySet();
+			Set<String> notifClassNames = project.getClassNames();
+			for (String existingClassName : existingClassNames)
+			{
+				if (!notifClassNames.contains(existingClassName))
+				{
+					missingClassName = existingClassName;
+				}
+			}
+			for (String notifClassName : notifClassNames)
+			{
+				if (!existingClassNames.contains(notifClassName))
+				{
+					foundClassName = notifClassName;
+				}
+			}
+
+			if (!missingClassName.isEmpty() && !foundClassName.isEmpty())
+			{
+				// Class has been renamed
+
+				JPanel panel = classPanels.remove(missingClassName);
+				classPanels.put(foundClassName, panel);
+				pWindow.moveToFront(panel);
+			}
+			else if (!missingClassName.isEmpty())
+			{
+				// Class has been removed
+				pWindow.remove(classPanels.get(missingClassName));
+				classPanels.remove(missingClassName);
+			}
+			else if (!foundClassName.isEmpty())
+			{
+				// Class has been added
+				createClassPanel(project.getClass(foundClassName));
+			}
+
+			for (Map.Entry<String, JPanel> panelEntry : classPanels.entrySet())
+			{
+				updateClassPanel(panelEntry.getValue(), project.getClass(panelEntry.getKey()));
+			}
+		}
+
+		relationArrows.clear();
+		for (Component c : pWindow.getComponentsInLayer(JLayeredPane.DEFAULT_LAYER))
+		{
+			pWindow.remove(c);
+		}
+
+		for (Relationship r : project.getRelationships())
+		{
+			createRelationArrow(r);
 		}
 
 		refresh();
@@ -501,6 +581,7 @@ public class GUIViews implements MenuViews{
 		System.out.println("View notified with a class");
 		JPanel panel = classPanels.get(classObj.getName());
 		updateClassPanel(panel, classObj);
+		pWindow.moveToFront(panel);
         refresh();
 	}
 	
@@ -510,61 +591,111 @@ public class GUIViews implements MenuViews{
 	 */
 	private void createClassPanel(ClassObject classObj)
 	{
-		System.out.println("made the class panel for display: GUIViews()");
-        
-        JPanel panel = new JPanel();
+		JPanel panel = new JPanel();
+		ClassPanelClick listener = new ClassPanelClick(this, panel);
+		addDragListener(panel, listener);
+		panel.setLocation(0, 0);
+		boolean goodLocation = false;
+		while (!goodLocation)
+		{
+			int offset = font.getSize() * 4 / 3;
+			panel.setLocation(panel.getX() + offset, panel.getY() + offset);
+			goodLocation = true;
+			for (JPanel other : classPanels.values())
+			{
+				if (other.getLocation().equals(panel.getLocation()))
+				{
+					goodLocation = false;
+				}
+			}
+		}
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setVisible(true);
 		classPanels.put(classObj.getName(), panel);
 		pWindow.add(panel);
+		pWindow.setLayer(panel, JLayeredPane.PALETTE_LAYER);
+		pWindow.moveToFront(panel);
 		
 		updateClassPanel(panel, classObj);
 	}
 
 	/**
-	 * Updates the contents of a class panel to match a class object.
-	 * @param panel    the panel to update
-	 * @param classObj the class the panel should display
+	 * 
+	 * @param panel
 	 */
-	private void updateClassPanel(JPanel panel, ClassObject classObj)
+	public void addDragListener(Component component, ClassPanelClick listener)
 	{
-		panel.removeAll();
-		
-		Border classBd = BorderFactory.createLineBorder(Color.BLACK);
-        Border classNameBd = BorderFactory.createLineBorder(Color.RED);
-        Border fieldBd = BorderFactory.createLineBorder(Color.GREEN);
-		Border methodBd = BorderFactory.createLineBorder(Color.BLUE);
-		panel.setBorder(classBd);
+		component.addMouseListener(listener);
+		component.addMouseMotionListener(listener);
+	}
 
-		if(classObj.isOpen())
-		{
-			panel.setBackground(Color.LIGHT_GRAY);
-		}
-		else
-		{
-			panel.setBackground(Color.GRAY);
-		}
+	/**
+	 * 
+	 */
+	public void createRelationArrow(Relationship relat)
+	{
+		JPanel panelFrom = classPanels.get(relat.getClassNameFrom());
+		JPanel panelTo = classPanels.get(relat.getClassNameTo());
+
+		RelationArrow arrow = new RelationArrow(panelFrom, panelTo, relat.getType());
+		arrow.setVisible(true);
+		arrow.setOpaque(false);
+		arrow.setLocation(0, 0);
+		arrow.setSize(pWindow.getSize());
+		pWindow.add(arrow);
+		pWindow.setLayer(arrow, JLayeredPane.DEFAULT_LAYER);
+		pWindow.moveToFront(arrow);
+		relationArrows.put(relat, arrow);
+	}
+
+	/**
+     * Updates the contents of a class panel to match a class object.
+     * @param panel    the panel to update
+     * @param classObj the class the panel should display
+     */
+    private void updateClassPanel(JPanel panel, ClassObject classObj)
+    {
+        panel.removeAll();
+		ClassPanelClick listener =  (ClassPanelClick) panel.getMouseListeners()[0];
+        Border classBd = BorderFactory.createLineBorder(Color.BLACK, 2);
+        panel.setBorder(classBd);
+
+        panel.setBackground(classObj.isOpen() ? Color.WHITE : Color.GRAY);
 
 		JTextArea classTxt = new JTextArea(classObj.getName());
-		classTxt.setEditable(false);
-        classTxt.setBorder(classNameBd);
+        classTxt.setEditable(false);
+        classTxt.setFocusable(false);
+		classTxt.setOpaque(false);
+		classTxt.setFont(font);
 		panel.add(classTxt);
-		
+		addDragListener(classTxt, listener);
+        
         for (String fieldName : classObj.getFieldNames())
         {
             JTextArea fieldTxt = new JTextArea(classObj.getField(fieldName).toString());
             fieldTxt.setEditable(false);
-            fieldTxt.setBorder(fieldBd);
-            panel.add(fieldTxt);
-		}
-		
+            fieldTxt.setFocusable(false);
+            fieldTxt.setOpaque(false);
+			fieldTxt.setFont(font);
+			panel.add(fieldTxt);
+			addDragListener(fieldTxt, listener);
+        }
+        
         for (String methodName : classObj.getMethodNames())
         {
             JTextArea methodTxt = new JTextArea(classObj.getMethod(methodName).toString());
             methodTxt.setEditable(false);
-            methodTxt.setBorder(methodBd);
-            panel.add(methodTxt);
-		}
-	}
+            methodTxt.setFocusable(false);
+            methodTxt.setOpaque(false);
+			methodTxt.setFont(font);
+			panel.add(methodTxt);
+			addDragListener(methodTxt, listener);
+        }
+
+		panel.setSize(panel.getPreferredSize());
+		
+		contain(panel);
+    }
 
 	/**
 	 * Removes all class panels from the view.
@@ -577,6 +708,44 @@ public class GUIViews implements MenuViews{
 		}
 		classPanels.clear();
 	}
+
+	/**
+	 * Increases the size of elements on screen, with a maximum of 60pt font
+	 * @return true if the size was increased, false if not
+	 */
+	public boolean zoomIn()
+	{
+		if (font.getSize() < 60)
+		{
+			font = font.deriveFont(font.getSize2D() + 3);
+			for (JPanel panel : classPanels.values())
+			{
+				panel.setLocation(panel.getX() + 4, panel.getY() + 4);
+			}
+			containAll();
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Decreases the size of elements on screen, with a minimum of 6pt font
+	 * @return true if the size was increased, false if not
+	 */
+	public boolean zoomOut()
+	{
+		if (font.getSize() > 6)
+		{
+			font = font.deriveFont(font.getSize2D() - 3);
+			for (JPanel panel : classPanels.values())
+			{
+				panel.setLocation(panel.getX() - 4, panel.getY() - 4);
+			}
+			containAll();
+			return true;
+		}
+		return false;
+	}
 	
 	/**
 	 * Updates view
@@ -587,8 +756,58 @@ public class GUIViews implements MenuViews{
 		pWindow.repaint();
 	}
 
+	/**
+	 * Ensures a panel is within the bounds of the window. If a panel does not
+	 * fit in the window, it is kept on the left or top of the window.
+	 * @param panel
+	 */
+	public void contain(JPanel panel)
+	{
+		int panelX = panel.getX();
+		int panelY = panel.getY();
+		int panelWidth = panel.getWidth();
+		int panelHeight = panel.getHeight();
+		int windowWidth = pWindow.getWidth();
+		int windowHeight = pWindow.getHeight();
+
+		if (panelX + panelWidth > windowWidth)
+		{
+			panelX = windowWidth - panelWidth;
+		}
+		if (panelX < 0)
+		{
+			panelX = 0;
+		}
+
+		if (panelY + panelHeight > windowHeight)
+		{
+			panelY = windowHeight - panelHeight;
+		}
+		if (panelY < 0)
+		{
+			panelY = 0;
+		}
+
+		panel.setLocation(panelX, panelY);
+	}
+
+	/**
+	 * Contain all panels within the window.
+	 */
+	public void containAll()
+	{
+		for (JPanel panel : classPanels.values())
+		{
+			contain(panel);
+		}
+		for (RelationArrow arrow : relationArrows.values())
+		{
+			arrow.setSize(pWindow.getSize());
+		}
+	}
+
 	// Temporary until we can display arrows between class boxes
-	public void showRelationships(WorkingProject project)
+	public void showRelationships(Model project)
 	{
 		StringBuilder message = new StringBuilder("Relationships:");
 		for (Relationship relationship : project.getRelationships())

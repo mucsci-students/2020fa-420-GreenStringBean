@@ -3,24 +3,31 @@ package view;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import model.WorkingProject;
+import javax.swing.JPanel;
+
+import model.Model;
 
 public interface MenuViews extends Observer
 {
 	/**
-	 * Gets file from user to be saved
+	 * Gets user input from text box
 	 */
-	String getVis(String p, String t);
+	String promptForString(String prompt, String title);
 
 	/**
 	 * Gets file from user to be saved
 	 */
-	String getClass(String p, String t);
+	String promptForVis(String p, String t);
 
 	/**
 	 * Gets file from user to be saved
 	 */
-	String getRelation(String p, String t);
+	String promptForRelType(String p, String t);
+
+	/**
+	 * Gets file from user to be saved
+	 */
+	String promptForClassName(String p, String t);
 
 	/**
 	 * Gets file from user to be saved
@@ -38,11 +45,6 @@ public interface MenuViews extends Observer
 	File getLoadFile();
 	
 	/**
-	 * Gets user input from text box
-	 */
-	String getText(String prompt, String title);
-	
-	/**
 	 * Sends an alert message to user when an ilegal action is performed
 	 */
 	void alert(String message);
@@ -58,6 +60,32 @@ public interface MenuViews extends Observer
 	 */
 	void start();
 
+	/**
+	 * Increases the size of elements on screen, with a maximum of 60pt font
+	 * @return true if the size was increased, false if not
+	 */
+	boolean zoomIn();
+
+	/**
+	 * Decreases the size of elements on screen, with a minimum of 6pt font
+	 * @return true if the size was increased, false if not
+	 */
+	boolean zoomOut();
+
+	/**
+	 * Ensures a panel is within the bounds of the window. If a panel does not
+	 * fit in the window, it is kept on the left or top of the window.
+	 * @param panel
+	 */
+	void contain(JPanel panel);
+
+	/**
+	 * Contain all panels within the window.
+	 */
+	void containAll();
+
+	void refresh();
+
 	// Temporary until we can display arrows between class boxes
-	void showRelationships(WorkingProject snapshot);
+	void showRelationships(Model snapshot);
 }

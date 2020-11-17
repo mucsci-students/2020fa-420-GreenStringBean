@@ -1,11 +1,11 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class CloseClassCommand extends Command {
     private String className;
 
-    public CloseClassCommand (WorkingProject project, String className)
+    public CloseClassCommand (Model project, String className)
     {
         super(project);
         this.className = className;

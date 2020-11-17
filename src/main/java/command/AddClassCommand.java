@@ -1,12 +1,12 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class AddClassCommand extends Command {
     
     private String className;
 
-    public AddClassCommand (WorkingProject project, String className)
+    public AddClassCommand (Model project, String className)
     {
         super(project);
         this.className = className;

@@ -1,5 +1,5 @@
 import model.ClassObject;
-import model.WorkingProject;
+import model.Model;
 import view.Observer;
 
 /**
@@ -11,7 +11,7 @@ public class MockObserver implements Observer {
     public boolean wasNotified;
     public boolean wasNotifiedWithProject;
     public boolean wasNotifiedWithClass;
-    public WorkingProject projectRecieved;
+    public Model projectRecieved;
     public ClassObject classRecieved;
 
     public MockObserver()
@@ -21,7 +21,7 @@ public class MockObserver implements Observer {
         wasNotifiedWithClass = false;
     }
 
-    public void onUpdate(WorkingProject project)
+    public void onUpdate(Model project, boolean newLoadedProject)
     {
         wasNotified = true;
         wasNotifiedWithProject = true;

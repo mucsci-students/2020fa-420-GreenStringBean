@@ -1,6 +1,6 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class AddParameterCommand extends Command {
     private String className;
@@ -8,7 +8,7 @@ public class AddParameterCommand extends Command {
     private String paramName;
     private String paramType;
 
-    public AddParameterCommand (WorkingProject project, String className, String methodName, String paramName, String paramType)
+    public AddParameterCommand (Model project, String className, String methodName, String paramName, String paramType)
     {
         super(project);
         this.className = className;

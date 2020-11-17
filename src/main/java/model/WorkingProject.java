@@ -1,9 +1,12 @@
 
 package model;
 
+import model.Relationship.relationshipType;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +39,7 @@ import org.json.simple.JSONValue;
  *     14 - Visibility Modifier is not valid
  */
 
-public class WorkingProject {
+public class WorkingProject implements Model{
     private LinkedHashMap<String, ClassObject> classes;
     private ArrayList<Relationship> relationships;
 
@@ -524,11 +527,12 @@ public class WorkingProject {
      */
     private void removeRelationshipsByClass(String className)
     {
-        for (Relationship relationship : relationships)
+        ListIterator<Relationship> relationshipIterator = relationships.listIterator();
+        while(relationshipIterator.hasNext())
         {
-            if (relationship.containsClass(className))
+            if (relationshipIterator.next().containsClass(className))
             {
-                relationships.remove(relationship);
+                relationshipIterator.remove();
             }
         }
     }
@@ -559,19 +563,19 @@ public class WorkingProject {
      * @return    the relationship type represented by the String, or null if
      *            str does not represent a relationship type
      */
-    public static Relationship.relationshipType stringToRelationshipType(String str)
+    public static relationshipType stringToRelationshipType(String str)
     {
         str = str.toUpperCase();
         switch(str)
         {
             case "A":
-                return Relationship.relationshipType.AGGREGATION;
+                return relationshipType.AGGREGATION;
             case "C":
-                return Relationship.relationshipType.COMPOSITION;
+                return relationshipType.COMPOSITION;
             case "I":
-                return Relationship.relationshipType.INHERITANCE;
+                return relationshipType.INHERITANCE;
             case "R":
-                return Relationship.relationshipType.REALIZATION;
+                return relationshipType.REALIZATION;
             default :
                 return null;
         }
