@@ -71,7 +71,7 @@ public class CLI {
     public void console() {
         //Continue to prompt user for input
         while (true) {
-            String command = lineReader.readLine("gsb>");
+            String command = lineReader.readLine("gsb> ");
             ArrayList<String> commands = parseLine(command);
             if (commands == null)
                 continue;
@@ -82,12 +82,12 @@ public class CLI {
                 //Exit the program
                 case "quit":
                     terminal.writer().println("Do you want to save before you go? (Y/N)");
-                    String YN = lineReader.readLine("gsb>");
+                    String YN = lineReader.readLine("gsb> ");
 
                     if (YN.equals("y".toUpperCase()) || YN.equals("y"))
                     {
                         terminal.writer().println("What do you want to name the project?");
-                        String name = lineReader.readLine("gsb>");
+                        String name = lineReader.readLine("gsb> ");
                         saveFile (parseLine(name).get(0));
                     }
                     else if (YN.equals("n".toUpperCase()) || YN.equals("n"))
