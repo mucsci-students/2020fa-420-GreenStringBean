@@ -82,7 +82,25 @@ public class FieldTest {
     @Test
     public void testLoadInvalidJSON()
     {
-        JSONObject emptyJsonObject = new JSONObject();
-        assertNull(Field.loadFromJSON(emptyJsonObject));
+        JSONObject jsonField = new JSONObject();
+        jsonField.put("name", "field");
+        jsonField.put("type", "int");
+        jsonField.put("visibility", visibility.PUBLIC.name());
+
+        JSONObject jsonFieldNoName = (JSONObject)jsonField.clone();
+        jsonFieldNoName.remove("name");
+        assertNull("Missing name returns null", Field.loadFromJSON(jsonFieldNoName));
+
+        JSONObject jsonFieldNoType = (JSONObject)jsonField.clone();
+        jsonFieldNoType.remove("type");
+        assertNull("Missing data type returns null", Field.loadFromJSON(jsonFieldNoType));
+
+        JSONObject jsonFieldNoVis = (JSONObject)jsonField.clone();
+        jsonFieldNoVis.remove("visibility");
+        assertNull("Missing visibility returns null", Field.loadFromJSON(jsonFieldNoVis));
+
+        JSONObject jsonFieldInvalidVis = (JSONObject)jsonField.clone();
+        jsonFieldInvalidVis.put("visibility", "abc");
+        assertNull("Invalid visibility returns null", Field.loadFromJSON(jsonFieldInvalidVis));
     }
 }
