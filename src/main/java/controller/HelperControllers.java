@@ -285,16 +285,6 @@ public class HelperControllers
 		project.changeRelationshipType(classNameFrom, classNameTo, newTypeName);
 		checkStatus();
 	}
-
-	/**
-	 * Temporary until we can display arrows between class boxes
-	 * Shows relationships in the WPEditor
-	 */
-	public void showRelationships()
-	{
-		view.showRelationships(project.getProjectSnapshot());
-	}
-
 	
 	/**********************************OTHERS********************************************/
 	/**
@@ -344,7 +334,7 @@ public class HelperControllers
 	public void addListeners()
     {
 		System.out.println("Made it to addListeners()");
-        view.addListeners(new FileButtonClick(view, this), new ClassClick(view, this), new FieldClick(view, this), new RelationshipClick(view, this));
+        view.addListeners(new FileButtonClick(view, this), new ClassClick(view, this), new RelationshipClick(view, this), new RightClickListenerFactory(view, this));
 	}
 	
 	/**

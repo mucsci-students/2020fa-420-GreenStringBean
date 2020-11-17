@@ -37,25 +37,7 @@ public class ClassClick implements ActionListener
 		System.out.println("succesfully got to ClassClick actions: ClassClick()");
 		
 		String cmd = e.getActionCommand();
-		if(cmd.equals("Open"))
-		{
-			String className = view.promptForString("Name of class to open:", cmd);
-			if (className == null)
-			{
-				return;
-			}
-			controller.openClass(className);
-		}
-		if(cmd.equals("Close"))
-		{
-			String className = view.promptForString("Name of class to close:", cmd);
-			if (className == null)
-			{
-				return;
-			}
-			controller.closeClass(className);
-		}
-		else if(cmd.equals("Add Class"))
+		if(cmd.equals("Add Class"))
 		{
 			String className = view.promptForString("Class name:", cmd);
 			if (className == null)
@@ -63,31 +45,14 @@ public class ClassClick implements ActionListener
 				return;
 			}
 			controller.createClass(className);
-		}
-		else if(cmd.equals("Remove Class"))
-		{
-			// TODO select a class from the list instead of raw input
-			String className = view.promptForString("Name of class to remove:", cmd);
-			if (className == null)
-			{
-				return;
-			}
-			controller.delClass(className);
-		}
-		else if(cmd.equals("Rename Class"))
-		{
-			// TODO select a class from the list instead of raw input
-			String oldClassName = view.promptForString("Old class name:", cmd);
-			if (oldClassName == null)
-			{
-				return;
-			}
-			String newClassName = view.promptForString("New class Name:", cmd);
-			if (newClassName == null)
-			{
-				return;
-			}
-			controller.renameClass(oldClassName, newClassName);
 		}	
+		else if(cmd.equals("Undo"))
+		{
+			controller.undo();
+		}
+		else if(cmd.equals("Redo"))
+		{
+			controller.redo();
+		}
 	}
 }

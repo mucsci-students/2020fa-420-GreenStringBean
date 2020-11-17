@@ -5,6 +5,7 @@ import java.io.File;
 
 import javax.swing.JPanel;
 
+import controller.RightClickListenerFactory;
 import model.Model;
 
 public interface MenuViews extends Observer
@@ -52,8 +53,7 @@ public interface MenuViews extends Observer
 	/**
 	 * Add action listeners to there respected menu options
 	 */
-	void addListeners(ActionListener fileClick, ActionListener classClick,
-			ActionListener fieldClick, ActionListener relationshipClick);	
+	void addListeners(ActionListener fileClick, ActionListener classClick, ActionListener relationshipClick, RightClickListenerFactory clickFactory);
 
 	/**
 	 * Starts the GUI with a clean window
@@ -83,9 +83,4 @@ public interface MenuViews extends Observer
 	 * Contain all panels within the window.
 	 */
 	void containAll();
-
-	void refresh();
-
-	// Temporary until we can display arrows between class boxes
-	void showRelationships(Model snapshot);
 }

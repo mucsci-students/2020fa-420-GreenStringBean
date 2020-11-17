@@ -3,6 +3,7 @@ package controller;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JLayeredPane;
 import view.MenuViews;
@@ -16,12 +17,14 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
 	private MenuViews view;
     //private HelperControllers controller;
     private JPanel panel;
+    private JPopupMenu menu;
 
-    public ClassPanelClick(MenuViews view, JPanel panel)
+    public ClassPanelClick(MenuViews view, JPanel panel, JPopupMenu menu)
 	{
 		this.view = view;
         //this.controller = c;
         this.panel = panel;
+        this.menu = menu;
 	}
 
     @Override
@@ -41,28 +44,36 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
     @Override
     public void mouseClicked(MouseEvent e) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        dragX = e.getX();
-        dragY = e.getY();
-
-        if (e.getComponent() instanceof JTextArea)
+        if(e.isPopupTrigger())
         {
-            Point childPos = e.getComponent().getLocation();
-            dragX += childPos.x;
-            dragY += childPos.y;
+            menu.show(e.getComponent(), e.getX(), e.getY());
         }
+        else
+        {
+            dragX = e.getX();
+            dragY = e.getY();
 
-        ((JLayeredPane)panel.getParent()).moveToFront(panel);
+            if (e.getComponent() instanceof JTextArea)
+            {
+                Point childPos = e.getComponent().getLocation();
+                dragX += childPos.x;
+                dragY += childPos.y;
+            }
+
+            ((JLayeredPane)panel.getParent()).moveToFront(panel);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        // TODO Auto-generated method stub
-
+        if(e.isPopupTrigger())
+        {
+            menu.show(e.getComponent(), e.getX(), e.getY());
+        }
     }
 
     @Override
