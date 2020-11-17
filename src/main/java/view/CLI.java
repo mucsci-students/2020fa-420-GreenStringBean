@@ -277,7 +277,7 @@ public class CLI {
                     {
                         projectEditor.addField(commands.get(1), commands.get(4), commands.get(3), commands.get(2));
                         printStatusMessage();
-                        //updateReaderAndCompleter();
+                        updateReaderAndCompleter();
                     }
                     break;
 
@@ -291,7 +291,7 @@ public class CLI {
                     {
                         projectEditor.addMethod(commands.get(1), commands.get(4), commands.get(3), commands.get(2));
                         printStatusMessage();
-                        //updateReaderAndCompleter();
+                        updateReaderAndCompleter();
                     }
                     break;
 
@@ -305,7 +305,7 @@ public class CLI {
                     {
                         projectEditor.addParameter(commands.get(1), commands.get(2), commands.get(4), commands.get(3));
                         printStatusMessage();
-                        //updateReaderAndCompleter();
+                        updateReaderAndCompleter();
                     }
                     break;
 
@@ -319,7 +319,7 @@ public class CLI {
                     {
                         projectEditor.removeField(commands.get(1), commands.get(2));
                         printStatusMessage();
-                        //updateReaderAndCompleter();
+                        updateReaderAndCompleter();
                     }
                     break;
 
@@ -333,7 +333,7 @@ public class CLI {
                 {
                     projectEditor.removeMethod(commands.get(1), commands.get(2));
                     printStatusMessage();
-                    //updateReaderAndCompleter();
+                    updateReaderAndCompleter();
                 }
                 break;   
 
@@ -347,7 +347,7 @@ public class CLI {
                 {
                     projectEditor.removeParameter(commands.get(1), commands.get(2), commands.get(3));
                     printStatusMessage();
-                    //updateReaderAndCompleter();
+                    updateReaderAndCompleter();
                 }
                 break;
                 
@@ -361,7 +361,7 @@ public class CLI {
                     {
                         projectEditor.renameField(commands.get(1), commands.get(2), commands.get(3));
                         printStatusMessage();
-                        //updateReaderAndCompleter();
+                        updateReaderAndCompleter();
                     }
                     break;
                 
@@ -375,7 +375,7 @@ public class CLI {
                 {
                     projectEditor.renameMethod(commands.get(1), commands.get(2), commands.get(3));
                     printStatusMessage();
-                    //updateReaderAndCompleter();
+                    updateReaderAndCompleter();
                 }
                 break;
 
@@ -389,7 +389,7 @@ public class CLI {
                 {
                     projectEditor.renameParameter(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
                     printStatusMessage();
-                    //updateReaderAndCompleter();
+                    updateReaderAndCompleter();
                 }
                 break;
 
@@ -642,7 +642,7 @@ public class CLI {
      */
     private void updateReaderAndCompleter()
     {
-        completer.updateCompleter(projectEditor.getProjectSnapshot().getClassNames());
+        completer.updateCompleter(projectEditor.getProjectSnapshot());
         lineReader = LineReaderBuilder.builder().terminal(terminal).completer(completer.getCompleter()).parser(parser).history(history).build();
     }
 

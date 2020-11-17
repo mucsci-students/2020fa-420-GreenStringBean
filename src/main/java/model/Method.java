@@ -166,6 +166,19 @@ public class Method extends VisibleDeclaration {
     }
 
     /**
+     * Accessor for the list of parameter names
+     * @return the list of parameter names
+     */
+    public List<String> getParameterNames(){
+        ArrayList<String> paramNames = new ArrayList<String>();
+        for (Parameter p : parameters)
+        {
+            paramNames.add(p.getName());
+        }
+        return paramNames;
+    }
+
+    /**
      * Creates a copy of this method
      * @return the copy of this method
      */
