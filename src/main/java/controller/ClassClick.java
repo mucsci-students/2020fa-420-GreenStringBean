@@ -34,7 +34,7 @@ public class ClassClick implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		System.out.println("succesfully got to ClassClick actions: ClassClick()");
+		//System.out.println("succesfully got to ClassClick actions: ClassClick()");
 		
 		String cmd = e.getActionCommand();
 		if(cmd.equals("Add Class"))

@@ -38,7 +38,7 @@ public class FieldRightClick implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent e) 
 	{
-		System.out.println("succesfully got to FieldClick actions: FieldClick()");
+		//System.out.println("succesfully got to FieldClick actions: FieldClick()");
 		
 		String cmd = e.getActionCommand();
         if (cmd.equals("Remove Field")) 

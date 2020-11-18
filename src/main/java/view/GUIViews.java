@@ -83,7 +83,7 @@ public class GUIViews implements MenuViews {
 	 * displayed for user.
 	 */
 	public void window() {
-		System.out.println("Got to make the window(): GUIViews()");
+		//System.out.println("Got to make the window(): GUIViews()");
 
 		win = new JFrame("UML");
 		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -115,7 +115,7 @@ public class GUIViews implements MenuViews {
 	 * @param win is the window for the menu bar to be added on
 	 */
 	public void makeMenu(JFrame win) {
-		System.out.println("made the menu: GUIViews()");
+		//System.out.println("made the menu: GUIViews()");
 
 		mb = new JMenuBar();
 		createFileM(mb);
@@ -480,7 +480,7 @@ public class GUIViews implements MenuViews {
 	 */
 	private void createFileM(JMenuBar mb)
 	{
-		System.out.println("made file menu: GUIViews()");
+		//System.out.println("made file menu: GUIViews()");
 		
 		fileM = new JMenu("File");
 		
@@ -522,7 +522,7 @@ public class GUIViews implements MenuViews {
 	 */
 	private void fileListener(ActionListener fileL)
 	{
-		System.out.println("adding Listeners for FileClick: GUIViews()");
+		//System.out.println("adding Listeners for FileClick: GUIViews()");
 		
 		for(Component i: fileM.getMenuComponents())
 		{
@@ -538,7 +538,7 @@ public class GUIViews implements MenuViews {
 	 */
 	private void createClassM(JMenuBar mb)
 	{
-		System.out.println("made class menu: GUIViews()");
+		//System.out.println("made class menu: GUIViews()");
 		
 		projectM = new JMenu("Project");
 
@@ -571,7 +571,7 @@ public class GUIViews implements MenuViews {
 	 */
 	private void classListener(ActionListener classL)
 	{
-		System.out.println("adding Listeners for ClassClick: GUIViews()");
+		//System.out.println("adding Listeners for ClassClick: GUIViews()");
 		
 		for(Component i: projectM.getMenuComponents())
 		{
@@ -587,7 +587,7 @@ public class GUIViews implements MenuViews {
 	 */
 	private void createRelatM(JMenuBar mb) 
 	{
-		System.out.println("made relationship menu:  GUIView()");
+		//System.out.println("made relationship menu:  GUIView()");
 		
 		relaM = new JMenu("Relationship");
 
@@ -610,7 +610,7 @@ public class GUIViews implements MenuViews {
 
 	private void createClassRightClick(String className, JTextArea txt, JPanel panel)
 	{
-		System.out.println("made class right click: GUIViews()");
+		//System.out.println("made class right click: GUIViews()");
 		
 		JPopupMenu classM = new JPopupMenu();
 		ClassRightClick click = clickFactory.getClassRightClick(className);
@@ -696,7 +696,7 @@ public class GUIViews implements MenuViews {
 	 */
 	private void relationshipListener(ActionListener relatL)
 	{
-		System.out.println("adding listeners for RelationshipClick: GUIViews()");
+		//System.out.println("adding listeners for RelationshipClick: GUIViews()");
 		
 		for(Component i: relaM.getMenuComponents())
 		{
@@ -711,14 +711,14 @@ public class GUIViews implements MenuViews {
 	public void addListeners(ActionListener fileL, ActionListener classL,
 			ActionListener relatL, RightClickListenerFactory clickFactory) 
 	{
-		System.out.println("adding listeners for all the menu buttons: GUIViews()");
+		//System.out.println("adding listeners for all the menu buttons: GUIViews()");
 		
         fileListener(fileL);
         classListener(classL);
 		relationshipListener(relatL);
 		this.clickFactory = clickFactory;
 		
-		System.out.println("finished listeners: GUIViews()");
+		//System.out.println("finished listeners: GUIViews()");
 	}
 
 	/**
@@ -738,7 +738,7 @@ public class GUIViews implements MenuViews {
 	{
 		if (newLoadedProject)
 		{
-			System.out.println("View notified with a loaded project");
+			//System.out.println("View notified with a loaded project");
 			clearClassPanels();
 
 			for (String className : project.getClassNames())
@@ -748,7 +748,7 @@ public class GUIViews implements MenuViews {
 		}
 		else
 		{
-			System.out.println("View notified with a non-loaded project");
+			//System.out.println("View notified with a non-loaded project");
 			String missingClassName = "";
 			String foundClassName = "";
 			Set<String> existingClassNames = classPanels.keySet();
@@ -816,7 +816,7 @@ public class GUIViews implements MenuViews {
 	 */
 	public void onUpdate(ClassObject classObj)
 	{
-		System.out.println("View notified with a class");
+		//System.out.println("View notified with a class");
 		JPanel panel = classPanels.get(classObj.getName());
 		updateClassPanel(panel, classObj);
 		pWindow.moveToFront(panel);
