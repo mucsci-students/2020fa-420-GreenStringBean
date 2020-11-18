@@ -33,7 +33,7 @@ public class RelationshipClick implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		System.out.println("succesfully got to RelationshipClick actions: RelationshipClick()");
+		//System.out.println("succesfully got to RelationshipClick actions: RelationshipClick()");
 		String cmd = e.getActionCommand();
 
 		String classNameFrom = view.promptForClassName("\"From\" class:", cmd);

@@ -39,7 +39,7 @@ public class FileButtonClick implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		System.out.println("succesfully got to FileClick actions: FileClick()");
+		//System.out.println("succesfully got to FileClick actions: FileClick()");
 		
 		String cmd = e.getActionCommand();
 		if(cmd.equals("Zoom In"))

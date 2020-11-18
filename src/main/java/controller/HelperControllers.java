@@ -311,7 +311,7 @@ public class HelperControllers
 	 */
 	public void addListeners()
     {
-		System.out.println("Made it to addListeners()");
+		//System.out.println("Made it to addListeners()");
         view.addListeners(new FileButtonClick(view, this), new ClassClick(view, this), new RelationshipClick(view, this), new RightClickListenerFactory(view, this));
 	}
 	
