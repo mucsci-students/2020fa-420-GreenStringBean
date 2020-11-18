@@ -166,6 +166,19 @@ public class Method extends VisibleDeclaration {
     }
 
     /**
+     * Accessor for the list of parameter names
+     * @return the list of parameter names
+     */
+    public List<String> getParameterNames(){
+        ArrayList<String> paramNames = new ArrayList<String>();
+        for (Parameter p : parameters)
+        {
+            paramNames.add(p.getName());
+        }
+        return paramNames;
+    }
+
+    /**
      * Creates a copy of this method
      * @return the copy of this method
      */
@@ -236,7 +249,7 @@ public class Method extends VisibleDeclaration {
             String paramName = (String)((JSONObject)jsonParameter).get("name");
             String paramType = (String)((JSONObject)jsonParameter).get("type");
 
-            if (paramName == null || paramType == null)
+            if (paramName == null || paramType == null || method.getParamIndex(paramName)!=-1)
             {
                 return null;
             }

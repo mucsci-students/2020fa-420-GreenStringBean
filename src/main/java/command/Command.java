@@ -23,7 +23,7 @@ public abstract class Command {
 		"Data type is not valid",
 		"Relationship type is not valid",
 		"Error loading project",
-		"Loaded project is not valid",
+		"Parameter name and data type counts do not match",
 		"Visibility modifier is not valid"
 	};
 

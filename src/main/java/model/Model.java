@@ -20,7 +20,7 @@ import java.util.Set;
  *     10 - Data type is not valid
  *     11 - Relationship type is not valid
  *     12 - Error loading project
- *     13 - Loaded project is not valid
+ *     13 - Parameter Name and Data Type counts don't match
  *     14 - Visibility Modifier is not valid
  */
 public interface Model
