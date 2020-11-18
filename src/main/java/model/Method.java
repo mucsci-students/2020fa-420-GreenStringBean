@@ -29,6 +29,25 @@ public class Method extends VisibleDeclaration {
         super(name, type, vis);
         parameters = new ArrayList<>();
     }
+
+    /**
+     * Creates a new method with parameters.
+     * @param name       the name of the method, which must always match this
+     *                   method's key in the class
+     * @param type       the return type of the method
+     * @param vis        the visibility of the method
+     * @param paramNames the names of the method's parameters
+     * @param paramTypes the data types of the method's parameters
+     */
+    public Method(String name, String type, visibility vis, List<String> paramNames, List<String> paramTypes)
+    {
+        super(name, type, vis);
+        parameters = new ArrayList<>();
+        for (int i = 0; i < paramNames.size(); ++i)
+        {
+            parameters.add(new Parameter(paramNames.get(i), paramTypes.get(i)));
+        }
+    }
     
     /**
      * Adds a new parameter to the method.
@@ -124,6 +143,20 @@ public class Method extends VisibleDeclaration {
 
         parameters.get(index).setType(newType);
         return 0;
+    }
+
+    /**
+     * Mutator for the entire parameter list
+     * @param paramNames the list of new parameter names
+     * @param paramTypes the list of new parameter data types
+     */
+    public void setParameters(List<String> paramNames, List<String> paramTypes)
+    {
+        parameters.clear();
+        for (int i = 0; i < paramNames.size(); ++i)
+        {
+            parameters.add(new Parameter(paramNames.get(i), paramTypes.get(i)));
+        }
     }
 
     /**
