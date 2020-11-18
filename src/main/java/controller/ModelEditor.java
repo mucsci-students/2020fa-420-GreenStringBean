@@ -1,6 +1,9 @@
 package controller;
 
 import view.Observer;
+
+import java.util.List;
+
 import model.Model;
 public interface ModelEditor
 {
@@ -123,6 +126,14 @@ public interface ModelEditor
     void addMethod(String className, String methodName, String methodType, String methodVis);
 
     /**
+     * Adds a new method with parameters to a class.
+     * @param className  the name of the class to add a method to
+     * @param methodName the name to be used by the new method
+     * @param methodType the data type to be used by the new method
+     */
+    void addMethod(String className, String methodName, String methodType, String methodVis, List<String> paramNames, List<String> paramTypes);
+
+    /**
      * Removes a method from a class, if it exists.
      * @param className  the name of the class to remove a method from
      * @param methodName the name of the method to remove
@@ -152,6 +163,15 @@ public interface ModelEditor
      * @param methodVisName the new visibility to give to the method
      */
     void changeMethodVisibility(String className, String methodName, String newMethodVis);
+
+    /**
+     * Changes the entire parameter list of a method, if it exists.
+     * @param className  the name of the class with the method to modify
+     * @param methodName the name of the method to modify
+     * @param paramNames the list of new parameter names
+     * @param paramTypes the list of new parameter data types
+     */
+    void changeParameterList(String className, String methodName, List<String> paramNames, List<String> paramTypes);
 
     /**
      * Adds a new parameter to a method.
