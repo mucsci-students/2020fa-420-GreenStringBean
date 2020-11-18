@@ -2,6 +2,7 @@ package view;
 
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JPanel;
@@ -37,6 +38,20 @@ public interface MenuViews extends Observer
 	 * @return      a map of the field's properties to their values, or null if incomplete
 	 */
 	Map<String, String> promptForNewField(String title);
+
+	/**
+	* Displays a dialog box to fill in all the information for a new method
+	* @param title the window title of the dialog box
+	* @return      a map of the method's properties to their values, or null if incomplete
+	*/
+	public Map<String, Object> promptForNewMethod(String title);
+
+	/**
+	 * Displays a dialog box to change the parameters of a method
+	 * @param title the window title of the dialog box
+	 * @return      a map of the method's properties to their values, or null if canceled
+	 */
+ 	public Map<String, List<String>> promptForNewParamList(String title, List<String> oldParamNames, List<String> oldParamTypes);
 
 	/**
 	 * Gets file from user to be saved

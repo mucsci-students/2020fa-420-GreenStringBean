@@ -371,7 +371,7 @@ public class ClassObject{
             {
                 return 9;
             }
-            if (paramNames.contains(paramName))
+            if (paramNames.indexOf(paramName) != paramNames.lastIndexOf(paramName))
             {
                 return 8;
             }
@@ -546,7 +546,7 @@ public class ClassObject{
             {
                 return 9;
             }
-            if (paramNames.contains(paramName))
+            if (paramNames.indexOf(paramName) != paramNames.lastIndexOf(paramName))
             {
                 return 8;
             }

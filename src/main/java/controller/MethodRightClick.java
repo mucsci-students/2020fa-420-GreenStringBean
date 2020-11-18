@@ -1,7 +1,13 @@
 package controller;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import view.MenuViews;
+import model.Parameter;
 
 public class MethodRightClick implements ActionListener
 {
@@ -58,59 +64,22 @@ public class MethodRightClick implements ActionListener
             }
             controller.changeMethodVisiblity(className, methodName, newMethodVis);
         }
-        else
+        else if (cmd.equals("Edit Parameters"))
         {
-            if (cmd.equals("Add Parameter"))
+            List<Parameter> currentParams = controller.getProjectSnapshot().getClass(className).getMethod(methodName).getParameters();
+            List<String> currentParamNames = new ArrayList<>();
+            List<String> currentParamTypes = new ArrayList<>();
+            for (Parameter param : currentParams)
             {
-                String paramName = view.promptForString("Parameter name:", cmd);
-                if (paramName == null)
-                {
-                    return;
-                }
-                String paramType = view.promptForString("Data type:", cmd);
-                if (paramType == null)
-                {
-                    return;
-                }
-                controller.addParameter(className, methodName, paramName, paramType);
+                currentParamNames.add(param.getName());
+                currentParamTypes.add(param.getType());
             }
-            else if (cmd.equals("Remove Parameter"))
+            Map<String, List<String>> paramListData = view.promptForNewParamList(cmd, currentParamNames, currentParamTypes);
+            if (paramListData == null)
             {
-                String paramName = view.promptForString("Name of parameter to remove:", cmd);
-                if (paramName == null)
-                {
-                    return;
-                }
-                controller.removeParameter(className, methodName, paramName);
+                return;
             }
-            else if (cmd.equals("Rename Parameter"))
-            {
-                String oldParamName = view.promptForString("Old parameter name:", cmd);
-                if (oldParamName == null)
-                {
-                    return;
-                }
-                String newParamName = view.promptForString("New parameter name:", cmd);
-                if (newParamName == null)
-                {
-                    return;
-                }
-                controller.renameParameter(className, methodName, oldParamName, newParamName);
-            }
-            else if (cmd.equals("Change Parameter Type"))
-            {
-                String paramName = view.promptForString("Name of parameter to modify:", cmd);
-                if (paramName == null)
-                {
-                    return;
-                }
-                String newParamType = view.promptForString("New data type:", cmd);
-                if (newParamType == null)
-                {
-                    return;
-                }
-                controller.changeParameterType(className, methodName, paramName, newParamType);
-            }
+            controller.editParameters(className, methodName, paramListData.get("ParamNames"), paramListData.get("ParamTypes"));
         }
 	}
 }

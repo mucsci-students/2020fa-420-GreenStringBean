@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.List;
+
 import model.Model;
 import view.*;
 
@@ -120,9 +122,9 @@ public class HelperControllers
 	 * @param methodType is the method type
 	 * @param methodVis is the visibility
 	 */
-	public void addMethod(String className, String methodName, String methodType, String methodVis)
+	public void addMethod(String className, String methodName, String methodType, String methodVis, List<String> paramNames, List<String> paramTypes)
 	{
-		project.addMethod(className, methodName, methodType, methodVis);
+		project.addMethod(className, methodName, methodType, methodVis, paramNames, paramTypes);
 		checkStatus();
 	}
 
@@ -148,42 +150,18 @@ public class HelperControllers
 		project.renameMethod(className, name, newName);
 		checkStatus();
 	}
-    /**********************************PARAMS********************************************/
+	/**********************************PARAMS********************************************/
+	
 	/**
-	 * Adds param to WPEditor
+	 * Edits params in WPEditor
 	 * @param className is the class name
 	 * @param methodName is the method name
-	 * @param paramName is the param name
-	 * @param paramType is the param type
+	 * @param paramNames is the param name list
+	 * @param paramTypes is the param type list
 	 */
-	public void addParameter(String className, String methodName, String paramName, String paramType)
+	public void editParameters(String className, String methodName, List<String> paramNames, List<String> paramTypes)
 	{
-		project.addParameter(className, methodName, paramName, paramType);
-		checkStatus();
-	}
-
-	/**
-	 * Deletes param from WPEditor
-	 * @param className is the class name
-	 * @param methodName is the method name 
-	 * @param paramName is the param name
-	 */
-	public void removeParameter(String className, String methodName, String paramName)
-	{
-		project.removeParameter(className, methodName, paramName);
-		checkStatus();
-	}
-
-	/**
-	 * Renames param in WPEditor
-	 * @param className is the class name
-	 * @param methodName is teh method name
-	 * @param oldParamName is the param name
-	 * @param newParamName is the new param name
-	 */
-	public void renameParameter(String className, String methodName, String oldParamName, String newParamName)
-	{
-		project.renameParameter(className, methodName, oldParamName, newParamName);
+		project.changeParameterList(className, methodName, paramNames, paramTypes);
 		checkStatus();
 	}
 
