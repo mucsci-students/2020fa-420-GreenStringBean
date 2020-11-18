@@ -628,7 +628,10 @@ public class WorkingProject implements Model{
      */
     public int loadFromJSON(String jsonString)
     {
-        try{
+        String previousState = this.toJSONString();
+        try
+        {
+
             classes.clear();
             relationships.clear();
 
@@ -636,6 +639,7 @@ public class WorkingProject implements Model{
 
             if (jsonProject == null)
             {
+                loadFromJSON(previousState);
                 return 12;
             }
 
@@ -644,6 +648,7 @@ public class WorkingProject implements Model{
 
             if (jsonClasses == null || jsonRelationships == null)
             {
+                loadFromJSON(previousState);
                 return 12;
             }
 
@@ -652,6 +657,7 @@ public class WorkingProject implements Model{
                 ClassObject classObj = ClassObject.loadFromJSON((JSONObject)jsonClass);
                 if (classObj == null || classes.containsKey(classObj.getName()))
                 {
+                    loadFromJSON(previousState);
                     return 12;
                 }
                 classes.put(classObj.getName(), classObj);
@@ -666,6 +672,7 @@ public class WorkingProject implements Model{
                 Relationship.relationshipType type = stringToRelationshipType(typeName);
                 if (classNameFrom == null || classNameTo == null || type == null || getRelationshipIndex(classNameFrom, classNameTo)!=-1)
                 {
+                    loadFromJSON(previousState);
                     return 12;
                 }
                 relationships.add(new Relationship(classNameFrom, classNameTo, type));
@@ -673,12 +680,15 @@ public class WorkingProject implements Model{
 
             if (!validityCheck())
             {
+                loadFromJSON(previousState);
                 return 12;
             }
 
             return 0;
         }
-        catch(ClassCastException e){
+        catch(ClassCastException e)
+        {
+            loadFromJSON(previousState);
             return 12;
         }
         
