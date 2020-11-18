@@ -1,5 +1,6 @@
 package model;
 
+import java.util.List;
 import java.util.Set;
 /**
  * The model represents a UML diagram containing classes and
@@ -20,8 +21,8 @@ import java.util.Set;
  *     10 - Data type is not valid
  *     11 - Relationship type is not valid
  *     12 - Error loading project
- *     13 - Parameter Name and Data Type counts don't match
- *     14 - Visibility Modifier is not valid
+ *     13 - Parameter name and data type counts don't match
+ *     14 - Visibility modifier is not valid
  */
 public interface Model
 {
@@ -113,7 +114,19 @@ public interface Model
      * @param methodType the data type to be used by the new method
      * @return           0 if successful, error code otherwise
      */
-    int addMethod(String className, String methodName, String methodType, String methodVisName);
+    int addMethod(String className, String methodName, String methodType, String methodVisName);   
+    
+    /**
+    * Adds a new method with parameters to a class.
+    * @param className     the name of the class to add a method to
+    * @param methodName    the name to be used by the new method
+    * @param methodType    the data type to be used by the new method
+    * @param methodVisName the visibility to be used by the new method
+    * @param paramNames    the parameter names to be used by the new method
+    * @param paramTypes    the parameter data types to be used by the new method
+    * @return              0 if successful, error code otherwise
+    */
+   public int addMethod(String className, String methodName, String methodType, String methodVisName, List<String> paramNames, List<String> paramTypes);
     
     /**
      * Removes a method from a class, if it exists.
@@ -149,7 +162,17 @@ public interface Model
      * @return              0 if successful, error code otherwise
      */
     int changeMethodVisibility(String className, String methodName, String methodVisName);
-    
+
+    /**
+     * Changes the entire parameter list of a method, if it exists.
+     * @param className  the name of the class with the method to modify
+     * @param methodName the name of the method to modify
+     * @param paramNames the list of new parameter names
+     * @param paramTypes the list of new parameter data types
+     * @return           0 if successful, error code otherwise
+     */
+    public int changeParameterList(String className, String methodName, List<String> paramNames, List<String> paramTypes);
+
     /**
      * Adds a new parameter to a method.
      * @param className  the name of the class with the method to modify
