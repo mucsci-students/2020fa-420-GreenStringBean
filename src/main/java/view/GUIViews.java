@@ -3,19 +3,26 @@ package view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.Point;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -24,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
@@ -35,13 +43,13 @@ import controller.ClassPanelClick;
 import controller.ClassRightClick;
 import controller.FieldRightClick;
 import controller.MethodRightClick;
+import controller.ParamButtonClick;
 import controller.RightClickListenerFactory;
 import model.ClassObject;
 import model.Model;
 import model.Relationship;
-import model.Relationship.relationshipType;
 
-public class GUIViews implements MenuViews{
+public class GUIViews implements MenuViews {
 	private JMenuBar mb;
 	private JLayeredPane pWindow;
 	private JFrame win;
@@ -54,37 +62,32 @@ public class GUIViews implements MenuViews{
 	private Font font;
 
 	private Map<String, JPanel> classPanels;
-	private Map<Relationship, RelationArrow> relationArrows; 
+	private Map<Relationship, RelationArrow> relationArrows;
 
 	/**
 	 * Constructor for creating a new GUI view
 	 */
-	public GUIViews()
-	{
+	public GUIViews() {
 		this.classPanels = new HashMap<>();
 		this.relationArrows = new HashMap<>();
-		try
-		{
+		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			// Default Java look and feel will be used
 		}
 		font = new Font(Font.MONOSPACED, Font.PLAIN, 15);
 	}
-	
+
 	/**
-	 * Mehtod for creating a window for the all the buttons and panels
-	 * to be displayed for user.
+	 * Mehtod for creating a window for the all the buttons and panels to be
+	 * displayed for user.
 	 */
-	public void window()
-	{
+	public void window() {
 		System.out.println("Got to make the window(): GUIViews()");
 
 		win = new JFrame("UML");
 		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		win.setSize(800,750);
+		win.setSize(800, 750);
 		win.setVisible(true);
 		win.addComponentListener(new WindowResizeListener(this));
 		pWindow = new JLayeredPane();
@@ -98,103 +101,313 @@ public class GUIViews implements MenuViews{
 	}
 
 	/**
-	 * Method for returning the window for displaying 
-	 * all buttons for menu bar.
+	 * Method for returning the window for displaying all buttons for menu bar.
+	 * 
 	 * @return the window
 	 */
-	public JFrame getMainWindow()
-	{
+	public JFrame getMainWindow() {
 		return win;
 	}
-	
+
 	/**
 	 * Method for placing all the seperate buttons onto the menu bar
+	 * 
 	 * @param win is the window for the menu bar to be added on
 	 */
-	public void makeMenu(JFrame win)
-	{
+	public void makeMenu(JFrame win) {
 		System.out.println("made the menu: GUIViews()");
-		
+
 		mb = new JMenuBar();
 		createFileM(mb);
 		createClassM(mb);
 		createRelatM(mb);
 		mb.setVisible(true);
 	}
-	
+
 	/**
 	 * method for returning menu bar for placing buttons
+	 * 
 	 * @return menu bar
 	 */
-	public JMenuBar getMenuBar()
-	{
+	public JMenuBar getMenuBar() {
 		return mb;
 	}
-	
+
 	/**
 	 * Method for displaying an input box for a user
-	 * @param prompt 
+	 * 
+	 * @param prompt
 	 * @param title
 	 */
-	public String promptForString(String prompt, String title) 
-	{
+	public String promptForString(String prompt, String title) {
 		return JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE);
 	}
 
 	/**
 	 * Method for displaying an input box for a user
-	 * @param  
-	 * @param 
+	 * 
+	 * @param
+	 * @param
 	 */
-	public String promptForVis(String prompt, String title) 
-	{
+	public String promptForVis(String prompt, String title) {
 		Object[] possibleValues = { "Public", "Private", "Protected" };
 
- 		Object selectedValue = JOptionPane.showInputDialog(pWindow,
-             prompt, title,
-             JOptionPane.PLAIN_MESSAGE, null,
-			 possibleValues, possibleValues[0]);
-			 
-		return (String) selectedValue;	
+		Object selectedValue = JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
+				possibleValues, possibleValues[0]);
+
+		return (String) selectedValue;
 	}
 
 	/**
 	 * Method for displaying an input box for a user
-	 * @param  pr
-	 * @param 
+	 * 
+	 * @param pr
+	 * @param
 	 */
-	public String promptForRelType(String prompt, String title)
-	{
+	public String promptForRelType(String prompt, String title) {
 		Object[] possibleValues = { "Inheritance", "Aggregation", "Composition", "Realization" };
 
- 		Object selectedValue = JOptionPane.showInputDialog(pWindow,
-             prompt, title,
-             JOptionPane.PLAIN_MESSAGE, null,
-			 possibleValues, possibleValues[0]);
+		Object selectedValue = JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
+				possibleValues, possibleValues[0]);
 
-		return ((String)selectedValue).substring(0, 1);
+		return ((String) selectedValue).substring(0, 1);
 	}
 
 	/**
 	 * Method for displaying an input box for a user
-	 * @param  
-	 * @param 
+	 * 
+	 * @param
+	 * @param
 	 */
-	public String promptForClassName(String prompt, String title)
-	{
-		if(classPanels.keySet().isEmpty())
-		{
+	public String promptForClassName(String prompt, String title) {
+		if (classPanels.keySet().isEmpty()) {
 			alert("No classes exist");
 			return null;
 		}
 		Object[] possibleValues = classPanels.keySet().toArray();
 
-		Object selectedValue = JOptionPane.showInputDialog(pWindow,
-		prompt, title,
-		JOptionPane.PLAIN_MESSAGE, null,
-		possibleValues, possibleValues[0]);
+		Object selectedValue = JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
+				possibleValues, possibleValues[0]);
 
 		return (String) selectedValue;
+	}
+
+	/**
+	 * Displays a dialog box to fill in all the information for a new field
+	 * 
+	 * @param title the window title of the dialog box
+	 * @return a map of the field's properties to their values, or null if canceled
+	 */
+	public Map<String, String> promptForNewField(String title)
+	{
+		// Create input fields
+		String[] possibleVisValues = { "Public", "Protected", "Private" };
+		JComboBox<String> visField = new JComboBox<>(possibleVisValues);
+		visField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JTextField typeField = new JTextField();
+		typeField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JTextField nameField = new JTextField();
+		nameField.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JPanel fieldPrompt = new JPanel();
+		fieldPrompt.setLayout(new BoxLayout(fieldPrompt, BoxLayout.Y_AXIS));
+
+		// Section of dialog for visibility
+		JLabel visLabel = new JLabel("Visibility:");
+		visLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		fieldPrompt.add(visLabel);
+		fieldPrompt.add(visField);
+		fieldPrompt.add(Box.createVerticalStrut(10));
+
+		// Section of dialog for data type
+		JLabel typeLabel = new JLabel("Data Type:");
+		typeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		fieldPrompt.add(typeLabel);
+		fieldPrompt.add(typeField);
+		fieldPrompt.add(Box.createVerticalStrut(10));
+
+		// Section of dialog for name
+		JLabel nameLabel = new JLabel("Field Name:");
+		nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		fieldPrompt.add(nameLabel);
+		fieldPrompt.add(nameField);
+
+		// Display dialog to user
+		int option = JOptionPane.showConfirmDialog(null, fieldPrompt, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (option == JOptionPane.OK_OPTION)
+		{
+			// Store input in a map and return it to the controller
+			Map<String, String> fieldData = new HashMap<>();
+			fieldData.put("Visibility", (String)visField.getSelectedItem());
+			fieldData.put("Type", typeField.getText());
+			fieldData.put("Name", nameField.getText());
+			return fieldData;
+		}
+
+		return null;
+	}
+
+	/**
+	* Displays a dialog box to fill in all the information for a new method
+	* @param title the window title of the dialog box
+	* @return      a map of the method's properties to their values, or null if canceled
+	*/
+	public Map<String, Object> promptForNewMethod(String title)
+	{
+		// Create input fields
+		String[] possibleVisValues = { "Public", "Protected", "Private" };
+		JComboBox<String> visField = new JComboBox<>(possibleVisValues);
+		visField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JTextField typeField = new JTextField();
+		typeField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JTextField nameField = new JTextField();
+		nameField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		List<JTextField> paramNameFields = new ArrayList<>();
+		List<JTextField> paramTypeFields = new ArrayList<>();
+
+		JPanel methodPrompt = new JPanel();
+		methodPrompt.setLayout(new BoxLayout(methodPrompt, BoxLayout.Y_AXIS));
+
+		// Section of dialog for visibility
+		JLabel visLabel = new JLabel("Visibility:");
+		visLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		methodPrompt.add(visLabel);
+		methodPrompt.add(visField);
+		methodPrompt.add(Box.createVerticalStrut(10));
+
+		// Section of dialog for return type
+		JLabel typeLabel = new JLabel("Return Type:");
+		typeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		methodPrompt.add(typeLabel);
+		methodPrompt.add(typeField);
+		methodPrompt.add(Box.createVerticalStrut(10));
+
+		// Section of dialog for name
+		JLabel nameLabel = new JLabel("Field Name:");
+		nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		methodPrompt.add(nameLabel);
+		methodPrompt.add(nameField);
+		methodPrompt.add(Box.createVerticalStrut(10));
+
+		// Section of dialog for parameters (expandable)
+		JLabel paramsLabel = new JLabel("Parameters:");
+		paramsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		methodPrompt.add(paramsLabel);
+		JPanel paramEntriesPanel = new JPanel();
+		paramEntriesPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		paramEntriesPanel.setLayout(new GridLayout(0, 2));
+		methodPrompt.add(paramEntriesPanel);
+		methodPrompt.add(Box.createVerticalStrut(10));
+
+		// Create buttons to add or remove entries from the parameter section
+		JPanel paramButtonsPanel = new JPanel();
+		paramButtonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		paramButtonsPanel.setLayout(new GridLayout(0, 2));
+		JButton addParamButton = new JButton("Add");
+		addParamButton.setActionCommand("Add");
+		paramButtonsPanel.add(addParamButton);
+		JButton removeParamButton = new JButton("Remove");
+		removeParamButton.setActionCommand("Remove");
+		paramButtonsPanel.add(removeParamButton);
+		methodPrompt.add(paramButtonsPanel);
+
+		ParamButtonClick paramButtonListener = new ParamButtonClick(paramEntriesPanel, paramNameFields, paramTypeFields);
+		addParamButton.addActionListener(paramButtonListener);
+		removeParamButton.addActionListener(paramButtonListener);
+
+		// Display dialog to user
+		int option = JOptionPane.showConfirmDialog(null, methodPrompt, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (option == JOptionPane.OK_OPTION)
+		{
+			// Store input in a map and return in to the controller
+			Map<String, Object> methodData = new HashMap<>();
+			methodData.put("Visibility", visField.getSelectedItem());
+			methodData.put("Type", typeField.getText());
+			methodData.put("Name", nameField.getText());
+			
+			List<String> paramNames = new ArrayList<>();
+			List<String> paramTypes = new ArrayList<>();
+
+			paramNameFields.forEach(field -> paramNames.add(field.getText()));
+			paramTypeFields.forEach(field -> paramTypes.add(field.getText()));
+
+			methodData.put("ParamNames", paramNames);
+			methodData.put("ParamTypes", paramTypes);
+
+			return methodData;
+		}
+
+	   return null;
+   }
+
+	/**
+	* Displays a dialog box to change the parameters of a method
+	* @param title the window title of the dialog box
+	* @return      a map of the method's properties to their values, or null if canceled
+	*/
+	public Map<String, List<String>> promptForNewParamList(String title, List<String> oldParamNames, List<String> oldParamTypes)
+	{
+		// Create input fields
+		List<JTextField> paramNameFields = new ArrayList<>();
+		for (String paramName : oldParamNames)
+		{
+			paramNameFields.add(new JTextField(paramName));
+		}
+		List<JTextField> paramTypeFields = new ArrayList<>();
+		for (String paramType : oldParamTypes)
+		{
+			paramTypeFields.add(new JTextField(paramType));
+		}
+
+		JPanel paramListPrompt = new JPanel();
+		paramListPrompt.setLayout(new BoxLayout(paramListPrompt, BoxLayout.Y_AXIS));
+
+		// Section of dialog for parameters (expandable)
+		JLabel paramsLabel = new JLabel("Parameters:");
+		paramsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		paramListPrompt.add(paramsLabel);
+		JPanel paramEntriesPanel = new JPanel();
+		paramEntriesPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		paramEntriesPanel.setLayout(new GridLayout(0, 2));
+		paramListPrompt.add(paramEntriesPanel);
+		paramListPrompt.add(Box.createVerticalStrut(10));
+
+		// Create buttons to add or remove entries from the parameter section
+		JPanel paramButtonsPanel = new JPanel();
+		paramButtonsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		paramButtonsPanel.setLayout(new GridLayout(0, 2));
+		JButton addParamButton = new JButton("Add");
+		addParamButton.setActionCommand("Add");
+		paramButtonsPanel.add(addParamButton);
+		JButton removeParamButton = new JButton("Remove");
+		removeParamButton.setActionCommand("Remove");
+		paramButtonsPanel.add(removeParamButton);
+		paramListPrompt.add(paramButtonsPanel);
+
+		ParamButtonClick paramButtonListener = new ParamButtonClick(paramEntriesPanel, paramNameFields, paramTypeFields);
+		addParamButton.addActionListener(paramButtonListener);
+		removeParamButton.addActionListener(paramButtonListener);
+ 
+		// Display dialog to user
+		int option = JOptionPane.showConfirmDialog(null, paramListPrompt, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (option == JOptionPane.OK_OPTION)
+		{
+			// Store input in a map and return in to the controller
+			Map<String, List<String>> paramListData = new HashMap<>();
+			
+			List<String> paramNames = new ArrayList<>();
+			List<String> paramTypes = new ArrayList<>();
+
+			paramNameFields.forEach(field -> paramNames.add(field.getText()));
+			paramTypeFields.forEach(field -> paramTypes.add(field.getText()));
+
+			paramListData.put("ParamNames", paramNames);
+			paramListData.put("ParamTypes", paramTypes);
+
+			return paramListData;
+		}
+ 
+		return null;
 	}
 
 	/**
@@ -460,14 +673,11 @@ public class GUIViews implements MenuViews{
 		JMenuItem tMeth = new JMenuItem("Change Method Type");
 		JMenuItem vMeth = new JMenuItem("Change Method Visibility");
 
-		JMenuItem aParam = new JMenuItem("Add Parameter");
-		JMenuItem dParam = new JMenuItem("Remove Parameter");
-		JMenuItem rParam = new JMenuItem("Rename Parameter");
-		JMenuItem tParam = new JMenuItem("Change Parameter Type");
+		JMenuItem eParam = new JMenuItem("Edit Parameters");
 
-		JMenuItem[] arr = {dMeth, rMeth, tMeth, vMeth, aParam, dParam, rParam, tParam};
-		String[] text = {"Remove Method","Rename Method", "Change Method Type", "Change Method Visibility", "Add Parameter", "Remove Parameter", "Rename Parameter", "Change Parameter Type"};
-		String[] cmd = {"Remove Method", "Rename Method", "Change Method Type", "Change Method Visibility", "Add Parameter", "Remove Parameter", "Rename Parameter", "Change Parameter Type"};
+		JMenuItem[] arr = {dMeth, rMeth, tMeth, vMeth, eParam};
+		String[] text = {"Remove Method","Rename Method", "Change Method Type", "Change Method Visibility", "Edit Parameters"};
+		String[] cmd = {"Remove Method", "Rename Method", "Change Method Type", "Change Method Visibility", "Edit Parameters"};
 
 		for(int i = 0; i < arr.length; ++i)
 		{

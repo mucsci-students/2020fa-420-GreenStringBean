@@ -1,6 +1,10 @@
 package controller;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Map;
+
 import view.MenuViews;
 
 /**
@@ -62,42 +66,22 @@ public class ClassRightClick implements ActionListener
 			controller.renameClass(className, newClassName);
         }
         else if(cmd.equals("Add Field")) 
-        {
-            String fieldVis = view.promptForVis("Visibility:", cmd);
-            if (fieldVis == null)
+        {    
+            Map<String, String> fieldData = view.promptForNewField(cmd);
+            if (fieldData == null)
             {
                 return;
             }
-            String fieldType = view.promptForString("Data type:", cmd);
-            if (fieldType == null)
-            {
-                return;
-            }
-            String fieldName = view.promptForString("Field name:", cmd);
-            if (fieldName == null)
-            {
-                return;
-            }
-            controller.addField(className, fieldName, fieldType, fieldVis);
+            controller.addField(className, fieldData.get("Name"), fieldData.get("Type"), fieldData.get("Visibility"));
         }
         else if(cmd.equals("Add Method"))
         {
-            String methodVis = view.promptForVis("Visibility:", cmd);
-            if (methodVis == null)
+            Map<String, Object> methodData = view.promptForNewMethod(cmd);
+            if (methodData == null)
             {
                 return;
             }
-            String methodType = view.promptForString("Return type:", cmd);
-            if (methodType == null)
-            {
-                return;
-            }
-            String methodName = view.promptForString("Method name:", cmd);
-            if (methodName == null)
-            {
-                return;
-            }
-            controller.addMethod(className, methodName, methodType, methodVis);
+            controller.addMethod(className, (String)methodData.get("Name"), (String)methodData.get("Type"), (String)methodData.get("Visibility"), (List<String>)methodData.get("ParamNames"), (List<String>)methodData.get("ParamTypes"));
         }	
 	}
 }

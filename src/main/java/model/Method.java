@@ -203,7 +203,7 @@ public class Method extends VisibleDeclaration {
      * @return the list of parameter names
      */
     public List<String> getParameterNames(){
-        ArrayList<String> paramNames = new ArrayList<String>();
+        ArrayList<String> paramNames = new ArrayList<>();
         for (Parameter p : parameters)
         {
             paramNames.add(p.getName());

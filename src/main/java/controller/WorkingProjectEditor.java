@@ -161,8 +161,10 @@ public class WorkingProjectEditor implements ModelEditor{
             ClassObject classObj = project.getClass(className);
             observers.forEach(o -> classObj.detach(o));
         }
+
         Command cmd = new LoadProjectCommand(project, jsonString);
         executeProjectCommand(cmd);
+
         for (String className : project.getClassNames())
         {
             ClassObject classObj = project.getClass(className);
@@ -470,10 +472,23 @@ public class WorkingProjectEditor implements ModelEditor{
     public void undo()
     {
         if(canUndo())
-        {
+        {              
+            for (String className : project.getClassNames())
+            {
+                ClassObject classObj = project.getClass(className);
+                observers.forEach(o -> classObj.detach(o));
+            }
+
             Command cmd = executedCommands.pop();
             cmd.undo();
             undoneCommands.push(cmd);
+
+            for (String className : project.getClassNames())
+            {
+                ClassObject classObj = project.getClass(className);
+                observers.forEach(o -> classObj.attach(o));
+            }
+
             notifyAllObservers(cmd instanceof LoadProjectCommand);
         }
     }
@@ -494,9 +509,22 @@ public class WorkingProjectEditor implements ModelEditor{
     {
         if(canRedo())
         {
+            for (String className : project.getClassNames())
+            {
+                ClassObject classObj = project.getClass(className);
+                observers.forEach(o -> classObj.detach(o));
+            }
+
             Command cmd = undoneCommands.pop();
             cmd.execute();
             executedCommands.push(cmd);
+
+            for (String className : project.getClassNames())
+            {
+                ClassObject classObj = project.getClass(className);
+                observers.forEach(o -> classObj.attach(o));
+            }
+            
             notifyAllObservers(cmd instanceof LoadProjectCommand);
         }
     }
