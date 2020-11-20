@@ -88,7 +88,10 @@ public class CLI {
                     {
                         terminal.writer().println("What do you want to name the project?");
                         String name = lineReader.readLine("gsb>");
-                        saveFile (parseLine(name).get(0));
+                        if (parseLine(name) != null)
+                            saveFile (parseLine(name).get(0));
+                        else 
+                            terminal.writer().println("No name entered. Resuming...");
                     }
                     else if (YN.equals("n".toUpperCase()) || YN.equals("n"))
                     {
@@ -101,9 +104,7 @@ public class CLI {
                         return;
                     }
                     else
-                    {
                         terminal.writer().println("Y/N not entered. Resuming...");
-                    }
 
                     break;
 
