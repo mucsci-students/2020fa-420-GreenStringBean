@@ -1,7 +1,7 @@
 package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import view.MenuViews;
+import view.GUIView;
 
 /**
  * ClassClick is a controller class for the GUI.
@@ -12,8 +12,8 @@ import view.MenuViews;
 
 public class ClassClick implements ActionListener
 {
-	private MenuViews view;
-	private HelperControllers controller;
+	private GUIView view;
+	private GUIEditorController controller;
 	
 	/**
      * Cronstructor for an action performer with the views input and a helper 
@@ -21,7 +21,7 @@ public class ClassClick implements ActionListener
      * @param v  view of the GUI that takes in user input
      * @param c controller to help the view actions perform correctly
      */
-	public ClassClick(MenuViews v, HelperControllers c)
+	public ClassClick(GUIView v, GUIEditorController c)
 	{
 		this.view = v;
 		this.controller = c;
@@ -44,7 +44,7 @@ public class ClassClick implements ActionListener
 			{
 				return;
 			}
-			controller.createClass(className);
+			controller.addClass(className);
 		}	
 		else if(cmd.equals("Undo"))
 		{

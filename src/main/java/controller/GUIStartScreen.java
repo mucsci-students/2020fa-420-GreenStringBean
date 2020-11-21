@@ -1,27 +1,32 @@
-package view;
+package controller;
 
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JButton;
-import controller.HelperControllers;
-import java.awt.event.*;
-import java.awt.FlowLayout;
-import controller.ModelEditor;
 
 public class GUIStartScreen 
 {
-    private ModelEditor project;
-    private JFrame win = new JFrame("UML");
-    private JPanel bPanel = new JPanel();
-    private JButton strtB = new JButton("Lets Get Started!");
-    private JButton closeB = new JButton("Close GUI");
+    private GUIController controller;
+    private JFrame win;
+    private JPanel bPanel;
+    private JButton strtB;
+    private JButton closeB;
 
     /**
      * Method that creates a window for a user to start or close GUI
      */
-    public GUIStartScreen(ModelEditor project)
+    public GUIStartScreen(GUIController controller)
     {
-        this.project = project;
+        this.controller = controller;
+        win = new JFrame("UML");
+        bPanel = new JPanel();
+        strtB = new JButton("Lets Get Started!");
+        closeB = new JButton("Close GUI");
+
         //Creates a window 
         windowSetup();
         win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,9 +46,11 @@ public class GUIStartScreen
      */
     private void windowSetup()
     {
+        ButtonClickListener listener = new ButtonClickListener();
     	strtB.setActionCommand("Start");
-    	strtB.addActionListener(new ButtonClickListener());
-    	closeB.setActionCommand("Close");
+    	strtB.addActionListener(listener);
+        closeB.setActionCommand("Close");
+        closeB.addActionListener(listener);
     }
 
     /**
@@ -55,10 +62,11 @@ public class GUIStartScreen
     		String cmd = e.getActionCommand();
     		if(cmd.equals("Start")) 
     		{
-                 GUIEditor uml = new GUIEditor();
-                 HelperControllers hc = new HelperControllers(uml, project);
-                 win.setVisible(false);
-    		}else if(cmd.equals("Close")){
+                controller.start();
+                win.setVisible(false);
+            }
+            else if(cmd.equals("Close"))
+            {
     			System.exit(0);
     		}
     	}

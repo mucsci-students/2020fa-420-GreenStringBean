@@ -19,7 +19,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -49,13 +48,12 @@ import model.ClassObject;
 import model.Model;
 import model.Relationship;
 
-public class GUIViews implements MenuViews {
+public class GUIEditorView implements GUIView {
 	private JMenuBar mb;
 	private JLayeredPane pWindow;
 	private JFrame win;
 	private JMenu fileM;
 	private JMenu relaM;
-	private JMenu fieldM;
 	private JMenu projectM;
 	private RightClickListenerFactory clickFactory;
 	private JFileChooser fileChooser;
@@ -67,12 +65,15 @@ public class GUIViews implements MenuViews {
 	/**
 	 * Constructor for creating a new GUI view
 	 */
-	public GUIViews() {
+	public GUIEditorView() {
 		this.classPanels = new HashMap<>();
 		this.relationArrows = new HashMap<>();
-		try {
+		try 
+		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
+		} 
+		catch (Exception e) 
+		{
 			// Default Java look and feel will be used
 		}
 		font = new Font(Font.MONOSPACED, Font.PLAIN, 15);
@@ -82,9 +83,8 @@ public class GUIViews implements MenuViews {
 	 * Mehtod for creating a window for the all the buttons and panels to be
 	 * displayed for user.
 	 */
-	public void window() {
+	public void showWindow() {
 		//System.out.println("Got to make the window(): GUIViews()");
-
 		win = new JFrame("UML");
 		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		win.setSize(800, 750);
@@ -720,15 +720,6 @@ public class GUIViews implements MenuViews {
 		
 		//System.out.println("finished listeners: GUIViews()");
 	}
-
-	/**
-	 * Starts the program with a clean window for GUI
-	 */
-	public void start()
-    {
-		window();
-        refresh();
-    }
 
 	/**
 	 * Called when an observed project updates. Update all class panels.
