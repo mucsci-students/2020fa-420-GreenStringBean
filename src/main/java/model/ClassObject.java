@@ -284,7 +284,7 @@ public class ClassObject{
     }
     
     /**
-     * Adds a new method to the class.
+     * Adds a new method with no parameters to the class.
      * @param methodName    the name to be used by the new method
      * @param methodType    the return type to be used by the new method
      * @param methodVisName the visibility to be used by the new method
@@ -319,6 +319,73 @@ public class ClassObject{
         }
 
         methods.put(methodName, new Method(methodName, methodType, methodVis));
+        notifyAllObservers();
+        return 0;
+    }
+
+    /**
+     * Adds a new method with parameters to the class.
+     * @param methodName    the name to be used by the new method
+     * @param methodType    the return type to be used by the new method
+     * @param methodVisName the visibility to be used by the new method
+     * @param paramNames    the parameter names to be used by the new method
+     * @param paramTypes    the parameter data types to be used by the new method
+     * @return              0 if successful, error code otherwise
+     */
+    public int addMethod(String methodName, String methodType, String methodVisName, List<String> paramNames, List<String> paramTypes)
+    {
+        if (!isOpen)
+        {
+            return 1;
+        }
+
+        visibility methodVis = stringToVisibility(methodVisName);
+        if (methodVis == null)
+        {
+            return 14;
+        }
+
+        if (methods.containsKey(methodName))
+        {
+            return 8;
+        }
+
+        if (!WorkingProject.isValidName(methodName))
+        {
+            return 9;
+        }
+
+        if (!WorkingProject.isValidReturnType(methodType))
+        {
+            return 10;
+        }        
+        
+        if (paramNames.size() != paramTypes.size())
+        {
+            return 13;
+        }
+
+        for (String paramName : paramNames)
+        {
+            if (!WorkingProject.isValidName(paramName))
+            {
+                return 9;
+            }
+            if (paramNames.indexOf(paramName) != paramNames.lastIndexOf(paramName))
+            {
+                return 8;
+            }
+        }
+
+        for (String paramType : paramTypes)
+        {
+            if (!WorkingProject.isValidDataType(paramType))
+            {
+                return 10;
+            }
+        }
+
+        methods.put(methodName, new Method(methodName, methodType, methodVis, paramNames, paramTypes));
         notifyAllObservers();
         return 0;
     }
@@ -445,6 +512,56 @@ public class ClassObject{
 
         methods.get(methodName).setVisibility(methodVis);
 
+        notifyAllObservers();
+        return 0;
+    }
+
+    /**
+     * Changes the entire parameter list of a method, if it exists.
+     * @param methodName the name of the method to modify
+     * @param paramNames the list of new parameter names
+     * @param paramTypes the list of new parameter data types
+     * @return           0 if successful, error code otherwise
+     */
+    public int changeParameterList(String methodName, List<String> paramNames, List<String> paramTypes)
+    {
+        if (!isOpen)
+        {
+            return 1;
+        }
+
+        if (!methods.containsKey(methodName))
+        {
+            return 4;
+        } 
+        
+        if (paramNames.size() != paramTypes.size())
+        {
+            return 13;
+        }
+
+        for (String paramName : paramNames)
+        {
+            if (!WorkingProject.isValidName(paramName))
+            {
+                return 9;
+            }
+            if (paramNames.indexOf(paramName) != paramNames.lastIndexOf(paramName))
+            {
+                return 8;
+            }
+        }
+
+        for (String paramType : paramTypes)
+        {
+            if (!WorkingProject.isValidDataType(paramType))
+            {
+                return 10;
+            }
+        }
+
+        methods.get(methodName).setParameters(paramNames, paramTypes);
+        
         notifyAllObservers();
         return 0;
     }
@@ -610,7 +727,7 @@ public class ClassObject{
         for (Object jsonField : jsonFields)
         {
             Field field = Field.loadFromJSON((JSONObject)jsonField);
-            if (field == null)
+            if (field == null || classObj.fields.containsKey(field.getName()))
             {
                 return null;
             }
@@ -620,7 +737,7 @@ public class ClassObject{
         for (Object jsonMethod : jsonMethods)
         {
             Method method = Method.loadFromJSON((JSONObject)jsonMethod);
-            if (method == null)
+            if (method == null || classObj.methods.containsKey(method.getName()))
             {
                 return null;
             }

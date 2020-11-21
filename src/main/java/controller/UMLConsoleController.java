@@ -10,7 +10,8 @@ public class UMLConsoleController {
 		 * Main method of the program and will start the GUI or CLI
 		 * @param args is input from a user to decide to use GUI or CLI
 		 */
-		public static void main(String[] args) {
+		public static void main(String[] args) 
+		{
 			Model model = new WorkingProject();
 			ModelEditor editor = new WorkingProjectEditor(model);
 			//start in console

@@ -163,7 +163,10 @@ public class RelationArrow extends JPanel {
 
     private boolean isInverse()
     {
-        
+        if (isLoop)
+        {
+            return false;
+        }
         if (isHorizontal)
         {
             if (isReverse)

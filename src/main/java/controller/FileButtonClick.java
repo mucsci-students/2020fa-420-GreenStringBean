@@ -39,18 +39,10 @@ public class FileButtonClick implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		System.out.println("succesfully got to FileClick actions: FileClick()");
+		//System.out.println("succesfully got to FileClick actions: FileClick()");
 		
 		String cmd = e.getActionCommand();
-		if(cmd.equals("Undo"))
-		{
-			controller.undo();
-		}
-		else if(cmd.equals("Redo"))
-		{
-			controller.redo();
-		}
-		else if(cmd.equals("Zoom In"))
+		if(cmd.equals("Zoom In"))
 		{
 			if (view.zoomIn())
 			{

@@ -161,8 +161,10 @@ public class WorkingProjectEditor implements ModelEditor{
             ClassObject classObj = project.getClass(className);
             observers.forEach(o -> classObj.detach(o));
         }
+
         Command cmd = new LoadProjectCommand(project, jsonString);
         executeProjectCommand(cmd);
+
         for (String className : project.getClassNames())
         {
             ClassObject classObj = project.getClass(className);
@@ -240,7 +242,7 @@ public class WorkingProjectEditor implements ModelEditor{
     }
 
     /**
-     * Adds a new method to a class.
+     * Adds a new method with no parameters to a class.
      * @param className  the name of the class to add a method to
      * @param methodName the name to be used by the new method
      * @param methodType the data type to be used by the new method
@@ -248,6 +250,18 @@ public class WorkingProjectEditor implements ModelEditor{
     public void addMethod(String className, String methodName, String methodType, String methodVis)
     {
         Command cmd = new AddMethodCommand(project, className, methodName, methodType, methodVis);
+        executeCommand(cmd);
+    }
+
+    /**
+     * Adds a new method with parameters to a class.
+     * @param className  the name of the class to add a method to
+     * @param methodName the name to be used by the new method
+     * @param methodType the data type to be used by the new method
+     */
+    public void addMethod(String className, String methodName, String methodType, String methodVis, List<String> paramNames, List<String> paramTypes)
+    {
+        Command cmd = new AddMethodWithParametersCommand(project, className, methodName, methodType, methodVis, paramNames, paramTypes);
         executeCommand(cmd);
     }
 
@@ -295,6 +309,19 @@ public class WorkingProjectEditor implements ModelEditor{
     public void changeMethodVisibility(String className, String methodName, String newMethodVis)
     {
         Command cmd = new ChangeMethodVisibilityCommand(project, className, methodName, newMethodVis);
+        executeCommand(cmd);
+    }
+
+    /**
+     * Changes the entire parameter list of a method, if it exists.
+     * @param className  the name of the class with the method to modify
+     * @param methodName the name of the method to modify
+     * @param paramNames the list of new parameter names
+     * @param paramTypes the list of new parameter data types
+     */
+    public void changeParameterList(String className, String methodName, List<String> paramNames, List<String> paramTypes)
+    {
+        Command cmd = new ChangeParameterListCommand(project, className, methodName, paramNames, paramTypes);
         executeCommand(cmd);
     }
 
@@ -445,10 +472,23 @@ public class WorkingProjectEditor implements ModelEditor{
     public void undo()
     {
         if(canUndo())
-        {
+        {              
+            for (String className : project.getClassNames())
+            {
+                ClassObject classObj = project.getClass(className);
+                observers.forEach(o -> classObj.detach(o));
+            }
+
             Command cmd = executedCommands.pop();
             cmd.undo();
             undoneCommands.push(cmd);
+
+            for (String className : project.getClassNames())
+            {
+                ClassObject classObj = project.getClass(className);
+                observers.forEach(o -> classObj.attach(o));
+            }
+
             notifyAllObservers(cmd instanceof LoadProjectCommand);
         }
     }
@@ -469,9 +509,22 @@ public class WorkingProjectEditor implements ModelEditor{
     {
         if(canRedo())
         {
+            for (String className : project.getClassNames())
+            {
+                ClassObject classObj = project.getClass(className);
+                observers.forEach(o -> classObj.detach(o));
+            }
+
             Command cmd = undoneCommands.pop();
             cmd.execute();
             executedCommands.push(cmd);
+
+            for (String className : project.getClassNames())
+            {
+                ClassObject classObj = project.getClass(className);
+                observers.forEach(o -> classObj.attach(o));
+            }
+            
             notifyAllObservers(cmd instanceof LoadProjectCommand);
         }
     }

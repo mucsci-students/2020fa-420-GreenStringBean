@@ -33,15 +33,8 @@ public class RelationshipClick implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		System.out.println("succesfully got to RelationshipClick actions: RelationshipClick()");
+		//System.out.println("succesfully got to RelationshipClick actions: RelationshipClick()");
 		String cmd = e.getActionCommand();
-
-		// Temporary until we can display arrows between class boxes
-		if (cmd.equals("Show Relationships"))
-		{
-			controller.showRelationships();
-			return;
-		}
 
 		String classNameFrom = view.promptForClassName("\"From\" class:", cmd);
 		if (classNameFrom == null)
