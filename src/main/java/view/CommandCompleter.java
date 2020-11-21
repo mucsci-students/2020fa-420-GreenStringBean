@@ -15,7 +15,10 @@ public class CommandCompleter
 {
     private Model model;
     private AggregateCompleter completer;
-    private StringsCompleter typeCompleter;
+    private StringsCompleter basicAttributeTypeCompleter;
+    private AggregateCompleter attributeTypeCompleter;
+    private StringsCompleter basicReturnTypeCompleter;
+    private AggregateCompleter returnTypeCompleter;
     private StringsCompleter visibilityCompleter;
     private StringsCompleter relationshipTypeCompleter;
     private StringsCompleter classCompleter;
@@ -28,7 +31,10 @@ public class CommandCompleter
     {
         //completer = new AggregateCompleter(quitCompleter(), helpCompleter(), addClassCompleter(), saveCompleter(), loadCompleter());
         completer = new AggregateCompleter();
-        typeCompleter = new StringsCompleter("byte", "short", "int", "long", "float", "double", "boolean", "char");
+        basicAttributeTypeCompleter = new StringsCompleter("byte", "short", "int", "long", "float", "double", "boolean", "char");
+        attributeTypeCompleter = new AggregateCompleter(basicAttributeTypeCompleter);
+        basicReturnTypeCompleter = new StringsCompleter("byte", "short", "int", "long", "float", "double", "boolean", "char", "void");
+        returnTypeCompleter = new AggregateCompleter(basicReturnTypeCompleter);
         visibilityCompleter = new StringsCompleter("public", "private", "protected");
         relationshipTypeCompleter = new StringsCompleter("AGGREGATE", "COMPOSITION", "INHERITANCE", "REALIZATION");
         classCompleter = new StringsCompleter();
@@ -52,6 +58,8 @@ public class CommandCompleter
     {
         this.model = model;
         this.classCompleter = new StringsCompleter(model.getClassNames());
+        attributeTypeCompleter = new AggregateCompleter(basicAttributeTypeCompleter, classCompleter);
+        returnTypeCompleter = new AggregateCompleter(basicReturnTypeCompleter, classCompleter);
 
         /**
          * Each command that takes an existing attribute/parameter requires a specific completer for every class.
@@ -145,7 +153,7 @@ public class CommandCompleter
     private ArgumentCompleter addFieldCompleter()
     {
         return new ArgumentCompleter(new StringsCompleter("addField"), classCompleter, 
-            visibilityCompleter, typeCompleter, new NullCompleter());
+            visibilityCompleter, attributeTypeCompleter, new NullCompleter());
     }
     /**
      * @return A new Completer for the addMethod command
@@ -153,7 +161,7 @@ public class CommandCompleter
     private ArgumentCompleter addMethodCompleter()
     {
         return new ArgumentCompleter(new StringsCompleter("addMethod"), classCompleter, 
-            visibilityCompleter, typeCompleter, new NullCompleter());
+            visibilityCompleter, returnTypeCompleter, new NullCompleter());
     }
     /**
      * @param UMLClass The class whose methods will be completed 
@@ -162,7 +170,7 @@ public class CommandCompleter
     private ArgumentCompleter addParameterCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("addParameter"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(model.getClass(UMLClass).getMethodNames()), typeCompleter, new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getMethodNames()), attributeTypeCompleter, new NullCompleter());
     }
     /**
      * @return A new Completer for the addRelationship command
@@ -280,7 +288,7 @@ public class CommandCompleter
     private ArgumentCompleter changeFieldTypeCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("changeFieldType"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(model.getClass(UMLClass).getFieldNames()), typeCompleter, new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getFieldNames()), attributeTypeCompleter, new NullCompleter());
     }
     /**
      * @param UMLClass The class whose methods will be completed
@@ -289,7 +297,7 @@ public class CommandCompleter
     private ArgumentCompleter changeMethodTypeCompleter(String UMLClass)
     {
         return new ArgumentCompleter(new StringsCompleter("changeMethodType"), new StringsCompleter(UMLClass), 
-            new StringsCompleter(model.getClass(UMLClass).getMethodNames()), typeCompleter, new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getMethodNames()), returnTypeCompleter, new NullCompleter());
     }
     /**
      * @param UMLClass The class whose methods will be completed
@@ -299,7 +307,7 @@ public class CommandCompleter
     private ArgumentCompleter changeParameterTypeCompleter(String UMLClass, String UMLMethod)
     {
         return new ArgumentCompleter(new StringsCompleter("changeParameterType"), new StringsCompleter(UMLClass), new StringsCompleter(UMLMethod), 
-            new StringsCompleter(model.getClass(UMLClass).getMethod(UMLMethod).getParameterNames()), typeCompleter, new NullCompleter());
+            new StringsCompleter(model.getClass(UMLClass).getMethod(UMLMethod).getParameterNames()), attributeTypeCompleter, new NullCompleter());
     }
     /**
      * @return A new Completer for the changeRelationshipType command
