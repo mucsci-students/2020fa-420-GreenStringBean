@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JLayeredPane;
-import view.MenuViews;
+import view.GUIView;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -14,12 +14,12 @@ import java.awt.event.MouseEvent;
 public class ClassPanelClick implements MouseListener, MouseMotionListener
 {
     private int dragX, dragY;
-	private MenuViews view;
+	private GUIView view;
     //private HelperControllers controller;
     private JPanel panel;
     private JPopupMenu menu;
 
-    public ClassPanelClick(MenuViews view, JPanel panel, JPopupMenu menu)
+    public ClassPanelClick(GUIView view, JPanel panel, JPopupMenu menu)
 	{
 		this.view = view;
         //this.controller = c;

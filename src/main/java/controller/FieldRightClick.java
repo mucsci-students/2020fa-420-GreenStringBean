@@ -1,7 +1,7 @@
 package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import view.MenuViews;
+import view.GUIView;
 
 /**
  * FieldClick is a controller class for the GUI.
@@ -12,8 +12,8 @@ import view.MenuViews;
 
 public class FieldRightClick implements ActionListener 
 {
-	private MenuViews view;
-    private HelperControllers controller;
+	private GUIView view;
+    private GUIController controller;
     private String className;
     private String fieldName;
     
@@ -23,7 +23,7 @@ public class FieldRightClick implements ActionListener
      * @param v  view of the GUI that takes in user input
      * @param c controller to help the view actions perform correctly
      */
-	public FieldRightClick(MenuViews v, HelperControllers c, String className, String fieldName)
+	public FieldRightClick(GUIView v, GUIController c, String className, String fieldName)
 	{
 		this.view = v;
         this.controller = c;
@@ -70,7 +70,7 @@ public class FieldRightClick implements ActionListener
             {
                 return;
             }
-            controller.changeFieldVisiblity(className, fieldName, newFieldVis);;
+            controller.changeFieldVisibility(className, fieldName, newFieldVis);
         }
     }
 }

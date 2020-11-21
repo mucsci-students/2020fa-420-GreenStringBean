@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import view.MenuViews;
+import view.GUIView;
 import model.Parameter;
 
 public class MethodRightClick implements ActionListener
 {
-    private MenuViews view;
-    private HelperControllers controller;
+    private GUIView view;
+    private GUIController controller;
     private String className;
     private String methodName;
     
@@ -22,7 +22,7 @@ public class MethodRightClick implements ActionListener
      * @param v  view of the GUI that takes in user input
      * @param c controller to help the view actions perform correctly
      */
-	public MethodRightClick(MenuViews v, HelperControllers c, String className, String methodName)
+	public MethodRightClick(GUIView v, GUIController c, String className, String methodName)
 	{
 		this.view = v;
         this.controller = c;
@@ -62,7 +62,7 @@ public class MethodRightClick implements ActionListener
             {
                 return;
             }
-            controller.changeMethodVisiblity(className, methodName, newMethodVis);
+            controller.changeMethodVisibility(className, methodName, newMethodVis);
         }
         else if (cmd.equals("Edit Parameters"))
         {
@@ -79,7 +79,7 @@ public class MethodRightClick implements ActionListener
             {
                 return;
             }
-            controller.editParameters(className, methodName, paramListData.get("ParamNames"), paramListData.get("ParamTypes"));
+            controller.changeParameterList(className, methodName, paramListData.get("ParamNames"), paramListData.get("ParamTypes"));
         }
 	}
 }
