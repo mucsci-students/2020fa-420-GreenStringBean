@@ -137,6 +137,7 @@ public class ClassObjectTest {
         int ret = classObj.addField("invalid name", "int", "public");
         assertEquals("Correct error code returned", 9, ret);
         assertFalse("Field was not added", classObj.hasField("invalid name"));
+        assertEquals("No field returned for invalid name", classObj.getField("invalid"), null);
     }
 
     /**
@@ -248,6 +249,7 @@ public class ClassObjectTest {
         assertEquals("Correct error code returned", 8, ret);
         assertTrue("First field is still present", classObj.hasField("field"));
         assertTrue("Second field is still present", classObj.hasField("field2"));
+        assertEquals(0, classObj.renameField("field", "field4"));
     }
 
     /**
@@ -277,6 +279,8 @@ public class ClassObjectTest {
         assertEquals("Field has correct initial data type", "int", classObj.getField("field").getType());
         classObj.changeFieldType("field", "double");
         assertEquals("Field has correct new data type", "double", classObj.getField("field").getType());
+        
+        assertEquals(3, classObj.changeFieldType("meadow", "double"));
     }
 
     /**
@@ -306,6 +310,7 @@ public class ClassObjectTest {
         assertEquals("Field has correct initial visibility", visibility.PUBLIC, classObj.getField("field").getVisibility());
         classObj.changeFieldVisibility("field", "private");
         assertEquals("Field has correct new visibility", visibility.PRIVATE, classObj.getField("field").getVisibility());
+        assertEquals(3, classObj.changeFieldVisibility("meadow", "private"));
     }
 
     /**
@@ -359,9 +364,18 @@ public class ClassObjectTest {
     public void testAddMethod()
     {
         ClassObject c = buildMockClassObject();
-        c.addMethod("Scoop", "void", "public");
+        c.close();
+        assertEquals(1, c.addMethod("Scoop", "void", "protected"));
+        c.open();
+        c.addMethod("Scoop", "void", "protected");
+        assertEquals(14, c.addMethod("Moop", "void", "invalidType"));
         assertTrue(c.hasMethod("Scoop"));
+        assertEquals(8, c.addMethod("Scoop", "void", "protected"));
+        assertEquals(9, c.addMethod("invalid name", "void", "protected"));
+        assertEquals(10, c.addMethod("Bloop", "invalid Type", "protected"));
+        assertTrue(c.getMethod("poocS") == null);
         assertTrue(c.getMethod("Scoop").getType() == "void");
+
     }
 
     /**
@@ -371,8 +385,12 @@ public class ClassObjectTest {
     public void testRemoveMethod()
     {
         ClassObject c = buildMockClassObject(); 
+        c.close();
+        c.removeMethod("Eat");
+        c.open();
         c.removeMethod("Eat");
         assertTrue(!c.hasMethod("Eat"));
+        assertEquals(4, c.removeMethod("Eat"));
     }
 
     /**
@@ -382,9 +400,18 @@ public class ClassObjectTest {
     public void testRenameMethod()
     {
         ClassObject c = buildMockClassObject();
+        c.close();
+        assertEquals(1, c.renameMethod("Eat", "Digest"));
+        c.open();
+        assertEquals(4, c.renameMethod("Eet", "Digest"));
         c.renameMethod("Eat", "Digest");
         assertTrue(c.hasMethod("Digest"));
         assertTrue(!c.hasMethod("Eat"));
+        c.addMethod("Sleep", "int", "private");
+        assertEquals(8, c.renameMethod("Digest", "Sleep"));
+        assertEquals(9, c.renameMethod("Digest", "invalid name"));
+        assertEquals(0, c.renameMethod("Digest", "Swallow"));
+
     }
 
     /**
@@ -394,6 +421,11 @@ public class ClassObjectTest {
     public void testChangeMethodType()
     {
         ClassObject c = buildMockClassObject();
+        c.close();
+        c.changeMethodType("Eat", "int");
+        c.open();
+        assertEquals(4, c.changeMethodType("Run", "int"));
+        assertEquals(10, c.changeMethodType("Eat", " "));
         c.changeMethodType("Eat", "int");
         assertTrue(c.getMethod("Eat").getType() == "int");
     }
@@ -405,8 +437,13 @@ public class ClassObjectTest {
     public void testChangeMethodVisibility()
     {
         ClassObject c = buildMockClassObject();
+        c.close();
+        assertEquals(1, c.changeMethodVisibility("Eat", "private"));
+        c.open();
         c.changeMethodVisibility("Eat", "private");
         assertTrue(c.getMethod("Eat").getVisibility().name() == visibility.PRIVATE.name());
+        assertEquals(14, c.changeMethodVisibility("Eat", "fire-type"));
+        assertEquals(3, c.changeMethodVisibility("Jump", "private"));
     }
 
     /**
@@ -416,7 +453,9 @@ public class ClassObjectTest {
     public void testAddParameter()
     {
         ClassObject c = buildMockClassObject();
+        assertEquals(c.addParameter("Drink", "Spoon", "int"), 4);
         c.addParameter("Eat", "cooked", "bool");
+        c.addParameter("Eat", "cooked", "bool"); //checks the param name
         assertTrue(c.getMethod("Eat").hasParameter("cooked"));
     } 
 
@@ -429,6 +468,10 @@ public class ClassObjectTest {
         ClassObject c = buildMockClassObject();
         c.renameParameter("Eat", "Spoon", "Utensil");
         assertTrue(c.getMethod("Eat").getParameters().get(0).getName().equals("Utensil"));
+        assertEquals(c.renameParameter("Run", "Spoon", "Spon"), 4);
+        c.renameParameter("Eat", "Utensil", "Utensil");
+
+
     }
 
     /**
@@ -438,8 +481,10 @@ public class ClassObjectTest {
     public void testChangeParameterType()
     {
         ClassObject c = buildMockClassObject();
+        c.changeParameterType("Eat", "Spon", "int");
         c.changeParameterType("Eat", "Spoon", "int");
         assertTrue(c.getMethod("Eat").getParameters().get(0).getType().equals("int"));
+        assertEquals(4, c.changeParameterType("Drink", "Spoon", "int"));
     }
 
     /**
@@ -449,8 +494,32 @@ public class ClassObjectTest {
     public void testRemoveParameter()
     {
         ClassObject c = buildMockClassObject();
+        c.removeParameter("Eat", "Fork");
+        assertTrue(!c.getMethod("Eat").hasParameter("Fork"));
         c.removeParameter("Eat", "Spoon");
         assertTrue(!c.getMethod("Eat").hasParameter("Spoon"));
+        
+        assertEquals(c.removeParameter("Drink", "Spoon"), 4);
+    }
+
+     /**
+     * Test printing the fields in the class
+     */
+    @Test
+    public void testPrintFields()
+    {
+        ClassObject c = buildMockClassObject();
+        c.printFields();
+    }
+
+    /**
+     * Test printing the methods in the class
+     */
+    @Test
+    public void testPrintMethods()
+    {
+        ClassObject c = buildMockClassObject();
+        c.printMethods();
     }
 
     /**
