@@ -3,9 +3,10 @@ import org.junit.Test;
 import org.junit.Ignore;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import model.*;
-import model.Parameter;
 import model.Relationship.relationshipType;
 
 /**
@@ -33,6 +34,92 @@ public class WorkingProjectTest {
         WorkingProject wp = new WorkingProject();
         wp.addClass("Fruits");
         assertTrue(wp.hasClass("Fruits"));
+    }
+
+    @Test
+    public void testAddInvalidClass()
+    {
+        WorkingProject project = new WorkingProject();
+        project.addClass("Apple");
+        
+        int ret = project.addClass("Apple");
+        assertEquals("Correct error code returned", 8, ret);
+        assertEquals("Class count didn't change", 1, project.getClassNames().size());
+
+        ret = project.addClass("Invalid Class");
+        assertEquals("Correct error code returned", 9, ret);
+        assertFalse("Class was not added", project.hasClass("Invalid Class"));
+    }
+
+    /**
+     * Test removing ClassObject from WorkingProject
+     */
+    @Test
+    public void testRemoveClass()
+    {
+        WorkingProject wp = buildMockWorkingProject();
+        wp.removeClass("Fruits");
+        assertTrue(!wp.hasClass("Fruits"));
+    }
+
+    @Test
+    public void testRemoveMissingClass()
+    {
+        WorkingProject project = buildMockWorkingProject();
+        int ret = project.removeClass("Legumes");
+        assertEquals("Correct error code returned", 2, ret);
+        assertEquals("No classes were removed", 2, project.getClassNames().size());
+    }
+
+    @Test
+    public void testRenameClass()
+    {
+        WorkingProject project = buildMockWorkingProject();
+        ClassObject classObj = project.getClass("Fruits");
+        project.renameClass("Fruits", "Legumes");
+        assertFalse("Old name is gone", project.hasClass("Fruits"));
+        assertTrue("New name is present", project.hasClass("Legumes"));
+        assertSame("Renamed class is same object", classObj, project.getClass("Legumes"));
+    }
+
+    @Test
+    public void testRenameInvalidClass()
+    {
+        WorkingProject project = buildMockWorkingProject();
+        int ret = project.renameClass("Legumes", "Grains");
+        assertEquals("Correct error code returned", 2, ret);
+        assertFalse("Old name is still not present", project.hasClass("Legumes"));
+        assertFalse("New name is not present", project.hasClass("Grains"));
+
+        ret = project.renameClass("Fruits", "Vegetables");
+        assertEquals("Correct error code returned", 8, ret);
+        assertTrue("Old name is still present", project.hasClass("Fruits"));
+        assertTrue("New name is still present", project.hasClass("Vegetables"));
+
+        ret = project.renameClass("Fruits", "Invalid Class");
+        assertEquals("Correct error code returned", 9, ret);
+        assertTrue("Old name is still present", project.hasClass("Fruits"));
+        assertFalse("New name is not present", project.hasClass("Invalid Class"));
+    }
+
+    @Test
+    public void testOpenCloseClass()
+    {
+        WorkingProject project = buildMockWorkingProject();
+        project.closeClass("Fruits");
+        assertFalse("Class is closed", project.getClass("Fruits").isOpen());
+        project.openClass("Fruits");
+        assertTrue("Class is open", project.getClass("Fruits").isOpen());
+    }
+
+    @Test
+    public void testOpenCloseMissingClass()
+    {
+        WorkingProject project = buildMockWorkingProject();
+        int ret = project.closeClass("Legumes");
+        assertEquals("Correct error code returned", 2, ret);
+        ret = project.openClass("Legumes");
+        assertEquals("Correct error code returned", 2, ret);
     }
 
     /**
@@ -236,17 +323,6 @@ public class WorkingProjectTest {
         WorkingProject wp = buildMockWorkingProject();
         wp.removeMethod("Fruits", "Eat");
         assertTrue(!wp.getClass("Fruits").hasMethod("Eat"));
-    }
-
-    /**
-     * Test removing ClassObject from WorkingProject
-     */
-    @Test
-    public void testRemoveClass()
-    {
-        WorkingProject wp = buildMockWorkingProject();
-        wp.removeClass("Fruits");
-        assertTrue(!wp.hasClass("Fruits"));
     }
 
     /**
