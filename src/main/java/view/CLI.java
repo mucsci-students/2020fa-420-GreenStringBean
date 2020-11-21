@@ -87,7 +87,7 @@ public class CLI {
                     if (YN.equals("y".toUpperCase()) || YN.equals("y"))
                     {
                         terminal.writer().println("What do you want to name the project?");
-                        String name = lineReader.readLine("gsb>");
+                        String name = lineReader.readLine("gsb> ");
                         if (parseLine(name) != null)
                             saveFile (parseLine(name).get(0));
                         else 
