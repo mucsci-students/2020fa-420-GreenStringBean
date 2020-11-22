@@ -88,7 +88,10 @@ public class CLI {
                     {
                         terminal.writer().println("What do you want to name the project?");
                         String name = lineReader.readLine("gsb> ");
-                        saveFile (parseLine(name).get(0));
+                        if (parseLine(name) != null)
+                            saveFile (parseLine(name).get(0));
+                        else 
+                            terminal.writer().println("No name entered. Resuming...");
                     }
                     else if (YN.equals("n".toUpperCase()) || YN.equals("n"))
                     {
@@ -101,18 +104,16 @@ public class CLI {
                         return;
                     }
                     else
-                    {
                         terminal.writer().println("Y/N not entered. Resuming...");
-                    }
 
                     break;
 
                 //Save the working project into a named file
                 case "save":
                     if (commands.size() < 2)
-                        terminal.writer().println("Error: too few arguments for save<filename>");
+                        terminal.writer().println("Error: too few arguments for save <filename>");
                     else if (commands.size() > 2)
-                        terminal.writer().println("Error: too many arguments for save<filename>");
+                        terminal.writer().println("Error: too many arguments for save <filename>");
                     else
                     {
                         saveFile(commands.get(1));
@@ -123,9 +124,9 @@ public class CLI {
                 //Load a project from a file
                 case "load":
                     if (commands.size() < 2)
-                        terminal.writer().println("Error: too few arguments for load<filename.txt>");
+                        terminal.writer().println("Error: too few arguments for load <filename.json>");
                     else if (commands.size() > 2)
-                        terminal.writer().println("Error: too many arguments for load<filename.txt>");
+                        terminal.writer().println("Error: too many arguments for load <filename.json>");
                     else
                     {
                         try 
@@ -165,9 +166,9 @@ public class CLI {
                 //Add a named class to the working project
                 case "addClass" :   
                     if (commands.size() < 2)
-                        terminal.writer().println ("Error: too few arguments for addClass<name>");
+                        terminal.writer().println ("Error: too few arguments for addClass <name>");
                     else if (commands.size() > 2)
-                        terminal.writer().println ("Error: too many arguments for addClass<name>");
+                        terminal.writer().println ("Error: too many arguments for addClass <name>");
                     else
                     {
                         projectEditor.addClass(commands.get(1));
@@ -179,9 +180,9 @@ public class CLI {
                 //Delete a named class from the working project
                 case "removeClass" :
                     if (commands.size() < 2)
-                        terminal.writer().println ("Error: too few arguments for deleteClass<class>");
+                        terminal.writer().println ("Error: too few arguments for deleteClass <class>");
                     else if (commands.size() > 2)
-                        terminal.writer().println ("Error: too many arguents for deleteClass<class>");
+                        terminal.writer().println ("Error: too many arguents for deleteClass <class>");
                     else 
                     {
                         projectEditor.removeClass(commands.get(1));
@@ -193,9 +194,9 @@ public class CLI {
                 //Rename a named class in the working project
                 case "renameClass" :
                     if (commands.size() < 3)
-                        terminal.writer().println ("Error: too few arguments for renameClass<class, newName>");
+                        terminal.writer().println ("Error: too few arguments for renameClass <class newName>");
                     else if (commands.size() > 3)
-                        terminal.writer().println ("Error: too many arguments for renameClass<class, newName>");
+                        terminal.writer().println ("Error: too many arguments for renameClass <class newName>");
                     else
                     {
                         projectEditor.renameClass(commands.get(1), commands.get(2));
@@ -207,9 +208,9 @@ public class CLI {
                 //Open a named class for editing
                 case "open" : 
                     if (commands.size() < 2)
-                        terminal.writer().println ("Error: too few arguments for open<class>");
+                        terminal.writer().println ("Error: too few arguments for open <class>");
                     else if (commands.size() > 2)
-                        terminal.writer().println ("Error: too many arguments for open<class>");
+                        terminal.writer().println ("Error: too many arguments for open <class>");
                     else
                     {
                         projectEditor.openClass(commands.get(1));
@@ -220,9 +221,9 @@ public class CLI {
                 //Close a named class to editing
                 case "close" :
                     if (commands.size() < 2)
-                        terminal.writer().println ("Error: too few arugments for close<class>");
+                        terminal.writer().println ("Error: too few arugments for close <class>");
                     else if (commands.size() > 2)
-                        terminal.writer().println ("Error: too many arguments for close<class>");
+                        terminal.writer().println ("Error: too many arguments for close <class>");
                     else
                     {
                         projectEditor.closeClass(commands.get(1));
@@ -233,9 +234,9 @@ public class CLI {
                 //Add a relationship of two named classes
                 case "addRelationship" :
                     if (commands.size() < 4)
-                        terminal.writer().println("Error: too few arguments for addRelation. <class, class, type>");
+                        terminal.writer().println("Error: too few arguments for addRelationship. <class class type>");
                     else if (commands.size() > 4)
-                        terminal.writer().println("Error: too many arguments for addRelation. <class, class, type>");
+                        terminal.writer().println("Error: too many arguments for addRelationship. <class class type>");
                     else
                     {
                         switch (commands.get(3)) {
@@ -256,7 +257,7 @@ public class CLI {
                                 printStatusMessage();
                                 break;
                             default :
-                                terminal.writer().println("Error: no relationship type given. <class, class, type>");
+                                terminal.writer().println("Error: no relationship type given. addRelationship <class class type>");
                         }
                     }
                     break;
@@ -264,9 +265,9 @@ public class CLI {
                 //Delete a relationship of two named classes
                 case "removeRelationship" :
                     if (commands.size() < 3)
-                        terminal.writer().println("Error: too few arguments for deleteRelation<class, class>");
+                        terminal.writer().println("Error: too few arguments for deleteRelation <class class>");
                     else if (commands.size() > 3)
-                        terminal.writer().println("Error: too many arguments for deleteRelation<class, class>");
+                        terminal.writer().println("Error: too many arguments for deleteRelation <class class>");
                     else
                     {
                         projectEditor.removeRelationship (commands.get(1), commands.get(2));
@@ -277,9 +278,9 @@ public class CLI {
                 //Add a new field attribute to named class
                 case "addField" :
                     if (commands.size() < 5)
-                        terminal.writer().println("Error: too few arguments for addField <class, visiblity, data type, name>");
+                        terminal.writer().println("Error: too few arguments for addField <class visibility type name>");
                     else if (commands.size() > 5)
-                        terminal.writer().println("Error: too many arguments for addField class <class, visibility, data type, name>");
+                        terminal.writer().println("Error: too many arguments for addField <class visibility type name>");
                     else 
                     {
                         projectEditor.addField(commands.get(1), commands.get(4), commands.get(3), commands.get(2));
@@ -291,9 +292,9 @@ public class CLI {
                 //Add a new method attribute to named class
                 case "addMethod" :
                     if (commands.size() < 5)
-                        terminal.writer().println("Error: too few arguments for addMethod <class, visibility, return type, name>");
+                        terminal.writer().println("Error: too few arguments for addMethod <class visibility return type name>");
                     else if (commands.size() > 5)
-                        terminal.writer().println("Error: too many arguments for addMethod class <class, visibility, return type, name>");
+                        terminal.writer().println("Error: too many arguments for addMethod <class visibility return type name>");
                     else
                     {
                         projectEditor.addMethod(commands.get(1), commands.get(4), commands.get(3), commands.get(2));
@@ -305,9 +306,9 @@ public class CLI {
                 //Add a new parameter to a method in a class
                 case "addParameter" :
                     if (commands.size() < 5)
-                        terminal.writer().println("Error: too few arguments for addParameter<class, method, paramType, paramName>");
+                        terminal.writer().println("Error: too few arguments for addParameter <class method paramType paramName>");
                     else if (commands.size() > 5)
-                        terminal.writer().println("Error: too many arguments for addParameter<class, method, paramType, paramName");
+                        terminal.writer().println("Error: too many arguments for addParameter <class method paramType paramName");
                     else
                     {
                         projectEditor.addParameter(commands.get(1), commands.get(2), commands.get(4), commands.get(3));
@@ -319,9 +320,9 @@ public class CLI {
                 //Delete a named field from a named class
                 case "removeField" :
                     if (commands.size() < 3)
-                        terminal.writer().println("Error: too few arguments for deleteAttribute<class, attribute>");
+                        terminal.writer().println("Error: too few arguments for removeField <class field>");
                     else if (commands.size() > 3)
-                        terminal.writer().println("Error: too many arguments for deleteAttribute<class, attribute>");
+                        terminal.writer().println("Error: too many arguments for removeField <class field>");
                     else
                     {
                         projectEditor.removeField(commands.get(1), commands.get(2));
@@ -333,9 +334,9 @@ public class CLI {
                 //Delete a named method from a named class
                 case "removeMethod" :
                     if (commands.size() < 3)
-                        terminal.writer().println("Error: too few arguments for deleteAttribute<class, attribute>");
+                        terminal.writer().println("Error: too few arguments for removeMethod <class method>");
                     else if (commands.size() > 3)
-                        terminal.writer().println("Error: too many arguments for deleteAttribute<class, attribute>");
+                        terminal.writer().println("Error: too many arguments for removeMethod <class method>");
                     else
                     {
                         projectEditor.removeMethod(commands.get(1), commands.get(2));
@@ -347,9 +348,9 @@ public class CLI {
                 //Deleter a named parameter from a named method
                 case "removeParameter" :
                     if (commands.size() < 4)
-                        terminal.writer().println("Error: too few arguments for deleteParameter<class, method, param>");
+                        terminal.writer().println("Error: too few arguments for removeParameter <class method param>");
                     else if (commands.size() > 4)
-                        terminal.writer().println("Error: too many arguments for deleteParameter<class, method, param");
+                        terminal.writer().println("Error: too many arguments for removeParameter <class method param");
                     else
                     {
                         projectEditor.removeParameter(commands.get(1), commands.get(2), commands.get(3));
@@ -361,9 +362,9 @@ public class CLI {
                 //Rename a named field from a named class
                 case "renameField" :
                     if (commands.size() < 4)
-                        terminal.writer().println("Error: too few arguments for renameField<class, oldName, newName>");
+                        terminal.writer().println("Error: too few arguments for renameField <class oldName newName>");
                     else if (commands.size() > 4)
-                        terminal.writer().println("Error: too many arguments for renameField<class, oldName, newName>");
+                        terminal.writer().println("Error: too many arguments for renameField <class oldName newName>");
                     else
                     {
                         projectEditor.renameField(commands.get(1), commands.get(2), commands.get(3));
@@ -375,9 +376,9 @@ public class CLI {
                 //Rename a named method from a named class
                 case "renameMethod" :
                     if (commands.size() < 4)
-                        terminal.writer().println("Error: too few arguments for renameMethod<class, oldName, newName>");
+                        terminal.writer().println("Error: too few arguments for renameMethod <class oldName newName>");
                     else if (commands.size() > 4)
-                        terminal.writer().println("Error: too many arguments for renameMethod <class, oldName, newName>");
+                        terminal.writer().println("Error: too many arguments for renameMethod <class oldName newName>");
                     else
                     {
                         projectEditor.renameMethod(commands.get(1), commands.get(2), commands.get(3));
@@ -389,9 +390,9 @@ public class CLI {
                 //Rename a parameter 
                 case "renameParameter" :
                     if (commands.size() < 5)
-                        terminal.writer().println("Error: too few arguments for renameParameter<class, method, parameter, newName>");
+                        terminal.writer().println("Error: too few arguments for renameParameter <class method param newName>");
                     else if (commands.size() > 5)
-                        terminal.writer().println("Error: too many arguments for renameParameter<class, method, parameter, newName>");
+                        terminal.writer().println("Error: too many arguments for renameParameter <class method param newName>");
                     else
                     {
                         projectEditor.renameParameter(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
@@ -403,9 +404,9 @@ public class CLI {
                 //Change a field's type
                 case "changeFieldType" :
                     if (commands.size() < 4)
-                        terminal.writer().println("Error: too few arguments for changeFieldType<class, field, newType>");
+                        terminal.writer().println("Error: too few arguments for changeFieldType <class field newType>");
                     else if (commands.size() > 4)
-                        terminal.writer().println("Error: too many arguments for changeFieldType<class, field, newType>");
+                        terminal.writer().println("Error: too many arguments for changeFieldType <class field newType>");
                     else 
                     {
                         projectEditor.changeFieldType (commands.get(1), commands.get(2), commands.get(3));
@@ -416,9 +417,9 @@ public class CLI {
                 //Change a method's return type
                 case "changeMethodType" :
                     if (commands.size() < 4)
-                        terminal.writer().println("Error: too few arguments for changeMethodType<class, method, newType>");
+                        terminal.writer().println("Error: too few arguments for changeMethodType <class method newType>");
                     else if (commands.size() > 4)
-                        terminal.writer().println("Error: too many arguments for changeMethodType<class, method, newType>");
+                        terminal.writer().println("Error: too many arguments for changeMethodType <class method newType>");
                     else 
                     {
                         projectEditor.changeMethodType (commands.get(1), commands.get(2), commands.get(3));
@@ -429,9 +430,9 @@ public class CLI {
                 //Change a parameter's type
                 case "changeParameterType" :
                     if (commands.size() < 5)
-                        terminal.writer().println("Error: too few arguments for changeParameterType<class, method, parameter, newType>");
+                        terminal.writer().println("Error: too few arguments for changeParameterType <class method param newType>");
                     else if (commands.size() > 5)
-                        terminal.writer().println("Error: too many arguments for changeParameterType<class, method, parameter, newType>");
+                        terminal.writer().println("Error: too many arguments for changeParameterType <class method param newType>");
                     else
                     {
                         projectEditor.changeParameterType (commands.get(1), commands.get(2), commands.get(3), commands.get(4));
@@ -442,9 +443,9 @@ public class CLI {
                 //Change a relationship's type
                 case "changeRelationshipType" :
                     if (commands.size() < 4)
-                        terminal.writer().println("Error: too few arguments for changeRelationshipType<class, class, newType>");
+                        terminal.writer().println("Error: too few arguments for changeRelationshipType <class class newType>");
                     else if (commands.size() > 4)
-                        terminal.writer().println("Error: too many arguments for changeRelationshipType<class, class, newType>");
+                        terminal.writer().println("Error: too many arguments for changeRelationshipType <class class newType>");
                     else
                     {
                         switch (commands.get(3)) {
@@ -465,7 +466,7 @@ public class CLI {
                                 printStatusMessage();
                                 break;
                             default :
-                                terminal.writer().println("Error: no relationship type given. <class, class, type>");
+                                terminal.writer().println("Error: no relationship type given. changeRelationshipType <class class type>");
                         }
                     }
                     break;
@@ -474,9 +475,9 @@ public class CLI {
                 //Change a field's visibility
                 case "changeFieldVisibility" :
                     if (commands.size() < 4)
-                        terminal.writer().println("Error: too few arguments for changeFieldVisibility<class, field, newVisibility>");
+                        terminal.writer().println("Error: too few arguments for changeFieldVisibility <class field newVisibility>");
                     else if (commands.size() > 4)
-                        terminal.writer().println("Error: too many arguments for changeFieldVisiblity<class, field, newVisibility>");
+                        terminal.writer().println("Error: too many arguments for changeFieldVisiblity <class field newVisibility>");
                     else
                     {
                         projectEditor.changeFieldVisibility (commands.get(1), commands.get(2), commands.get(3));
@@ -487,9 +488,9 @@ public class CLI {
                     //Change a method's visiblity
                     case "changeMethodVisibility": 
                     if (commands.size() < 4)
-                        terminal.writer().println("Error: too few arguments for changeMethodVisibility<class, method, newVisibility>");
+                        terminal.writer().println("Error: too few arguments for changeMethodVisibility <class method newVisibility>");
                     else if (commands.size() > 4)
-                        terminal.writer().println("Error: too many arguments for changeMethodVisibility<class, method, newVisibility>");
+                        terminal.writer().println("Error: too many arguments for changeMethodVisibility <class method newVisibility>");
                     else
                     {
                         projectEditor.changeMethodVisibility (commands.get(1), commands.get(2), commands.get(3));
@@ -505,9 +506,9 @@ public class CLI {
                 //Print a named class with fields and methods
                 case "printClass" :
                     if (commands.size() < 2)
-                        terminal.writer().println("Error: too few arguments for printClass<class>");
+                        terminal.writer().println("Error: too few arguments for printClass <class>");
                     else if (commands.size() > 2)
-                        terminal.writer().println("Error: too many arguments for printClass<class>");
+                        terminal.writer().println("Error: too many arguments for printClass <class>");
                     else
                         printClass(commands.get(1));
                     break;

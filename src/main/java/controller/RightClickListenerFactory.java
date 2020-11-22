@@ -1,12 +1,17 @@
 package controller;
-import view.MenuViews;
+import view.GUIView;
 
+/**
+ * The right click listener factory is created by a GUI controller and given to
+ * a GUI view. It is used to dynamically create listeners for right-clickable
+ * components in the view that can interact with the controller.
+ */
 public class RightClickListenerFactory {
     
-    private MenuViews view;
-    private HelperControllers controller;
+    private GUIView view;
+    private GUIController controller;
 
-    public RightClickListenerFactory(MenuViews v, HelperControllers c)
+    public RightClickListenerFactory(GUIView v, GUIController c)
     {
         this.view = v;
         this.controller = c;
@@ -14,7 +19,6 @@ public class RightClickListenerFactory {
 
     public ClassRightClick getClassRightClick(String className)
     {
-
         return new ClassRightClick(view, controller, className);
     }
 

@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
 
-import view.MenuViews;
+import view.GUIView;
 
 /**
  * ClassClick is a controller class for the GUI.
@@ -16,8 +16,8 @@ import view.MenuViews;
 
 public class ClassRightClick implements ActionListener
 {
-	private MenuViews view;
-    private HelperControllers controller;
+	private GUIView view;
+    private GUIController controller;
     private String className;
 	
 	/**
@@ -26,7 +26,7 @@ public class ClassRightClick implements ActionListener
      * @param v  view of the GUI that takes in user input
      * @param c controller to help the view actions perform correctly
      */
-	public ClassRightClick(MenuViews v, HelperControllers c, String s)
+	public ClassRightClick(GUIView v, GUIController c, String s)
 	{
 		this.view = v;
         this.controller = c;
@@ -54,7 +54,7 @@ public class ClassRightClick implements ActionListener
 		}
 		else if(cmd.equals("Remove Class"))
 		{
-			controller.delClass(className);
+			controller.removeClass(className);
 		}
 		else if(cmd.equals("Rename Class"))
 		{
