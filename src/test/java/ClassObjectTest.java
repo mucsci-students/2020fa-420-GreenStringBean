@@ -4,9 +4,12 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.*;
 
 import model.ClassObject;
 import model.Field;
@@ -379,6 +382,97 @@ public class ClassObjectTest {
     }
 
     /**
+     * Test adding a Method with parameters to ClassObject
+     */
+    @Test
+    public void testAddMethodWithParams()
+    {
+        ClassObject c = buildMockClassObject();
+
+        List<String> paramNames = new ArrayList<String>();
+        List<String> paramTypes = new ArrayList<String>();
+        paramNames.add("Size");
+        paramNames.add("Color");
+        paramTypes.add("int");
+        paramTypes.add("double");
+
+        c.close();
+        assertEquals(1, c.addMethod("Scoop", "void", "protected", paramNames, paramTypes));
+        c.open();
+        assertEquals(0, c.addMethod("Scoop", "void", "protected", paramNames, paramTypes));
+
+        assertEquals(14, c.addMethod("Moop", "void", "invalidType", paramNames, paramTypes));
+        assertTrue(c.hasMethod("Scoop"));
+        assertEquals(8, c.addMethod("Scoop", "void", "protected", paramNames, paramTypes));
+        assertEquals(9, c.addMethod("invalid name", "void", "protected", paramNames, paramTypes));
+        assertEquals(10, c.addMethod("Bloop", "invalid Type", "protected", paramNames, paramTypes));
+        assertTrue(c.getMethod("poocS") == null);
+        assertTrue(c.getMethod("Scoop").getType() == "void");
+
+        paramNames.add("Weight");
+        assertEquals(13, c.addMethod("test13", "void", "protected", paramNames, paramTypes));
+        paramTypes.add("int");
+
+        paramNames.add("Weight");
+        paramTypes.add("int");
+        assertEquals(8, c.addMethod("test8", "void", "protected", paramNames, paramTypes));
+        paramNames.remove(paramNames.size()-1);
+        paramTypes.remove(paramTypes.size()-1);
+
+
+        paramNames.add("invalid name");
+        paramTypes.add("validType");
+        assertEquals(9, c.addMethod("test9", "void", "protected", paramNames, paramTypes));
+        paramNames.remove(paramNames.size()-1);
+        paramTypes.remove(paramTypes.size()-1);
+
+        paramNames.add("validName");
+        paramTypes.add("invalid type");
+        assertEquals(10, c.addMethod("test10", "void", "protected", paramNames, paramTypes));
+    }
+
+     /**
+     * Test changing the entire list of parameters for a method
+     */
+    @Test
+    public void testChangeParameterList()
+    {
+        ClassObject c = buildMockClassObject();
+
+        List<String> paramNames = new ArrayList<String>();
+        List<String> paramTypes = new ArrayList<String>();
+
+        c.close();
+        assertEquals(1, c.changeParameterList("Eat", paramNames, paramTypes));
+        c.open();
+        assertEquals(0, c.changeParameterList("Eat", paramNames, paramTypes));
+
+        assertEquals(4, c.changeParameterList("Drink", paramNames, paramTypes));
+
+        paramNames.add("color");
+        assertEquals(13, c.changeParameterList("Eat", paramNames, paramTypes));
+        paramTypes.add("int");
+
+        paramNames.add("color");
+        paramTypes.add("int");
+        assertEquals(8, c.changeParameterList("Eat", paramNames, paramTypes));
+        paramNames.remove(paramNames.size()-1);
+        paramTypes.remove(paramTypes.size()-1);
+
+        paramNames.add("invalid name");
+        paramTypes.add("double");
+        assertEquals(9, c.changeParameterList("Eat", paramNames, paramTypes));
+        paramNames.remove(paramNames.size()-1);
+        paramTypes.remove(paramTypes.size()-1);
+
+        paramNames.add("validName");
+        paramTypes.add("invalid type");
+        assertEquals(10, c.changeParameterList("Eat", paramNames, paramTypes));
+    }
+
+    
+
+    /**
      * Test removing a Method from a ClassObject
      */
     @Test
@@ -524,9 +618,8 @@ public class ClassObjectTest {
 
     /**
      * Test converting a ClassObject to JSON
-     * TODO: Finish this test
      */
-    @Ignore
+    @Test
     public void TestToJSON ()
     {
         ClassObject d = new ClassObject("Construction");
@@ -536,20 +629,106 @@ public class ClassObjectTest {
         JSONObject expectedF = new JSONObject();
         JSONObject expectedM = new JSONObject();
         JSONObject expectedP = new JSONObject();
+       
         expectedF.put("name", "Height");
         expectedF.put("type", "double");
-        expectedM.put("name", "buildHouse");
+        expectedF.put("visibility", visibility.PUBLIC.name());
+
+        expectedM.put("name", "BuildHouse");
         expectedM.put("type", "void");
         expectedP.put("name", "Four_Bedroom");
         expectedP.put("type", "HouseType");
-        expectedM.put("parameters", expectedP);
+
+        JSONArray expectedParams = new JSONArray();
+        expectedParams.add(expectedP);
+
+        expectedM.put("parameters", expectedParams);
+        expectedM.put("visibility", visibility.PUBLIC.name());
+
+
+        JSONArray expectedFields = new JSONArray();
+        expectedFields.add(expectedF);
+        JSONArray expectedMethods = new JSONArray();
+        expectedMethods.add(expectedM);
+
         JSONObject expectedC = new JSONObject();
         expectedC.put("name", "Construction");
-        expectedC.put("methods", expectedM);
-        expectedC.put("fields", expectedF);
+        expectedC.put("methods", expectedMethods);
+        expectedC.put("fields", expectedFields);
+        expectedC.put("isOpen", true);
 
+        assertEquals(d.toJSON(), expectedC);
+    }
 
-        assertTrue(null, d.toJSON().equals(expectedC));
+    /**
+     * Test converting a JSONObject to ClassObject
+     */
+    @Test
+    public void testLoadFromJSON ()
+    {
+        JSONObject field = new JSONObject();
+        JSONObject method = new JSONObject();
+        JSONObject parameter = new JSONObject();
+        field.put("name", "Height");
+        field.put("type", "double");
+        field.put("visibility", visibility.PUBLIC.name());
+        method.put("name", "BuildHouse");
+        method.put("type", "void");
+        parameter.put("name", "Four_Bedroom");
+        parameter.put("type", "HouseType");
+        JSONArray parameters = new JSONArray();
+        parameters.add(parameter);
+        method.put("parameters", parameters);
+        method.put("visibility", visibility.PUBLIC.name());
+        JSONArray fields = new JSONArray();
+        fields.add(field);
+        JSONArray methods = new JSONArray();
+        methods.add(method);
+
+        JSONObject json = new JSONObject();
+        json.put("name", "Construction");
+        json.put("methods", methods);
+        json.put("fields", fields);
+        json.put("isOpen", true);
+
+        //json is our completed jsonobject to load from now
+        //testClass is the class that we want as a result of this method on json
+
+        ClassObject testClass = new ClassObject("Construction");
+        testClass.addField("Height", "double", "public");
+        testClass.addMethod("BuildHouse", "void", "public");
+        testClass.addParameter("BuildHouse", "Four_Bedroom", "HouseType");
+        
+        System.out.println(testClass.toJSON().toJSONString());
+        System.out.println("-----------------");
+        System.out.println(json.toJSONString());
+
+        ClassObject loadedClass = testClass.loadFromJSON(json);
+
+        assertTrue(testClass.hasField("Height"));
+        assertTrue(testClass.hasMethod("BuildHouse"));
+        assertTrue(loadedClass.hasField("Height"));
+        assertTrue(loadedClass.hasMethod("BuildHouse"));
+
+        JSONObject noName = new JSONObject();
+        noName.put("methods", methods);
+        noName.put("fields", fields);
+        noName.put("isOpen", true);
+        assertEquals(null, testClass.loadFromJSON(noName));
+
+        JSONObject noMethods = new JSONObject();
+        noMethods.put("name", "Construction");
+        noMethods.put("fields", fields);
+        noMethods.put("isOpen", true);
+        assertEquals(null, testClass.loadFromJSON(noMethods));
+  
+        // JSONObject nullField = new JSONObject();
+        // nullField.put("name", "Construction");
+        // nullField.put("methods", methods);
+        // nullField.put("fields", fields);
+        // nullField.put("isOpen", true);
+        // testClass.addField("Height", "double", "public");
+        // assertEquals(null, testClass.loadFromJSON(nullField));
     }
 
     /**
