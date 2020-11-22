@@ -6,14 +6,14 @@ import view.*;
 public class CLIEditorController implements CLIController
 {
 
-    private ModelEditor model;
+    private ModelEditor modelEditor;
     private CLIView cli;
 
-    public CLIEditorController (CLIView cli, ModelEditor model)
+    public CLIEditorController (CLIView cli, ModelEditor modelEditor)
     {
         this.cli = cli;
-        this.model = model;
-        model.attach(this.cli);
+        this.modelEditor = modelEditor;
+        modelEditor.attach(this.cli);
     }
 
      /**
@@ -22,7 +22,7 @@ public class CLIEditorController implements CLIController
      */
     public Model getProjectSnapshot()
     {
-        return model.getProjectSnapshot();
+        return modelEditor.getProjectSnapshot();
     }
 
     /**
@@ -31,8 +31,10 @@ public class CLIEditorController implements CLIController
      */
     public void addClass(String className)
     {
-        model.addClass(className);
+        modelEditor.addClass(className);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -43,8 +45,10 @@ public class CLIEditorController implements CLIController
      */
     public void removeClass(String className)
     {
-        model.removeClass(className);
+        modelEditor.removeClass(className);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -55,8 +59,10 @@ public class CLIEditorController implements CLIController
      */
     public void renameClass(String oldClassName, String newClassName)
     {
-        model.renameClass(oldClassName, newClassName);
+        modelEditor.renameClass(oldClassName, newClassName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -65,8 +71,9 @@ public class CLIEditorController implements CLIController
      */
     public void openClass(String className)
     {
-        model.openClass(className);
+        modelEditor.openClass(className);
         checkStatus();
+        printStatusMessage();
     }
 
     /**
@@ -76,8 +83,10 @@ public class CLIEditorController implements CLIController
      */
     public void loadProject(String jsonString)
     {
-        model.loadProject(jsonString);
+        modelEditor.loadProject(jsonString);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -86,8 +95,9 @@ public class CLIEditorController implements CLIController
      */
     public void closeClass(String className)
     {
-        model.closeClass(className);
+        modelEditor.closeClass(className);
         checkStatus();
+        printStatusMessage();
     }
 
     /**
@@ -98,8 +108,10 @@ public class CLIEditorController implements CLIController
      */
     public void addField(String className, String fieldName, String fieldType, String fieldVisName)
     {
-        model.addField(className, fieldName, fieldType, fieldVisName);
+        modelEditor.addField(className, fieldName, fieldType, fieldVisName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
      /**
@@ -109,8 +121,10 @@ public class CLIEditorController implements CLIController
      */
     public void removeField(String className, String fieldName)
     {
-        model.removeField(className, fieldName);
+        modelEditor.removeField(className, fieldName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -121,8 +135,10 @@ public class CLIEditorController implements CLIController
      */
     public void renameField(String className, String oldFieldName, String newFieldName)
     {
-        model.renameField(className, oldFieldName, newFieldName);
+        modelEditor.renameField(className, oldFieldName, newFieldName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -133,8 +149,10 @@ public class CLIEditorController implements CLIController
      */
     public void changeFieldType(String className, String fieldName, String newFieldType)
     {
-        model.changeFieldType(className, fieldName, newFieldType);
+        modelEditor.changeFieldType(className, fieldName, newFieldType);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -145,14 +163,18 @@ public class CLIEditorController implements CLIController
      */
     public void changeFieldVisibility(String className, String fieldName, String newFieldVis)
     {
-        model.changeFieldVisibility(className, fieldName, newFieldVis);
+        modelEditor.changeFieldVisibility(className, fieldName, newFieldVis);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     public void addMethod(String className, String methodName, String methodType, String methodVisName)
     {
-        model.addMethod(className, methodName, methodType, methodVisName);
+        modelEditor.addMethod(className, methodName, methodType, methodVisName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -162,8 +184,10 @@ public class CLIEditorController implements CLIController
      */
     public void removeMethod(String className, String methodName)
     {
-        model.removeMethod(className, methodName);
+        modelEditor.removeMethod(className, methodName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
      /**
@@ -174,8 +198,10 @@ public class CLIEditorController implements CLIController
      */
     public void renameMethod(String className, String oldMethodName, String newMethodName)
     {
-        model.renameMethod(className, oldMethodName, newMethodName);
+        modelEditor.renameMethod(className, oldMethodName, newMethodName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -186,8 +212,10 @@ public class CLIEditorController implements CLIController
      */
     public void changeMethodType(String className, String methodName, String newMethodType)
     {
-        model.changeMethodType(className, methodName, newMethodType);
+        modelEditor.changeMethodType(className, methodName, newMethodType);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -198,32 +226,66 @@ public class CLIEditorController implements CLIController
      */
     public void changeMethodVisibility(String className, String methodName, String newMethodVis)
     {
-        model.changeMethodVisibility(className, methodName, newMethodVis);
+        modelEditor.changeMethodVisibility(className, methodName, newMethodVis);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
+    /**
+     * Adds a parameter to a method
+     * @param className     the name of the class which is getting a parameter
+     * @param methodName    the name of the method which is getting a parameter
+     * @param paramName     the name of the parameter to be added
+     * @param paramType     the type of the parameter to be added
+     */
     public void addParameter(String className, String methodName, String paramName, String paramType)
     {
-        model.addParameter(className, methodName, paramName, paramType);
+        modelEditor.addParameter(className, methodName, paramName, paramType);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
+    /**
+     * @param className     the name of the class which is losing a parameter
+     * @param methodName    the name of the method which is losing a parameter
+     * @param paramName     the name of the parameter to be added
+     */
     public void removeParameter(String className, String methodName, String paramName)
     {
-        model.removeParameter(className, methodName, paramName);
+        modelEditor.removeParameter(className, methodName, paramName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
+    /**
+     * @param className     the name of the class with a parameter being renamed
+     * @param methodName    the name of the method with a parameter being renamed
+     * @param oldParamName  the name of the parameter which is being renamed
+     * @param newParamName  the new name of the parameter being renamed
+     */
     public void renameParameter(String className, String methodName, String oldParamName, String newParamName)
     {
-        model.renameParameter(className, methodName, oldParamName, newParamName);
+        modelEditor.renameParameter(className, methodName, oldParamName, newParamName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
+    /**
+     * @param className     the name of the class with a parameter being re-typed
+     * @param methodName    the name of the method with a parameter being re-typed
+     * @param paramName     the name of the parameter being re-typed
+     * @param newParamType  the type the parameter is being re-typed to
+     */
     public void changeParameterType(String className, String methodName, String paramName, String newParamType)
     {
-        model.changeParameterType(className, methodName, paramName, newParamType);
+        modelEditor.changeParameterType(className, methodName, paramName, newParamType);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
     /**
      * Adds a new ordered relationship to the project.
@@ -234,8 +296,10 @@ public class CLIEditorController implements CLIController
      */
     public void addRelationship(String classNameFrom, String classNameTo, String typeName)
     {
-        model.addRelationship(classNameFrom, classNameTo, typeName);
+        modelEditor.addRelationship(classNameFrom, classNameTo, typeName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -246,8 +310,10 @@ public class CLIEditorController implements CLIController
      */
     public void removeRelationship(String classNameFrom, String classNameTo)
     {
-        model.removeRelationship(classNameFrom, classNameTo);
+        modelEditor.removeRelationship(classNameFrom, classNameTo);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -259,8 +325,10 @@ public class CLIEditorController implements CLIController
      */
     public void changeRelationshipType(String classNameFrom, String classNameTo, String newTypeName)
     {
-        model.changeRelationshipType(classNameFrom, classNameTo, newTypeName);
+        modelEditor.changeRelationshipType(classNameFrom, classNameTo, newTypeName);
         checkStatus();
+        printStatusMessage();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -269,7 +337,7 @@ public class CLIEditorController implements CLIController
      */
     public String toJSONString()
     {
-        return model.toJSONString();
+        return modelEditor.toJSONString();
     }
 
     /**
@@ -277,7 +345,8 @@ public class CLIEditorController implements CLIController
      */
     public void undo() 
     {
-        model.undo();
+        modelEditor.undo();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
     /**
@@ -285,12 +354,24 @@ public class CLIEditorController implements CLIController
      */
     public void redo()
     {
-        model.redo();
+        modelEditor.redo();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
     }
 
+    /**
+     * Print a status message saying if an action was successful
+     */
     public String getLastCommandStatusMessage()
     {
-        return model.getLastCommandStatusMessage();
+        return modelEditor.getLastCommandStatusMessage();
+    }
+
+    /**
+     * Print getLastCommandStatusMessage in the Console
+     */
+    public void printStatusMessage()
+    {
+        cli.alert(getLastCommandStatusMessage());
     }
     
     /**
@@ -299,9 +380,9 @@ public class CLIEditorController implements CLIController
 	private void checkStatus()
     {
         // If the last command failed
-        if(!model.getLastCommandStatus())
+        if(!modelEditor.getLastCommandStatus())
         {
-            cli.alert("Error: " + model.getLastCommandStatusMessage());
+            cli.alert("Error: " + modelEditor.getLastCommandStatusMessage());
         }
     }
 }

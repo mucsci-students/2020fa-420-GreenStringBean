@@ -14,12 +14,6 @@ import java.util.Iterator;
 import java.io.BufferedReader;
 import controller.CLIController;
 
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.impl.history.*;
-import org.jline.reader.History;
-import org.jline.reader.impl.DefaultParser;
-
 /**
  * The Console allows a user to interface with a UML model
  * containing classes and relationships between those classes.
@@ -30,12 +24,6 @@ public class CLI {
     boolean helpfilePresent = true;
     BufferedReader brHelp;
     BufferedReader brProject;
-
-    private LineReader lineReader;
-    private CommandCompleter completer;
-    private History history;
-    private DefaultParser parser;
-    
     private CLIController controller;
     private CLIView view;
 
@@ -45,7 +33,7 @@ public class CLI {
      * Constructor
      */
     public CLI (CLIView view, CLIController controller) {
-        //Initialize the help file and the terminal for jline
+        //Initialize the help file
         try {
             brHelp = new BufferedReader (new FileReader ("HelpDocument.txt"));
             brHelp.mark(5000);
@@ -56,10 +44,7 @@ public class CLI {
         this.view = view;
 
         //Initialize the Completer that will be use for tab-completion
-        parser = new DefaultParser();
-        history = new DefaultHistory(lineReader);
-        completer = new CommandCompleter();
-        updateReaderAndCompleter();
+        
         //Begin prompting input
         console();
         System.exit(0);
@@ -72,7 +57,7 @@ public class CLI {
     public void console() {
         //Continue to prompt user for input
         while (true) {
-            String command = lineReader.readLine("gsb> ");
+            String command = view.readLine("gsb> ");
             ArrayList<String> commands = parseLine(command);
             if (commands == null)
                 continue;
@@ -83,12 +68,12 @@ public class CLI {
                 //Exit the program
                 case "quit":
                     view.alert("Do you want to save before you go? (Y/N)");
-                    String YN = lineReader.readLine("gsb> ");
+                    String YN = view.readLine("gsb> ");
 
                     if (YN.equals("y".toUpperCase()) || YN.equals("y"))
                     {
                         view.alert("What do you want to name the project?");
-                        String name = lineReader.readLine("gsb> ");
+                        String name = view.readLine("gsb> ");
                         if (parseLine(name) != null)
                             saveFile (parseLine(name).get(0));
                         else 
@@ -110,9 +95,7 @@ public class CLI {
                     else if (commands.size() > 2)
                         view.alert("Error: too many arguments for save <filename>");
                     else
-                    {
                         saveFile(commands.get(1));
-                    }
                     
                     break;
 
@@ -127,7 +110,6 @@ public class CLI {
                         try 
                         {
                             loadFile(commands.get(1));
-                            updateReaderAndCompleter();
                         }
                         catch (FileNotFoundException f)
                         {
@@ -149,13 +131,11 @@ public class CLI {
                 //Undo a previous action
                 case "undo":
                     controller.undo();
-                    updateReaderAndCompleter();
                     break;
 
                 //Redo a recently undone action
                 case "redo":
                     controller.redo();
-                    updateReaderAndCompleter();
                     break;
 
                 //Add a named class to the working project
@@ -165,11 +145,7 @@ public class CLI {
                     else if (commands.size() > 2)
                         view.alert ("Error: too many arguments for addClass <name>");
                     else
-                    {
                         controller.addClass(commands.get(1));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                         break;
 
                 //Delete a named class from the working project
@@ -179,11 +155,7 @@ public class CLI {
                     else if (commands.size() > 2)
                         view.alert ("Error: too many arguents for deleteClass <class>");
                     else 
-                    {
                         controller.removeClass(commands.get(1));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;
 
                 //Rename a named class in the working project
@@ -193,11 +165,7 @@ public class CLI {
                     else if (commands.size() > 3)
                         view.alert ("Error: too many arguments for renameClass <class newName>");
                     else
-                    {
                         controller.renameClass(commands.get(1), commands.get(2));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;
 
                 //Open a named class for editing
@@ -207,10 +175,7 @@ public class CLI {
                     else if (commands.size() > 2)
                         view.alert ("Error: too many arguments for open <class>");
                     else
-                    {
                         controller.openClass(commands.get(1));
-                        printStatusMessage();
-                    }
                     break;
 
                 //Close a named class to editing
@@ -220,10 +185,7 @@ public class CLI {
                     else if (commands.size() > 2)
                         view.alert ("Error: too many arguments for close <class>");
                     else
-                    {
                         controller.closeClass(commands.get(1));
-                        printStatusMessage();
-                    }
                     break;
 
                 //Add a relationship of two named classes
@@ -237,19 +199,15 @@ public class CLI {
                         switch (commands.get(3)) {
                             case "AGGREGATE" :
                                 controller.addRelationship (commands.get(1), commands.get(2), "A"); 
-                                printStatusMessage();
                                 break;
                             case "COMPOSITION" : 
                                 controller.addRelationship (commands.get(1), commands.get(2), "C"); 
-                                printStatusMessage();
                                 break;
                             case "INHERITANCE" : 
                                 controller.addRelationship (commands.get(1), commands.get(2), "I"); 
-                                printStatusMessage();
                                 break;
                             case "REALIZATION" : 
                                 controller.addRelationship (commands.get(1), commands.get(2), "R"); 
-                                printStatusMessage();
                                 break;
                             default :
                                 view.alert("Error: no relationship type given. addRelationship <class class type>");
@@ -264,10 +222,7 @@ public class CLI {
                     else if (commands.size() > 3)
                         view.alert("Error: too many arguments for deleteRelation <class class>");
                     else
-                    {
                         controller.removeRelationship (commands.get(1), commands.get(2));
-                        printStatusMessage();
-                    }
                     break;
 
                 //Add a new field attribute to named class
@@ -277,11 +232,7 @@ public class CLI {
                     else if (commands.size() > 5)
                         view.alert("Error: too many arguments for addField <class visibility type name>");
                     else 
-                    {
                         controller.addField(commands.get(1), commands.get(4), commands.get(3), commands.get(2));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;
 
                 //Add a new method attribute to named class
@@ -291,11 +242,7 @@ public class CLI {
                     else if (commands.size() > 5)
                         view.alert("Error: too many arguments for addMethod <class visibility return type name>");
                     else
-                    {
                         controller.addMethod(commands.get(1), commands.get(4), commands.get(3), commands.get(2));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;
 
                 //Add a new parameter to a method in a class
@@ -305,11 +252,7 @@ public class CLI {
                     else if (commands.size() > 5)
                         view.alert("Error: too many arguments for addParameter <class method paramType paramName");
                     else
-                    {
                         controller.addParameter(commands.get(1), commands.get(2), commands.get(4), commands.get(3));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;
 
                 //Delete a named field from a named class
@@ -319,11 +262,7 @@ public class CLI {
                     else if (commands.size() > 3)
                         view.alert("Error: too many arguments for removeField <class field>");
                     else
-                    {
                         controller.removeField(commands.get(1), commands.get(2));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;
 
                 //Delete a named method from a named class
@@ -333,11 +272,7 @@ public class CLI {
                     else if (commands.size() > 3)
                         view.alert("Error: too many arguments for removeMethod <class method>");
                     else
-                    {
                         controller.removeMethod(commands.get(1), commands.get(2));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;   
 
                 //Deleter a named parameter from a named method
@@ -347,11 +282,7 @@ public class CLI {
                     else if (commands.size() > 4)
                         view.alert("Error: too many arguments for removeParameter <class method param");
                     else
-                    {
                         controller.removeParameter(commands.get(1), commands.get(2), commands.get(3));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;
                 
                 //Rename a named field from a named class
@@ -361,11 +292,7 @@ public class CLI {
                     else if (commands.size() > 4)
                         view.alert("Error: too many arguments for renameField <class oldName newName>");
                     else
-                    {
                         controller.renameField(commands.get(1), commands.get(2), commands.get(3));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;
                 
                 //Rename a named method from a named class
@@ -375,11 +302,7 @@ public class CLI {
                     else if (commands.size() > 4)
                         view.alert("Error: too many arguments for renameMethod <class oldName newName>");
                     else
-                    {
                         controller.renameMethod(commands.get(1), commands.get(2), commands.get(3));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;
 
                 //Rename a parameter 
@@ -389,11 +312,7 @@ public class CLI {
                     else if (commands.size() > 5)
                         view.alert("Error: too many arguments for renameParameter <class method param newName>");
                     else
-                    {
                         controller.renameParameter(commands.get(1), commands.get(2), commands.get(3), commands.get(4));
-                        printStatusMessage();
-                        updateReaderAndCompleter();
-                    }
                     break;
 
                 //Change a field's type
@@ -403,10 +322,7 @@ public class CLI {
                     else if (commands.size() > 4)
                         view.alert("Error: too many arguments for changeFieldType <class field newType>");
                     else 
-                    {
                         controller.changeFieldType (commands.get(1), commands.get(2), commands.get(3));
-                        printStatusMessage();
-                    }
                     break;
 
                 //Change a method's return type
@@ -416,10 +332,7 @@ public class CLI {
                     else if (commands.size() > 4)
                         view.alert("Error: too many arguments for changeMethodType <class method newType>");
                     else 
-                    {
                         controller.changeMethodType (commands.get(1), commands.get(2), commands.get(3));
-                        printStatusMessage();
-                    }
                     break;
 
                 //Change a parameter's type
@@ -429,10 +342,7 @@ public class CLI {
                     else if (commands.size() > 5)
                         view.alert("Error: too many arguments for changeParameterType <class method param newType>");
                     else
-                    {
                         controller.changeParameterType (commands.get(1), commands.get(2), commands.get(3), commands.get(4));
-                        printStatusMessage();
-                    }    
                     break;
 
                 //Change a relationship's type
@@ -446,19 +356,15 @@ public class CLI {
                         switch (commands.get(3)) {
                             case "AGGREGATE" :
                                 controller.changeRelationshipType (commands.get(1), commands.get(2), "A"); 
-                                printStatusMessage();
                                 break;
                             case "COMPOSITION" : 
                                 controller.changeRelationshipType (commands.get(1), commands.get(2), "C"); 
-                                printStatusMessage();
                                 break;
                             case "INHERITANCE" : 
                                 controller.changeRelationshipType (commands.get(1), commands.get(2), "I"); 
-                                printStatusMessage();
                                 break;
                             case "REALIZATION" : 
                                 controller.changeRelationshipType (commands.get(1), commands.get(2), "R"); 
-                                printStatusMessage();
                                 break;
                             default :
                                 view.alert("Error: no relationship type given. changeRelationshipType <class class type>");
@@ -466,7 +372,6 @@ public class CLI {
                     }
                     break;
                 
-
                 //Change a field's visibility
                 case "changeFieldVisibility" :
                     if (commands.size() < 4)
@@ -474,10 +379,7 @@ public class CLI {
                     else if (commands.size() > 4)
                         view.alert("Error: too many arguments for changeFieldVisiblity <class field newVisibility>");
                     else
-                    {
                         controller.changeFieldVisibility (commands.get(1), commands.get(2), commands.get(3));
-                        printStatusMessage();
-                    }
                     break;
 
                     //Change a method's visiblity
@@ -487,10 +389,7 @@ public class CLI {
                     else if (commands.size() > 4)
                         view.alert("Error: too many arguments for changeMethodVisibility <class method newVisibility>");
                     else
-                    {
                         controller.changeMethodVisibility (commands.get(1), commands.get(2), commands.get(3));
-                        printStatusMessage();
-                    }
                     break;
 
                 //Print the names of each class
@@ -507,31 +406,6 @@ public class CLI {
                     else
                         printClass(commands.get(1));
                     break;
-
-                
-                /**
-                 * //Print the fields of a named class
-                 * case "printFields" :
-                 *   if (commands.size() < 2)
-                 *       view.alert("Error: too few arguments for printFields<class>");
-                 *   else if (commands.size() > 2)
-                 *       view.alert("Error: too many arguments for printFields<class>");
-                 *   else
-                 *       view.alert("No longer supported");
-                 *   break;
-                 *
-                 *   //Print the methods of a named class
-                 *   case "printMethods" :
-                 *   if (commands.size() < 2)
-                 *       view.alert("Error: too few arguments for printFields<class>");
-                 *   else if (commands.size() > 2)
-                 *       view.alert("Error: too many arguments for printFields<class>");
-                 *   else
-                 *       view.alert("No longer supported");
-                 *   break;
-                 * 
-                 */
-                
                 
                 //Print each relationship
                 case "printRelationships" :
@@ -638,14 +512,6 @@ public class CLI {
     }
 
     /**
-     * Print getLastCommandStatusMessage in the Console
-     */
-    public void printStatusMessage()
-    {
-        view.alert(controller.getLastCommandStatusMessage());
-    }
-
-    /**
      * Print the relationships in the WorkingProject
      * TODO: Have the Workingcontroller return a string representing the relationships
      */
@@ -668,22 +534,9 @@ public class CLI {
     private void printClass(String className)
     {
         ClassObject c = controller.getProjectSnapshot().getClass(className);
+        view.alert("Fields");
         c.printFields();
+        view.alert("Methods");
         c.printMethods();
-    }
-
-    /**
-     * Update the state of the lineReader and its Completer whenever the model is changed
-     */
-    private void updateReaderAndCompleter()
-    {
-        completer.updateCompleter(controller.getProjectSnapshot());
-        lineReader = LineReaderBuilder.builder()
-            .terminal(view.getTerminal())
-            .completer(completer
-            .getCompleter())
-            .parser(parser)
-            .history(history)
-            .build();
     }
 }

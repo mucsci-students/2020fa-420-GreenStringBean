@@ -1,6 +1,7 @@
 package controller;
 import view.CLI;
 import view.GUIEditorView;
+import view.CLIEditorView;
 import view.GUIView;
 import view.CLIView;
 
@@ -25,7 +26,7 @@ public class UMLConsoleController {
 			if(args.length == 1 && args[0].equals("--cli"))
 			{
 				//Start in console
-				CLIView view = new CLIView();
+				CLIEditorView view = new CLIEditorView();
 				CLIEditorController controller = new CLIEditorController(view, editor);
 				new CLI(view, controller);
 			}
