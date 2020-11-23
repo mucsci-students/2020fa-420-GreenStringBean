@@ -2,7 +2,8 @@ package controller;
 
 import java.util.List;
 
-public interface GUIController extends Controller {
+public interface GUIController extends Controller 
+{
     /**
      * Adds a new method with parameters to a class.
      * @param className  the name of the class to add a method to

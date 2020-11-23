@@ -12,7 +12,8 @@ import javax.swing.JPanel;
 
 import model.Relationship.relationshipType;
 
-public class RelationArrow extends JPanel {
+public class RelationArrow extends JPanel 
+{
     final static float THICKNESS = 2;
     final static float DASH_ARRAY[] = {10};
     final static BasicStroke SOLID_STROKE = new BasicStroke(THICKNESS);
@@ -30,6 +31,12 @@ public class RelationArrow extends JPanel {
     private boolean isReverse;
     private boolean isLoop;
 
+    /**
+     * Constructor for creating a relationship arrow
+     * @param panelFrom panel from
+     * @param panelTo   panel to
+     * @param type      relationship type
+     */
     public RelationArrow(JPanel panelFrom, JPanel panelTo, relationshipType type)
     {
         this.panelFrom = panelFrom;
@@ -44,6 +51,9 @@ public class RelationArrow extends JPanel {
         calculateEndpoints();
     }
 
+    /**
+     * Get the endpoints from both class panels 
+     */
     private void calculateEndpoints()
     {        
         if (isLoop)
@@ -103,6 +113,10 @@ public class RelationArrow extends JPanel {
         }
     }
 
+    /**
+     * Makes the relationship arrow 
+     * @param g graphic being made
+     */
     @Override
     protected void paintComponent(Graphics g)
     {
@@ -161,6 +175,10 @@ public class RelationArrow extends JPanel {
         }
     }
 
+    /**
+     * Check if arrow to be made is on the left/above the classFrom panel
+     * @return true if from coords are less than the to coords
+     */
     private boolean isInverse()
     {
         if (isLoop)
@@ -191,6 +209,11 @@ public class RelationArrow extends JPanel {
         }
     }
 
+    /**
+     * Makes the end shape of a relationship arrow
+     * @param g2d       the arrow being made     
+     * @param isDiamond is the graphic a diamond
+     */
     private void drawCap(Graphics2D g2d, boolean isDiamond)
     {
         Polygon cap = new Polygon();
@@ -245,6 +268,10 @@ public class RelationArrow extends JPanel {
         g2d.fill(cap);
     }
 
+    /**
+     * Repaints the graphic 
+     * @param g is the graphic being used
+     */
     protected void repaint(Graphics g)
     {
         //calculateEndpoints();

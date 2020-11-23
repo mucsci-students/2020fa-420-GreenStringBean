@@ -48,7 +48,8 @@ import model.ClassObject;
 import model.Model;
 import model.Relationship;
 
-public class GUIEditorView implements GUIView {
+public class GUIEditorView implements GUIView 
+{
 	private JMenuBar mb;
 	private JLayeredPane pWindow;
 	private JFrame win;
@@ -65,7 +66,8 @@ public class GUIEditorView implements GUIView {
 	/**
 	 * Constructor for creating a new GUI view
 	 */
-	public GUIEditorView() {
+	public GUIEditorView() 
+	{
 		this.classPanels = new HashMap<>();
 		this.relationArrows = new HashMap<>();
 		try 
@@ -83,8 +85,8 @@ public class GUIEditorView implements GUIView {
 	 * Mehtod for creating a window for the all the buttons and panels to be
 	 * displayed for user.
 	 */
-	public void showWindow() {
-		//System.out.println("Got to make the window(): GUIViews()");
+	public void showWindow() 
+	{
 		win = new JFrame("UML");
 		win.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		win.setSize(800, 750);
@@ -102,21 +104,19 @@ public class GUIEditorView implements GUIView {
 
 	/**
 	 * Method for returning the window for displaying all buttons for menu bar.
-	 * 
 	 * @return the window
 	 */
-	public JFrame getMainWindow() {
+	public JFrame getMainWindow() 
+	{
 		return win;
 	}
 
 	/**
 	 * Method for placing all the seperate buttons onto the menu bar
-	 * 
 	 * @param win is the window for the menu bar to be added on
 	 */
-	public void makeMenu(JFrame win) {
-		//System.out.println("made the menu: GUIViews()");
-
+	public void makeMenu(JFrame win) 
+	{
 		mb = new JMenuBar();
 		createFileM(mb);
 		createClassM(mb);
@@ -125,31 +125,31 @@ public class GUIEditorView implements GUIView {
 	}
 
 	/**
-	 * method for returning menu bar for placing buttons
-	 * 
+	 * Method for returning menu bar for placing buttons
 	 * @return menu bar
 	 */
-	public JMenuBar getMenuBar() {
+	public JMenuBar getMenuBar() 
+	{
 		return mb;
 	}
 
 	/**
-	 * Method for displaying an input box for a user
-	 * 
-	 * @param prompt
-	 * @param title
+	 * Method for displaying a string input box for a user
+	 * @param prompt prompt for user 
+	 * @param title  title of user prompt 
 	 */
-	public String promptForString(String prompt, String title) {
+	public String promptForString(String prompt, String title) 
+	{
 		return JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE);
 	}
 
 	/**
-	 * Method for displaying an input box for a user
-	 * 
-	 * @param
-	 * @param
+	 * Method for displaying a visibility input box for a user
+	 * @param prompt prompt for user 
+	 * @param title  title of user prompt  
 	 */
-	public String promptForVis(String prompt, String title) {
+	public String promptForVis(String prompt, String title) 
+	{
 		Object[] possibleValues = { "Public", "Private", "Protected" };
 
 		Object selectedValue = JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
@@ -159,12 +159,12 @@ public class GUIEditorView implements GUIView {
 	}
 
 	/**
-	 * Method for displaying an input box for a user
-	 * 
-	 * @param pr
-	 * @param
+	 * Method for displaying a relationship input box for a user
+	 * @param prompt prompt for user 
+	 * @param title  title of user prompt 
 	 */
-	public String promptForRelType(String prompt, String title) {
+	public String promptForRelType(String prompt, String title) 
+	{
 		Object[] possibleValues = { "Inheritance", "Aggregation", "Composition", "Realization" };
 
 		Object selectedValue = JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
@@ -174,12 +174,12 @@ public class GUIEditorView implements GUIView {
 	}
 
 	/**
-	 * Method for displaying an input box for a user
-	 * 
-	 * @param
-	 * @param
+	 * Method for displaying an class input box for a user
+	 * @param prompt prompt for user 
+	 * @param title  title of user prompt 
 	 */
-	public String promptForClassName(String prompt, String title) {
+	public String promptForClassName(String prompt, String title) 
+	{
 		if (classPanels.keySet().isEmpty()) {
 			alert("No classes exist");
 			return null;
@@ -194,7 +194,6 @@ public class GUIEditorView implements GUIView {
 
 	/**
 	 * Displays a dialog box to fill in all the information for a new field
-	 * 
 	 * @param title the window title of the dialog box
 	 * @return a map of the field's properties to their values, or null if canceled
 	 */
@@ -480,8 +479,6 @@ public class GUIEditorView implements GUIView {
 	 */
 	private void createFileM(JMenuBar mb)
 	{
-		//System.out.println("made file menu: GUIViews()");
-		
 		fileM = new JMenu("File");
 		
 		JMenuItem zi = new JMenuItem("Zoom In");
@@ -522,8 +519,6 @@ public class GUIEditorView implements GUIView {
 	 */
 	private void fileListener(ActionListener fileL)
 	{
-		//System.out.println("adding Listeners for FileClick: GUIViews()");
-		
 		for(Component i: fileM.getMenuComponents())
 		{
 			JMenuItem menu = (JMenuItem)i;
@@ -538,8 +533,6 @@ public class GUIEditorView implements GUIView {
 	 */
 	private void createClassM(JMenuBar mb)
 	{
-		//System.out.println("made class menu: GUIViews()");
-		
 		projectM = new JMenu("Project");
 
 		JMenuItem un = new JMenuItem("Undo");
@@ -571,8 +564,6 @@ public class GUIEditorView implements GUIView {
 	 */
 	private void classListener(ActionListener classL)
 	{
-		//System.out.println("adding Listeners for ClassClick: GUIViews()");
-		
 		for(Component i: projectM.getMenuComponents())
 		{
 			JMenuItem menu = (JMenuItem)i;
@@ -580,15 +571,13 @@ public class GUIEditorView implements GUIView {
 		}
 	}
 	
-/**
+	/**
 	 * Creates a relationship drop down menu for adding, changing,
 	 * deleting, and showing relationships
 	 * @param mb is the menu bar
 	 */
 	private void createRelatM(JMenuBar mb) 
 	{
-		//System.out.println("made relationship menu:  GUIView()");
-		
 		relaM = new JMenu("Relationship");
 
 		JMenuItem in = new JMenuItem("Create Relationship");
@@ -608,10 +597,14 @@ public class GUIEditorView implements GUIView {
 		mb.add(relaM);
 	}
 
+	/**
+	 * Creates a right click pop up menu for a class
+	 * @param className name of the class
+	 * @param txt       text area that was clicked on
+	 * @param panel     class panel that was clicked
+	 */
 	private void createClassRightClick(String className, JTextArea txt, JPanel panel)
 	{
-		//System.out.println("made class right click: GUIViews()");
-		
 		JPopupMenu classM = new JPopupMenu();
 		ClassRightClick click = clickFactory.getClassRightClick(className);
 
@@ -638,6 +631,13 @@ public class GUIEditorView implements GUIView {
 		addDragListener(txt, listen);
 	}
 
+	/**
+	 * Creates a right click pop up menu for a field
+	 * @param className name of the class
+	 * @param fieldName name of the field
+	 * @param txt       text area that was clicked on
+	 * @param panel     class panel that was clicked
+	 */
 	private void createFieldRightClick(String className, String fieldName, JTextArea txt, JPanel panel)
 	{	
 		JPopupMenu fieldM = new JPopupMenu();
@@ -663,6 +663,13 @@ public class GUIEditorView implements GUIView {
 		addDragListener(txt, listen);
 	}
 
+	/**
+	 * Creates a right click pop up menu for a method
+	 * @param className   name of the class
+	 * @param methodName  name of the method
+	 * @param txt         text area that was clicked on
+	 * @param panel       class panel that was clicked
+	 */
 	private void createMethodRightClick(String className, String methodName, JTextArea txt, JPanel panel)
 	{	
 		JPopupMenu methM = new JPopupMenu();
@@ -711,14 +718,10 @@ public class GUIEditorView implements GUIView {
 	public void addListeners(ActionListener fileL, ActionListener classL,
 			ActionListener relatL, RightClickListenerFactory clickFactory) 
 	{
-		//System.out.println("adding listeners for all the menu buttons: GUIViews()");
-		
         fileListener(fileL);
         classListener(classL);
 		relationshipListener(relatL);
 		this.clickFactory = clickFactory;
-		
-		//System.out.println("finished listeners: GUIViews()");
 	}
 
 	/**
@@ -729,7 +732,6 @@ public class GUIEditorView implements GUIView {
 	{
 		if (newLoadedProject)
 		{
-			//System.out.println("View notified with a loaded project");
 			clearClassPanels();
 
 			for (String className : project.getClassNames())
@@ -739,7 +741,6 @@ public class GUIEditorView implements GUIView {
 		}
 		else
 		{
-			//System.out.println("View notified with a non-loaded project");
 			String missingClassName = "";
 			String foundClassName = "";
 			Set<String> existingClassNames = classPanels.keySet();
@@ -807,7 +808,6 @@ public class GUIEditorView implements GUIView {
 	 */
 	public void onUpdate(ClassObject classObj)
 	{
-		//System.out.println("View notified with a class");
 		JPanel panel = classPanels.get(classObj.getName());
 		updateClassPanel(panel, classObj);
 		pWindow.moveToFront(panel);
@@ -847,8 +847,9 @@ public class GUIEditorView implements GUIView {
 	}
 
 	/**
-	 * 
-	 * @param panel
+	 * Adds listeners to ClassPanelClick
+	 * @param component component that was clicked     
+	 * @param listener  mouse action listener
 	 */
 	public void addDragListener(Component component, ClassPanelClick listener)
 	{
@@ -857,7 +858,8 @@ public class GUIEditorView implements GUIView {
 	}
 
 	/**
-	 * 
+	 * Creates a relationship arrow between two class panels
+	 * @param relat type of relationship
 	 */
 	public void createRelationArrow(Relationship relat)
 	{

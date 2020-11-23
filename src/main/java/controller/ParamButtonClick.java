@@ -14,7 +14,8 @@ import javax.swing.JTextField;
  * method or editing its list of parameters.
  */
 
-public class ParamButtonClick implements ActionListener {
+public class ParamButtonClick implements ActionListener 
+{
 	private JPanel paramEntriesPanel;
 	private List<JTextField> paramNameFields;
 	private List<JTextField> paramTypeFields;
@@ -22,7 +23,6 @@ public class ParamButtonClick implements ActionListener {
 	/**
 	 * Cronstructor for an action performer with the views input and a helper
 	 * controller to manipulate the view.
-	 * 
 	 * @param v view of the GUI that takes in user input
 	 * @param c controller to help the view actions perform correctly
 	 */
@@ -36,7 +36,6 @@ public class ParamButtonClick implements ActionListener {
 
 	/**
 	 * Method for handling actions performed on a class
-	 * 
 	 * @param e is the action that was performed by the user and is in the form of a
 	 *          command
 	 */
@@ -56,6 +55,9 @@ public class ParamButtonClick implements ActionListener {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void updateEntriesPanel()
 	{
 		paramEntriesPanel.removeAll();

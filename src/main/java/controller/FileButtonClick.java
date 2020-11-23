@@ -8,13 +8,6 @@ import java.nio.file.Files;
 
 import view.*;
 
-/**
- * FileButtonClick is a controller class for the GUI.
- * It contains the set of actions perfomed by a user in the view, 
- * and then sends the actions performed to another controller to 
- * manipulate the view accordingly.
- */
-
 public class FileButtonClick implements ActionListener
 {
 	private GUIView view;
@@ -39,8 +32,6 @@ public class FileButtonClick implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		//System.out.println("succesfully got to FileClick actions: FileClick()");
-		
 		String cmd = e.getActionCommand();
 		if(cmd.equals("Zoom In"))
 		{
