@@ -17,8 +17,8 @@ import view.*;
 
 public class FileButtonClick implements ActionListener
 {
-	private MenuViews view;
-	private HelperControllers controller;
+	private GUIView view;
+	private GUIController controller;
 	
 	/**
      * Cronstructor for an action performer with the views input and a helper 
@@ -26,7 +26,7 @@ public class FileButtonClick implements ActionListener
      * @param v  view of the GUI that takes in user input
      * @param c controller to help the view actions perform correctly
      */
-	public FileButtonClick(MenuViews v, HelperControllers c)
+	public FileButtonClick(GUIView v, GUIController c)
 	{
 		this.view = v;
 		this.controller = c;
@@ -65,7 +65,7 @@ public class FileButtonClick implements ActionListener
             }
             try
             {
-				Files.writeString(file.toPath(), controller.save());
+				Files.writeString(file.toPath(), controller.toJSONString());
             }
             catch(IOException ex)
             {
@@ -81,7 +81,7 @@ public class FileButtonClick implements ActionListener
             }
             try
             {
-				Files.writeString(file.toPath(), controller.save());
+				Files.writeString(file.toPath(), controller.toJSONString());
             }
             catch(IOException ex)
             {
@@ -97,7 +97,7 @@ public class FileButtonClick implements ActionListener
             }
             try
             {
-                controller.load(Files.readString(file.toPath()));
+                controller.loadProject(Files.readString(file.toPath()));
             }
             catch(IOException ex)
             {

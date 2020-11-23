@@ -11,8 +11,8 @@ import view.*;
 
 public class RelationshipClick implements ActionListener
 {
-	private MenuViews view;
-	private HelperControllers controller;
+	private GUIView view;
+	private GUIController controller;
 	
 	/**
      * Cronstructor for an action performer with the views input and a helper 
@@ -20,7 +20,7 @@ public class RelationshipClick implements ActionListener
      * @param v  view of the GUI that takes in user input
      * @param c controller to help the view actions perform correctly
      */
-	public RelationshipClick(MenuViews v, HelperControllers c)
+	public RelationshipClick(GUIView v, GUIController c)
 	{
 		this.view = v;
 		this.controller = c;

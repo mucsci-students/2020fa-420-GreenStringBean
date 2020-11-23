@@ -4,9 +4,9 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
 public class WindowResizeListener implements ComponentListener {
-    MenuViews view;
+    GUIView view;
 
-    public WindowResizeListener(MenuViews view)
+    public WindowResizeListener(GUIView view)
     {
         this.view = view;
     }
