@@ -14,8 +14,16 @@ plugins {
     id 'application'
 
     id 'com.github.johnrengelman.shadow' version '6.0.0'
+
+    id 'jacoco'
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = false
+    }
+}
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
@@ -31,6 +39,12 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13'
+
+    // Use JLine for Tab-Completion
+    compile group: 'org.jline', name: 'jline', version: '3.14.1'
+
+    compile group: 'net.java.dev.jna', name: 'jna', version: '5.3.1'
+
 }
 
 application {

@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
  */
 
 public class Relationship {
-	enum relationshipType
+	public enum relationshipType
 	{
 		AGGREGATION, COMPOSITION, INHERITANCE, REALIZATION;
 	}

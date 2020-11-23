@@ -1,13 +1,13 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class RenameMethodCommand extends Command {
     private String className;
     private String oldMethodName;
     private String newMethodName;
 
-    public RenameMethodCommand (WorkingProject project, String className, String oldMethodName, String newMethodName)
+    public RenameMethodCommand (Model project, String className, String oldMethodName, String newMethodName)
     {
         super(project);
         this.className = className;

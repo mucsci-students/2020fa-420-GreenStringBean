@@ -1,6 +1,6 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class AddMethodCommand extends Command {
     private String className;
@@ -8,7 +8,7 @@ public class AddMethodCommand extends Command {
     private String methodType;
     private String methodVisName;
 
-    public AddMethodCommand (WorkingProject project, String className, String methodName, String methodType, String methodVisName)
+    public AddMethodCommand (Model project, String className, String methodName, String methodType, String methodVisName)
     {
         super(project);
         this.className = className;

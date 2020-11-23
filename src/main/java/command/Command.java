@@ -1,10 +1,10 @@
 package command;
-import model.WorkingProject;
+import model.Model;
 
 public abstract class Command {
 	private boolean status;
 	private String statusMsg;
-	protected WorkingProject project;
+	protected Model project;
 	private String projectState;
 	
 
@@ -23,11 +23,11 @@ public abstract class Command {
 		"Data type is not valid",
 		"Relationship type is not valid",
 		"Error loading project",
-		"Loaded project is not valid",
+		"Parameter name and data type counts do not match",
 		"Visibility modifier is not valid"
 	};
 
-	protected Command(WorkingProject project)
+	protected Command(Model project)
 	{
 		status = false;
 		statusMsg = "Not yet executed";

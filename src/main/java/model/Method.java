@@ -29,6 +29,25 @@ public class Method extends VisibleDeclaration {
         super(name, type, vis);
         parameters = new ArrayList<>();
     }
+
+    /**
+     * Creates a new method with parameters.
+     * @param name       the name of the method, which must always match this
+     *                   method's key in the class
+     * @param type       the return type of the method
+     * @param vis        the visibility of the method
+     * @param paramNames the names of the method's parameters
+     * @param paramTypes the data types of the method's parameters
+     */
+    public Method(String name, String type, visibility vis, List<String> paramNames, List<String> paramTypes)
+    {
+        super(name, type, vis);
+        parameters = new ArrayList<>();
+        for (int i = 0; i < paramNames.size(); ++i)
+        {
+            parameters.add(new Parameter(paramNames.get(i), paramTypes.get(i)));
+        }
+    }
     
     /**
      * Adds a new parameter to the method.
@@ -127,6 +146,20 @@ public class Method extends VisibleDeclaration {
     }
 
     /**
+     * Mutator for the entire parameter list
+     * @param paramNames the list of new parameter names
+     * @param paramTypes the list of new parameter data types
+     */
+    public void setParameters(List<String> paramNames, List<String> paramTypes)
+    {
+        parameters.clear();
+        for (int i = 0; i < paramNames.size(); ++i)
+        {
+            parameters.add(new Parameter(paramNames.get(i), paramTypes.get(i)));
+        }
+    }
+
+    /**
      * Creates a String representation of the method as it would appear in java
      * @return the String representing this method
      */
@@ -163,6 +196,19 @@ public class Method extends VisibleDeclaration {
      */
     public List<Parameter> getParameters(){
         return parameters;
+    }
+
+    /**
+     * Accessor for the list of parameter names
+     * @return the list of parameter names
+     */
+    public List<String> getParameterNames(){
+        ArrayList<String> paramNames = new ArrayList<>();
+        for (Parameter p : parameters)
+        {
+            paramNames.add(p.getName());
+        }
+        return paramNames;
     }
 
     /**
@@ -236,7 +282,7 @@ public class Method extends VisibleDeclaration {
             String paramName = (String)((JSONObject)jsonParameter).get("name");
             String paramType = (String)((JSONObject)jsonParameter).get("type");
 
-            if (paramName == null || paramType == null)
+            if (paramName == null || paramType == null || method.getParamIndex(paramName)!=-1)
             {
                 return null;
             }

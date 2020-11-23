@@ -1,13 +1,13 @@
 package command;
 
-import model.WorkingProject;
+import model.Model;
 
 public class ChangeMethodVisibilityCommand extends Command {
     private String className;
     private String methodName;
     private String newMethodVisName;
 
-    public ChangeMethodVisibilityCommand (WorkingProject project, String className, String methodName, String newMethodVisName )
+    public ChangeMethodVisibilityCommand (Model project, String className, String methodName, String newMethodVisName )
     {
         super(project);
         this.className = className;

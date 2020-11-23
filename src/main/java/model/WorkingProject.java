@@ -1,9 +1,13 @@
 
 package model;
 
+import model.Relationship.relationshipType;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,11 +36,11 @@ import org.json.simple.JSONValue;
  *     10 - Data type is not valid
  *     11 - Relationship type is not valid
  *     12 - Error loading project
- *     13 - Loaded project is not valid
- *     14 - Visibility Modifier is not valid
+ *     13 - Parameter name and data type counts do not match
+ *     14 - Visibility modifier is not valid
  */
 
-public class WorkingProject {
+public class WorkingProject implements Model{
     private LinkedHashMap<String, ClassObject> classes;
     private ArrayList<Relationship> relationships;
 
@@ -177,11 +181,6 @@ public class WorkingProject {
             return 2;
         }
 
-        if (!isValidName(fieldName))
-        {
-            return 9;
-        }
-
         return classes.get(className).addField(fieldName, fieldType, fieldVisName);
     }
 
@@ -253,11 +252,12 @@ public class WorkingProject {
     }
 
     /**
-     * Adds a new method to a class.
-     * @param className  the name of the class to add a method to
-     * @param methodName the name to be used by the new method
-     * @param methodType the data type to be used by the new method
-     * @return           0 if successful, error code otherwise
+     * Adds a new method with no parameters to a class.
+     * @param className     the name of the class to add a method to
+     * @param methodName    the name to be used by the new method
+     * @param methodType    the data type to be used by the new method
+     * @param methodVisName the visibility to be used by the new method
+     * @return              0 if successful, error code otherwise
      */
     public int addMethod(String className, String methodName, String methodType, String methodVisName)
     {
@@ -267,6 +267,26 @@ public class WorkingProject {
         }
 
         return classes.get(className).addMethod(methodName, methodType, methodVisName);
+    }
+
+    /**
+     * Adds a new method with parameters to a class.
+     * @param className     the name of the class to add a method to
+     * @param methodName    the name to be used by the new method
+     * @param methodType    the data type to be used by the new method
+     * @param methodVisName the visibility to be used by the new method
+     * @param paramNames    the parameter names to be used by the new method
+     * @param paramTypes    the parameter data types to be used by the new method
+     * @return              0 if successful, error code otherwise
+     */
+    public int addMethod(String className, String methodName, String methodType, String methodVisName, List<String> paramNames, List<String> paramTypes)
+    {
+        if (!classes.containsKey(className))
+        {
+            return 2;
+        }
+
+        return classes.get(className).addMethod(methodName, methodType, methodVisName, paramNames, paramTypes);
     }
 
     /**
@@ -334,6 +354,24 @@ public class WorkingProject {
         }
 
         return classes.get(className).changeMethodVisibility(methodName, methodVisName);
+    }
+
+    /**
+     * Changes the entire parameter list of a method, if it exists.
+     * @param className  the name of the class with the method to modify
+     * @param methodName the name of the method to modify
+     * @param paramNames the list of new parameter names
+     * @param paramTypes the list of new parameter data types
+     * @return           0 if successful, error code otherwise
+     */
+    public int changeParameterList(String className, String methodName, List<String> paramNames, List<String> paramTypes)
+    {
+        if (!classes.containsKey(className))
+        {
+            return 2;
+        }
+
+        return classes.get(className).changeParameterList(methodName, paramNames, paramTypes);
     }
 
     /**
@@ -524,11 +562,12 @@ public class WorkingProject {
      */
     private void removeRelationshipsByClass(String className)
     {
-        for (Relationship relationship : relationships)
+        ListIterator<Relationship> relationshipIterator = relationships.listIterator();
+        while(relationshipIterator.hasNext())
         {
-            if (relationship.containsClass(className))
+            if (relationshipIterator.next().containsClass(className))
             {
-                relationships.remove(relationship);
+                relationshipIterator.remove();
             }
         }
     }
@@ -559,19 +598,19 @@ public class WorkingProject {
      * @return    the relationship type represented by the String, or null if
      *            str does not represent a relationship type
      */
-    public static Relationship.relationshipType stringToRelationshipType(String str)
+    public static relationshipType stringToRelationshipType(String str)
     {
         str = str.toUpperCase();
         switch(str)
         {
             case "A":
-                return Relationship.relationshipType.AGGREGATION;
+                return relationshipType.AGGREGATION;
             case "C":
-                return Relationship.relationshipType.COMPOSITION;
+                return relationshipType.COMPOSITION;
             case "I":
-                return Relationship.relationshipType.INHERITANCE;
+                return relationshipType.INHERITANCE;
             case "R":
-                return Relationship.relationshipType.REALIZATION;
+                return relationshipType.REALIZATION;
             default :
                 return null;
         }
@@ -584,54 +623,75 @@ public class WorkingProject {
      */
     public int loadFromJSON(String jsonString)
     {
-        classes.clear();
-        relationships.clear();
-
-        JSONObject jsonProject = (JSONObject)JSONValue.parse(jsonString);
-
-        if (jsonProject == null)
+        String previousState = this.toJSONString();
+        try
         {
-            return 12;
-        }
+            classes.clear();
+            relationships.clear();
 
-        JSONArray jsonClasses = (JSONArray)jsonProject.get("classes");
-        JSONArray jsonRelationships = (JSONArray)jsonProject.get("relationships");
+            JSONObject jsonProject = (JSONObject)JSONValue.parse(jsonString);
 
-        if (jsonClasses == null || jsonRelationships == null)
-        {
-            return 12;
-        }
-
-        for (Object jsonClass : jsonClasses)
-        {
-            ClassObject classObj = ClassObject.loadFromJSON((JSONObject)jsonClass);
-            if (classObj == null)
+            if (jsonProject == null)
             {
+                loadFromJSON(previousState);
                 return 12;
             }
-            classes.put(classObj.getName(), classObj);
-        }
 
-        for (Object jsonRelationship : jsonRelationships)
-        {
-            String classNameFrom = (String)((JSONObject)jsonRelationship).get("from");
-            String classNameTo = (String)((JSONObject)jsonRelationship).get("to");
-            String typeName = (String)((JSONObject)jsonRelationship).get("type");
-            typeName = typeName.substring(0, 1);
-            Relationship.relationshipType type = stringToRelationshipType(typeName);
-            if (classNameFrom == null || classNameTo == null || type == null)
+            JSONArray jsonClasses = (JSONArray)jsonProject.get("classes");
+            JSONArray jsonRelationships = (JSONArray)jsonProject.get("relationships");
+
+            if (jsonClasses == null || jsonRelationships == null)
             {
+                loadFromJSON(previousState);
                 return 12;
             }
-            relationships.add(new Relationship(classNameFrom, classNameTo, type));
-        }
 
-        if (!validityCheck())
+            for (Object jsonClass : jsonClasses)
+            {
+                ClassObject classObj = ClassObject.loadFromJSON((JSONObject)jsonClass);
+                if (classObj == null || classes.containsKey(classObj.getName()))
+                {
+                    loadFromJSON(previousState);
+                    return 12;
+                }
+                classes.put(classObj.getName(), classObj);
+            }
+
+            for (Object jsonRelationship : jsonRelationships)
+            {
+                String classNameFrom = (String)((JSONObject)jsonRelationship).get("from");
+                String classNameTo = (String)((JSONObject)jsonRelationship).get("to");
+                String typeName = (String)((JSONObject)jsonRelationship).get("type");
+                if (classNameFrom == null || classNameTo == null || typeName == null || getRelationshipIndex(classNameFrom, classNameTo) != -1)
+                {
+                    loadFromJSON(previousState);
+                    return 12;
+                }
+                typeName = typeName.substring(0, 1);
+                Relationship.relationshipType type = stringToRelationshipType(typeName);
+                if (type == null)
+                {
+                    loadFromJSON(previousState);
+                    return 12;
+                }
+
+                relationships.add(new Relationship(classNameFrom, classNameTo, type));
+            }
+
+            if (!validityCheck())
+            {
+                loadFromJSON(previousState);
+                return 12;
+            }
+
+            return 0;
+        }
+        catch(ClassCastException e)
         {
-            return 13;
+            loadFromJSON(previousState);
+            return 12;
         }
-
-        return 0;
+        
     }
     
     /**
@@ -788,11 +848,7 @@ public class WorkingProject {
      */
     public ClassObject getClass(String className)
     {
-        if(classes.containsKey(className))
-        {
-            return classes.get(className);
-        }
-        return null;
+        return classes.get(className);
     }
 
     /**

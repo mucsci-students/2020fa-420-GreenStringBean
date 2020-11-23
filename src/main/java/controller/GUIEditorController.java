@@ -1,22 +1,25 @@
 package controller;
+
+import java.util.List;
+
+import model.Model;
 import view.*;
 
-public class HelperControllers 
+public class GUIEditorController implements GUIController
 {
-	private WorkingProjectEditor project;
-	private MenuViews view;
+	private ModelEditor project;
+	private GUIView view;
 	
 	/**
      * Cronstructor for controller helpers that will work with
 	 * the WorkingProjectEditor to move data around to its respected parts
      * @param v view of the GUI that is to be updated occordingly 
      */
-	public HelperControllers(MenuViews v) 
+	public GUIEditorController(GUIView v, ModelEditor m) 
 	{
-		this.project = new WorkingProjectEditor();
+		this.project = m;
 		this.view = v;
 		project.attach(v);
-		addListeners();
 	}
 
 	/**********************************CLASSES********************************************/
@@ -44,7 +47,7 @@ public class HelperControllers
 	 * Adds a class in WPEditor
 	 * @param className is the name of the class
 	 */
-	public void createClass(String className) 
+	public void addClass(String className) 
 	{
 		project.addClass(className);
 		checkStatus();
@@ -54,7 +57,7 @@ public class HelperControllers
 	 * Deletes class in WPEditor
 	 * @param className is the name of the class
 	 */
-	public void delClass(String className) 
+	public void removeClass(String className) 
 	{
 		project.removeClass(className);
 		checkStatus();
@@ -116,9 +119,9 @@ public class HelperControllers
 	 * @param methodType is the method type
 	 * @param methodVis is the visibility
 	 */
-	public void addMethod(String className, String methodName, String methodType, String methodVis)
+	public void addMethod(String className, String methodName, String methodType, String methodVis, List<String> paramNames, List<String> paramTypes)
 	{
-		project.addMethod(className, methodName, methodType, methodVis);
+		project.addMethod(className, methodName, methodType, methodVis, paramNames, paramTypes);
 		checkStatus();
 	}
 
@@ -144,42 +147,18 @@ public class HelperControllers
 		project.renameMethod(className, name, newName);
 		checkStatus();
 	}
-    /**********************************PARAMS********************************************/
+	/**********************************PARAMS********************************************/
+	
 	/**
-	 * Adds param to WPEditor
+	 * Edits params in WPEditor
 	 * @param className is the class name
 	 * @param methodName is the method name
-	 * @param paramName is the param name
-	 * @param paramType is the param type
+	 * @param paramNames is the param name list
+	 * @param paramTypes is the param type list
 	 */
-	public void addParameter(String className, String methodName, String paramName, String paramType)
+	public void changeParameterList(String className, String methodName, List<String> paramNames, List<String> paramTypes)
 	{
-		project.addParameter(className, methodName, paramName, paramType);
-		checkStatus();
-	}
-
-	/**
-	 * Deletes param from WPEditor
-	 * @param className is the class name
-	 * @param methodName is the method name 
-	 * @param paramName is the param name
-	 */
-	public void removeParameter(String className, String methodName, String paramName)
-	{
-		project.removeParameter(className, methodName, paramName);
-		checkStatus();
-	}
-
-	/**
-	 * Renames param in WPEditor
-	 * @param className is the class name
-	 * @param methodName is teh method name
-	 * @param oldParamName is the param name
-	 * @param newParamName is the new param name
-	 */
-	public void renameParameter(String className, String methodName, String oldParamName, String newParamName)
-	{
-		project.renameParameter(className, methodName, oldParamName, newParamName);
+		project.changeParameterList(className, methodName, paramNames, paramTypes);
 		checkStatus();
 	}
 
@@ -228,7 +207,7 @@ public class HelperControllers
 	 * @param fieldName is the field name
 	 * @param newFieldVis is the new field visibility
 	 */
-	public void changeFieldVisiblity( String className, String fieldName, String newFieldVis)
+	public void changeFieldVisibility( String className, String fieldName, String newFieldVis)
 	{
 		project.changeFieldVisibility(className, fieldName, newFieldVis);
 		checkStatus();
@@ -240,7 +219,7 @@ public class HelperControllers
 	 * @param methodName is the method name
 	 * @param newMethVis is the new method visibility
 	 */
-	public void changeMethodVisiblity(String className, String methodName, String newMethVis)
+	public void changeMethodVisibility(String className, String methodName, String newMethVis)
 	{
 		project.changeMethodVisibility(className, methodName, newMethVis);
 		checkStatus();
@@ -281,23 +260,13 @@ public class HelperControllers
 		project.changeRelationshipType(classNameFrom, classNameTo, newTypeName);
 		checkStatus();
 	}
-
-	/**
-	 * Temporary until we can display arrows between class boxes
-	 * Shows relationships in the WPEditor
-	 */
-	public void showRelationships()
-	{
-		view.showRelationships(project.getProjectSnapshot());
-	}
-
 	
 	/**********************************OTHERS********************************************/
 	/**
 	 * Loads from the WPEditor
 	 * @param projectJsonString is the WPEditor loaded string
 	 */
-	public void load(String projectJsonString) 
+	public void loadProject(String projectJsonString) 
 	{
 		project.loadProject(projectJsonString);		
 		checkStatus();
@@ -307,7 +276,7 @@ public class HelperControllers
 	 * Save into WPEditor
 	 * @return WPEditor string
 	 */
-	public String save()
+	public String toJSONString()
 	{
 		return project.toJSONString();
 	}
@@ -327,21 +296,37 @@ public class HelperControllers
 	{
 		project.redo();
 	}
-	
+
 	/**
-	 * Adds the listeners created from the view and puts 
-	 * them into their respected controllers
+	 * Creates a copy of the current state of the Model
+     * @return copy of the model
+	 */
+	public Model getProjectSnapshot()
+	{
+		return project.getProjectSnapshot();
+	}
+
+	/**
+	 * Creates listeners and adds them to the view
 	 */
 	public void addListeners()
     {
-		System.out.println("Made it to addListeners()");
-        view.addListeners(new FileButtonClick(view, this), new ClassClick(view, this), new FieldClick(view, this), new RelationshipClick(view, this));
+        view.addListeners(new FileButtonClick(view, this), new ClassClick(view, this), new RelationshipClick(view, this), new RightClickListenerFactory(view, this));
+	}
+
+	/**
+	 * Creates starting window for UML
+	 */
+	public void start()
+	{
+		view.showWindow();
+		addListeners();
 	}
 	
 	/**
 	 * Checks if the WPEditor modification was legal or not
 	 */
-	public void checkStatus()
+	private void checkStatus()
     {
         // If the last command failed
         if(!project.getLastCommandStatus())
