@@ -7,13 +7,6 @@ import java.util.Map;
 
 import view.GUIView;
 
-/**
- * ClassClick is a controller class for the GUI.
- * It contains the set of actions perfomed by a user in the view, 
- * and then sends the actions performed to another controller to 
- * manipulate the view accordingly.
- */
-
 public class ClassRightClick implements ActionListener
 {
 	private GUIView view;
@@ -24,7 +17,7 @@ public class ClassRightClick implements ActionListener
      * Cronstructor for an action performer with the views input and a helper 
 	 * controller to manipulate the view.
      * @param v  view of the GUI that takes in user input
-     * @param c controller to help the view actions perform correctly
+     * @param c  controller to help the view actions perform correctly
      */
 	public ClassRightClick(GUIView v, GUIController c, String s)
 	{
@@ -39,9 +32,7 @@ public class ClassRightClick implements ActionListener
 	 * 			and is in the form of a command 
 	 */
 	public void actionPerformed(ActionEvent e)
-	{
-		//System.out.println("succesfully got to ClassClick actions: ClassClick()");
-		
+	{	
 		String cmd = e.getActionCommand();
 		if(cmd.equals("Open"))
 		{

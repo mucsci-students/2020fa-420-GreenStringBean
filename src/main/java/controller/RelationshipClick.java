@@ -2,13 +2,6 @@ package controller;
 import java.awt.event.*;
 import view.*;
 
-/**
- * RelationshipClick is a controller class for the GUI.
- * It contains the set of actions perfomed by a user in the view, 
- * and then sends the actions performed to another controller to 
- * manipulate the view accordingly.
- */
-
 public class RelationshipClick implements ActionListener
 {
 	private GUIView view;
@@ -27,13 +20,12 @@ public class RelationshipClick implements ActionListener
 	}
 	
 	/**
-	 * Method for handling actions performed on a file
+	 * Method for handling actions performed on a relationship
 	 * @param e is the action that was performed by the user 
 	 * 			and is in the form of a command 
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		//System.out.println("succesfully got to RelationshipClick actions: RelationshipClick()");
 		String cmd = e.getActionCommand();
 
 		String classNameFrom = view.promptForClassName("\"From\" class:", cmd);
