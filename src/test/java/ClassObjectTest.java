@@ -63,6 +63,8 @@ public class ClassObjectTest {
     public void testCopy()
     {
         ClassObject classObj = new ClassObject("ClassObj");
+        classObj.addField("name", "int", "public");
+        classObj.addMethod("name", "int", "public");
         ClassObject classObjCopy = classObj.copy();
         assertNotSame("Copy is a new object", classObj, classObjCopy);
         assertEquals("Same name", classObj.getName(), classObjCopy.getName());
@@ -666,6 +668,7 @@ public class ClassObjectTest {
     @Test
     public void testLoadFromJSON ()
     {
+        //All of this is making the JSON object that we can use to load from
         JSONObject field = new JSONObject();
         JSONObject method = new JSONObject();
         JSONObject parameter = new JSONObject();
@@ -684,6 +687,7 @@ public class ClassObjectTest {
         fields.add(field);
         JSONArray methods = new JSONArray();
         methods.add(method);
+        
 
         JSONObject json = new JSONObject();
         json.put("name", "Construction");
@@ -698,12 +702,8 @@ public class ClassObjectTest {
         testClass.addField("Height", "double", "public");
         testClass.addMethod("BuildHouse", "void", "public");
         testClass.addParameter("BuildHouse", "Four_Bedroom", "HouseType");
-        
-        System.out.println(testClass.toJSON().toJSONString());
-        System.out.println("-----------------");
-        System.out.println(json.toJSONString());
 
-        ClassObject loadedClass = testClass.loadFromJSON(json);
+        ClassObject loadedClass = ClassObject.loadFromJSON(json);
 
         assertTrue(testClass.hasField("Height"));
         assertTrue(testClass.hasMethod("BuildHouse"));
@@ -714,21 +714,75 @@ public class ClassObjectTest {
         noName.put("methods", methods);
         noName.put("fields", fields);
         noName.put("isOpen", true);
-        assertEquals(null, testClass.loadFromJSON(noName));
+        assertEquals(null, ClassObject.loadFromJSON(noName));
+
+        JSONObject notOpen = new JSONObject();
+        notOpen.put("name", "testName");
+        notOpen.put("methods", methods);
+        notOpen.put("fields", fields);
+        notOpen.put("isOpen", null);
+        assertEquals(null, ClassObject.loadFromJSON(notOpen));
 
         JSONObject noMethods = new JSONObject();
         noMethods.put("name", "Construction");
         noMethods.put("fields", fields);
         noMethods.put("isOpen", true);
-        assertEquals(null, testClass.loadFromJSON(noMethods));
+        assertEquals(null, ClassObject.loadFromJSON(noMethods));
   
-        // JSONObject nullField = new JSONObject();
-        // nullField.put("name", "Construction");
-        // nullField.put("methods", methods);
-        // nullField.put("fields", fields);
-        // nullField.put("isOpen", true);
-        // testClass.addField("Height", "double", "public");
-        // assertEquals(null, testClass.loadFromJSON(nullField));
+        JSONObject noFields = new JSONObject();
+        noFields.put("name", "Construction");
+        noFields.put("methods", methods);
+        noFields.put("isOpen", true);
+        assertEquals(null, ClassObject.loadFromJSON(noFields));
+  
+        JSONArray nullFields = new JSONArray();
+        nullFields.add(new JSONObject());
+        JSONObject testObject = new JSONObject();
+        testObject.put("name", "Construction");
+        testObject.put("methods", methods);
+        testObject.put("fields", nullFields);
+        testObject.put("isOpen", true);
+        testClass.addField("Height", "double", "public");
+        assertEquals(null, ClassObject.loadFromJSON(testObject));
+
+        JSONArray nullMethods = new JSONArray();
+        nullMethods.add(new JSONObject());
+        JSONObject testObject2 = new JSONObject();
+        testObject2.put("name", "Construction");
+        testObject2.put("methods", nullMethods);
+        testObject2.put("fields", fields);
+        testObject2.put("isOpen", true);
+        testClass.addMethod("Height", "double", "public");
+        assertEquals(null, ClassObject.loadFromJSON(testObject2));
+
+        JSONArray tooManyFields = new JSONArray();
+        JSONObject field2 = new JSONObject();
+        field2.put("name", "Height");
+        field2.put("type", "double");
+        field2.put("visibility", visibility.PUBLIC.name());
+        tooManyFields.add(field);
+        tooManyFields.add(field2);
+        JSONObject dupFields = new JSONObject();
+        dupFields.put("name", "testName");
+        dupFields.put("methods", methods);
+        dupFields.put("fields", tooManyFields);
+        dupFields.put("isOpen", true);
+        assertEquals(null, ClassObject.loadFromJSON(dupFields));
+
+        JSONArray tooManyMethods = new JSONArray();
+        JSONObject method2 = new JSONObject();
+        method2.put("name", "BuildHouse");
+        method2.put("type", "void");
+        method2.put("visibility", visibility.PUBLIC.name());
+        method2.put("parameters", new JSONArray());
+        tooManyMethods.add(method);
+        tooManyMethods.add(method2);
+        JSONObject dupMethods = new JSONObject();
+        dupMethods.put("name", "testName");
+        dupMethods.put("methods", tooManyMethods);
+        dupMethods.put("fields", fields);
+        dupMethods.put("isOpen", true);
+        assertEquals(null, ClassObject.loadFromJSON(dupMethods));
     }
 
     /**
