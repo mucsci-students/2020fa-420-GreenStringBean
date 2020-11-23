@@ -15,18 +15,27 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
 {
     private int dragX, dragY;
 	private GUIView view;
-    //private HelperControllers controller;
     private JPanel panel;
     private JPopupMenu menu;
 
+    /**
+     * Constructor for a class panel action performer
+     * @param view  view of the GUI that takes in user input
+     * @param panel panel thats being manipulated
+     * @param menu  menu for right click action
+     */
     public ClassPanelClick(GUIView view, JPanel panel, JPopupMenu menu)
 	{
 		this.view = view;
-        //this.controller = c;
         this.panel = panel;
         this.menu = menu;
 	}
 
+    /**
+     * Get the starting location of a class panel then when a mouse is dragged
+     * it sets the loaction it was released on.
+     * @param e mouse event listener
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
         Point parentPos = panel.getParent().getLocationOnScreen();
@@ -46,6 +55,11 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
         // TODO Auto-generated method stub
     }
 
+    /**
+     * When mouse is pressed if there is a right click it will show a menu or
+     * a left click will start a mouse drag action. 
+     * @param e mouse event listener
+     */
     @Override
     public void mousePressed(MouseEvent e) {
         if(e.isPopupTrigger())
@@ -68,6 +82,10 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
         }
     }
 
+    /** 
+     * Set class panels location when mouse is released
+     * @param e mouse event listener
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
         if(e.isPopupTrigger())

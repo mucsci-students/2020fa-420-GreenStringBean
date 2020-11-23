@@ -5,6 +5,7 @@ import view.Observer;
 import java.util.List;
 
 import model.Model;
+
 public interface ModelEditor
 {
     /**

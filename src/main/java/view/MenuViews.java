@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import controller.RightClickListenerFactory;
-import model.Model;
 
 public interface MenuViews extends Observer
 {
@@ -107,5 +106,8 @@ public interface MenuViews extends Observer
 	 */
 	void containAll();
 
+	/**
+	 * Refreshes the window
+	 */
 	void refresh();
 }
