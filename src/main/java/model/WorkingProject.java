@@ -181,11 +181,6 @@ public class WorkingProject implements Model{
             return 2;
         }
 
-        if (!isValidName(fieldName))
-        {
-            return 9;
-        }
-
         return classes.get(className).addField(fieldName, fieldType, fieldVisName);
     }
 
@@ -631,7 +626,6 @@ public class WorkingProject implements Model{
         String previousState = this.toJSONString();
         try
         {
-
             classes.clear();
             relationships.clear();
 
@@ -668,13 +662,19 @@ public class WorkingProject implements Model{
                 String classNameFrom = (String)((JSONObject)jsonRelationship).get("from");
                 String classNameTo = (String)((JSONObject)jsonRelationship).get("to");
                 String typeName = (String)((JSONObject)jsonRelationship).get("type");
-                typeName = typeName.substring(0, 1);
-                Relationship.relationshipType type = stringToRelationshipType(typeName);
-                if (classNameFrom == null || classNameTo == null || type == null || getRelationshipIndex(classNameFrom, classNameTo)!=-1)
+                if (classNameFrom == null || classNameTo == null || typeName == null || getRelationshipIndex(classNameFrom, classNameTo) != -1)
                 {
                     loadFromJSON(previousState);
                     return 12;
                 }
+                typeName = typeName.substring(0, 1);
+                Relationship.relationshipType type = stringToRelationshipType(typeName);
+                if (type == null)
+                {
+                    loadFromJSON(previousState);
+                    return 12;
+                }
+
                 relationships.add(new Relationship(classNameFrom, classNameTo, type));
             }
 
@@ -848,11 +848,7 @@ public class WorkingProject implements Model{
      */
     public ClassObject getClass(String className)
     {
-        if(classes.containsKey(className))
-        {
-            return classes.get(className);
-        }
-        return null;
+        return classes.get(className);
     }
 
     /**

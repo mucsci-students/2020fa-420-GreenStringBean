@@ -3,13 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import view.GUIView;
 
-/**
- * FieldClick is a controller class for the GUI.
- * It contains the set of actions perfomed by a user in the view, 
- * and then sends the actions performed to another controller to 
- * manipulate the view accordingly.
- */
-
 public class FieldRightClick implements ActionListener 
 {
 	private GUIView view;
@@ -38,8 +31,6 @@ public class FieldRightClick implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent e) 
 	{
-		//System.out.println("succesfully got to FieldClick actions: FieldClick()");
-		
 		String cmd = e.getActionCommand();
         if (cmd.equals("Remove Field")) 
         {

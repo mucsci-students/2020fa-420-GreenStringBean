@@ -30,6 +30,11 @@ public class MethodRightClick implements ActionListener
         this.methodName = methodName;
     }
 
+    /**
+	 * Method for handling actions performed on a method
+	 * @param e is the action that was performed by the user 
+	 * 			and is in the form of a command 
+	 */
     public void actionPerformed(ActionEvent e) 
 	{	
 		String cmd = e.getActionCommand();

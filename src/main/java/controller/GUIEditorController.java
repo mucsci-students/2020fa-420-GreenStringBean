@@ -297,6 +297,10 @@ public class GUIEditorController implements GUIController
 		project.redo();
 	}
 
+	/**
+	 * Creates a copy of the current state of the Model
+     * @return copy of the model
+	 */
 	public Model getProjectSnapshot()
 	{
 		return project.getProjectSnapshot();
@@ -307,10 +311,12 @@ public class GUIEditorController implements GUIController
 	 */
 	public void addListeners()
     {
-		//System.out.println("Made it to addListeners()");
         view.addListeners(new FileButtonClick(view, this), new ClassClick(view, this), new RelationshipClick(view, this), new RightClickListenerFactory(view, this));
 	}
 
+	/**
+	 * Creates starting window for UML
+	 */
 	public void start()
 	{
 		view.showWindow();
