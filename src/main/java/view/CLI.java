@@ -43,8 +43,12 @@ public class CLI {
         this.controller = controller;
         this.view = view;
 
-        //Initialize the Completer that will be use for tab-completion
-        
+        //Print a fun intro message
+        printStartMessage();
+
+        //Print a short instructional message to help the user get started
+        view.alert("\nPress 'tab' to open a list of commands. Enjoy!\n");
+
         //Begin prompting input
         console();
         System.exit(0);
@@ -412,6 +416,10 @@ public class CLI {
                     printRelationships();
                     break;
                 
+                case "beanItUp" :
+                    beanItUp();
+                    break;
+                
                 //If the input did not match any known command, then print an error message
                 default :
                     view.alert("Error: command \"" + commands.get(0) + "\" is not recognized");
@@ -539,4 +547,66 @@ public class CLI {
         view.alert("Methods");
         c.printMethods();
     }
+
+    /**
+     * Prints an ASCII art start message upon initialization
+     */
+
+    private void printStartMessage()
+    {
+        view.alert("  ___  ____  ____  ____  __ _  ____  ____  ____  __  __ _   ___  ____  ____   __   __ _ ");
+        view.alert(" / __)(  _ \\(  __)(  __)(  ( \\/ ___)(_  _)(  _ \\(  )(  ( \\ / __)(  _ \\(  __) / _\\ (  ( \\ ");
+        view.alert("( (_ \\ )   / ) _)  ) _) /    /\\___ \\  )(   )   / )( /    /( (_ \\ ) _ ( ) _) /    \\/    / ");
+        view.alert(" \\___/(__\\_)(____)(____)\\_)__)(____/ (__) (__\\_)(__)\\_)__) \\___/(____/(____)\\_/\\_/\\_)__)");
+    }
+
+    /**
+     * Bean it up!
+     */
+
+     private void beanItUp()
+     {
+        view.alert("                            .                                         ");
+        view.alert("                           *#                                        ");
+        view.alert("                           /(#*                                      ");
+        view.alert("                           (((##                                     ");
+        view.alert("                           /((((##                                    ");
+        view.alert("                           ,#(((((#*                                   ");
+        view.alert("                           /#((//(##                                   ");
+        view.alert("                           ##((///(#.                                  ");
+        view.alert("                           %#(////(#,                                  ");
+        view.alert("                           %#(////(#(                                  ");
+        view.alert("                          .%#(////(#,                                  ");
+        view.alert("                           %#(////(%,                                  ");
+        view.alert("                          *%((////(%                                   ");
+        view.alert("                          ##((////(%                                   ");
+        view.alert("                          %#(/////##                                   ");
+        view.alert("                         .%#(#///##(                                   ");
+        view.alert("                         *%(((/(/(%*                                   ");
+        view.alert("                         /#((&*@*#%                                    ");
+        view.alert("   .,*.*.         ...,*//%#**(**(*/                                    ");
+        view.alert(" ,,*(..*   ,., */,..    ,%#(/(@@##/(((.       ,..                      ");
+        view.alert(" .*,.      ,.           /%((//(((#    ,.,,,.  ,. /*.                   ");
+        view.alert("  *.. .,,.              %#(////(%,      .,*      .,                    ");
+        view.alert("  .*,                  .%#(////(%           .,*. ,                     ");
+        view.alert("                       (%((///(#/                                      ");
+        view.alert("                       %#((/(((%.                                      ");
+        view.alert("                      .%#(((((%(                                       ");
+        view.alert("                      (%#((((#%.                                       ");
+        view.alert("                      %#######(            .,***.                      ");
+        view.alert("                     .%######%.         *#( . .////                    ");
+        view.alert("                     .%%#%%%%(   ,    ,,(#/ ./*////.                   ");
+        view.alert("                      %%%%%%(*,*,,*//*((#,.///////                     ");
+        view.alert("                     ,&%%%,     .*/#(###,.(/(///,                      ");
+        view.alert("                         ,*      .#####,.(((((/                        ");
+        view.alert("                          *         (#,,(((((.                         ");
+        view.alert("                        ..*           ,(((#.                           ");
+        view.alert("                      ,(,*###(.                                        ");
+        view.alert("                     ,/((*****/*,.                                     ");
+        view.alert("                    ,#*###,***//*.                                     ");
+        view.alert("                    */#####,*,,*(.                                     ");
+        view.alert("                     .**#######%###                                    ");
+        view.alert("                      * ,..        *                                   ");
+        view.alert("                         *,.. ...*                                     ");
+     }
 }
