@@ -94,11 +94,12 @@ public interface GUIView extends View
 	/**
 	 * Connects listeners to the appropriate menu items, and stores a factory for when right click listeners are needed
 	 * @param fileClick         a listener for the "File" menu items
+	 * @param viewClick         a listener for the "View" menu items
 	 * @param classClick        a listener or the "Project" menu items
 	 * @param relationshipClick a listener for the "Relationship" menu items
 	 * @param clickFactory      a factory to create right click listeners
 	 */
-	void addListeners(ActionListener fileClick, ActionListener classClick, ActionListener relationshipClick, RightClickListenerFactory clickFactory);
+	void addListeners(ActionListener fileClick, ActionListener viewClick, ActionListener classClick, ActionListener relationshipClick, RightClickListenerFactory clickFactory);
 
 	/**
 	 * Increases the size of elements on screen, with a maximum of 60pt font
@@ -111,6 +112,11 @@ public interface GUIView extends View
 	 * @return true if the size was increased, false if not
 	 */
 	boolean zoomOut();
+
+	/**
+	 * Switches dark mode on or off
+	 */
+	void toggleDarkMode();
 
 	/**
 	 * Ensures a panel is within the bounds of the window. If a panel does not
@@ -128,4 +134,17 @@ public interface GUIView extends View
 	 * Refreshes the window, ensuring all elements are up to date
 	 */
 	void refresh();
+
+	/**
+	 * Creates a JSON string combining the state of the model with the state of the view
+	 * @param jsonProjectString a JSON string encoding the state of the model
+	 * @return                  a JSON string encoding the state of the view and model
+	 */
+	String toJSONString(String jsonProjectString);
+
+	/**
+	 * Loads a JSON string encoding the state of the view
+	 * @param jsonString a JSON string encoding the state of the view
+	 */
+	void loadFromJSON(String jsonString);
 }

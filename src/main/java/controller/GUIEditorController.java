@@ -2,6 +2,10 @@ package controller;
 
 import java.util.List;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import command.Command;
 import model.Model;
 import view.*;
 
@@ -29,6 +33,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void openClass(String className)
 	{
+		storeViewState();
 		project.openClass(className);
 		checkStatus();
 	}
@@ -39,6 +44,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void closeClass(String className)
 	{
+		storeViewState();
 		project.closeClass(className);
 		checkStatus();
 	}
@@ -49,6 +55,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void addClass(String className) 
 	{
+		storeViewState();
 		project.addClass(className);
 		checkStatus();
 	}
@@ -59,6 +66,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void removeClass(String className) 
 	{
+		storeViewState();
 		project.removeClass(className);
 		checkStatus();
 	}
@@ -70,6 +78,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void renameClass(String oldName, String newName) 
 	{
+		storeViewState();
 		project.renameClass(oldName, newName);
 		checkStatus();
 	}
@@ -84,6 +93,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void addField(String className, String fieldName, String fieldType, String fieldVis) 
 	{
+		storeViewState();
 		project.addField(className, fieldName, fieldType, fieldVis);
 		checkStatus();
 	}
@@ -95,6 +105,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void removeField(String className, String name) 
 	{
+		storeViewState();
 		project.removeField(className, name);
 		checkStatus();
 	}
@@ -107,6 +118,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void renameField(String className, String name, String newName) 
 	{
+		storeViewState();
 		project.renameField(className, name, newName);
 		checkStatus();
 	}
@@ -121,6 +133,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void addMethod(String className, String methodName, String methodType, String methodVis, List<String> paramNames, List<String> paramTypes)
 	{
+		storeViewState();
 		project.addMethod(className, methodName, methodType, methodVis, paramNames, paramTypes);
 		checkStatus();
 	}
@@ -132,6 +145,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void removeMethod(String className, String name)
 	{
+		storeViewState();
 		project.removeMethod(className, name);
 		checkStatus();
 	}
@@ -144,6 +158,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void renameMethod(String className, String name, String newName)
 	{
+		storeViewState();
 		project.renameMethod(className, name, newName);
 		checkStatus();
 	}
@@ -158,6 +173,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void changeParameterList(String className, String methodName, List<String> paramNames, List<String> paramTypes)
 	{
+		storeViewState();
 		project.changeParameterList(className, methodName, paramNames, paramTypes);
 		checkStatus();
 	}
@@ -171,6 +187,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void changeFieldType(String className, String fieldName, String newFieldType)
 	{
+		storeViewState();
 		project.changeFieldType(className, fieldName, newFieldType);
 		checkStatus();
 	}
@@ -183,20 +200,8 @@ public class GUIEditorController implements GUIController
 	 */
 	public void changeMethodType(String className, String methodName, String newMethodType)
 	{
+		storeViewState();
 		project.changeMethodType(className, methodName, newMethodType);
-		checkStatus();
-	}
-
-	/**
-	 * Changes param type in WPEditor
-	 * @param className is the class name
-	 * @param methodName is the method name
-	 * @param paramName is the param name
-	 * @param newParamType is the new param name
-	 */
-	public void changeParameterType(String className, String methodName, String paramName, String newParamType)
-	{
-		project.changeParameterType(className, methodName, paramName, newParamType);
 		checkStatus();
 	}
 
@@ -209,6 +214,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void changeFieldVisibility( String className, String fieldName, String newFieldVis)
 	{
+		storeViewState();
 		project.changeFieldVisibility(className, fieldName, newFieldVis);
 		checkStatus();
 	}
@@ -221,6 +227,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void changeMethodVisibility(String className, String methodName, String newMethVis)
 	{
+		storeViewState();
 		project.changeMethodVisibility(className, methodName, newMethVis);
 		checkStatus();
 	}
@@ -234,6 +241,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void addRelationship(String classNameFrom, String classNameTo, String type) 
 	{
+		storeViewState();
 		project.addRelationship(classNameFrom, classNameTo, type);
 		checkStatus();
 	}
@@ -245,6 +253,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void removeRelationship(String classNameFrom, String classNameTo)
 	{
+		storeViewState();
 		project.removeRelationship(classNameFrom, classNameTo);
 		checkStatus();
 	}
@@ -257,19 +266,50 @@ public class GUIEditorController implements GUIController
 	 */
 	public void changeRelationshipType(String classNameFrom, String classNameTo, String newTypeName)
 	{
+		storeViewState();
 		project.changeRelationshipType(classNameFrom, classNameTo, newTypeName);
 		checkStatus();
 	}
 	
 	/**********************************OTHERS********************************************/
 	/**
-	 * Loads from the WPEditor
-	 * @param projectJsonString is the WPEditor loaded string
+	 * Loads a project from a JSON string. If the project was saved in the GUI, also loads state of the view.
+	 * @param jsonString is the WPEditor loaded string
 	 */
-	public void loadProject(String projectJsonString) 
+	public void loadProject(String jsonString)
 	{
-		project.loadProject(projectJsonString);		
-		checkStatus();
+		try
+		{
+			JSONObject jsonInput = (JSONObject)JSONValue.parse(jsonString);
+			if (jsonInput == null)
+			{
+				view.alert("Error: Error loading project");
+			}
+
+			if (jsonInput.get("project") != null)
+			{
+				JSONObject jsonProject = (JSONObject)jsonInput.get("project");
+				storeViewState();
+				project.loadProject(jsonProject.toJSONString());
+				checkStatus();
+				
+				if (project.getLastCommandStatus())
+				{
+					view.loadFromJSON(jsonString);
+					view.onUpdate(project.getProjectSnapshot(), false);
+				}
+			}
+			else
+			{
+				storeViewState();
+				project.loadProject(jsonString);
+				checkStatus();
+			}
+		}
+		catch (ClassCastException e)
+		{
+			view.alert("Error: Error loading project");
+		}
 	}
 
 	/**
@@ -278,7 +318,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public String toJSONString()
 	{
-		return project.toJSONString();
+		return view.toJSONString(project.toJSONString());
 	}
 
 	/**
@@ -286,7 +326,9 @@ public class GUIEditorController implements GUIController
 	 */
 	public void undo()
 	{
+		storeViewState();
 		project.undo();
+		checkStatus();
 	}
 
 	/**
@@ -294,7 +336,9 @@ public class GUIEditorController implements GUIController
 	 */
 	public void redo()
 	{
+		storeViewState();
 		project.redo();
+		checkStatus();
 	}
 
 	/**
@@ -311,7 +355,7 @@ public class GUIEditorController implements GUIController
 	 */
 	public void addListeners()
     {
-        view.addListeners(new FileButtonClick(view, this), new ClassClick(view, this), new RelationshipClick(view, this), new RightClickListenerFactory(view, this));
+        view.addListeners(new FileButtonClick(view, this), new ViewButtonClick(view, this), new ClassClick(view, this), new RelationshipClick(view, this), new RightClickListenerFactory(view, this));
 	}
 
 	/**
@@ -321,6 +365,18 @@ public class GUIEditorController implements GUIController
 	{
 		view.showWindow();
 		addListeners();
+	}
+
+	/**
+	 * Stores the state of the view in the last command's optional status data
+	 */
+	private void storeViewState()
+	{
+		Command lastCmd = project.getLastCommand();
+		if (lastCmd != null)
+		{
+			lastCmd.setOptionalState(view.toJSONString(lastCmd.getProjectState()));
+		}
 	}
 	
 	/**
@@ -332,7 +388,16 @@ public class GUIEditorController implements GUIController
         if(!project.getLastCommandStatus())
         {
             view.alert("Error: " + project.getLastCommandStatusMessage());
-        }
+		}
+		else
+		{
+			Command lastCmd = project.getLastCommand();
+			if (lastCmd != null && lastCmd.hasOptionalState())
+			{
+				view.loadFromJSON(lastCmd.getOptionalState());
+				view.onUpdate(project.getProjectSnapshot(), false);
+			}
+		}
     }
 
 }

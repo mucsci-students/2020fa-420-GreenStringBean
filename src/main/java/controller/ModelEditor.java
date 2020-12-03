@@ -4,6 +4,7 @@ import view.Observer;
 
 import java.util.List;
 
+import command.Command;
 import model.Model;
 
 public interface ModelEditor
@@ -257,8 +258,15 @@ public interface ModelEditor
      * @return true if there is >=1 command to redo, false otherwise
      */
     boolean canRedo();
+
     /**
      * Redo the last undone command
      */
     void redo();
+
+    /**
+     * Accessor for the most recent command
+     * @return the most recent command
+     */
+    Command getLastCommand();
 }

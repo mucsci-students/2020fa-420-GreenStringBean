@@ -1,4 +1,7 @@
-package controller; 
+package controller;
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import model.Model;
 import view.*;
@@ -83,6 +86,27 @@ public class CLIEditorController implements CLIController
      */
     public void loadProject(String jsonString)
     {
+        try
+        {
+            JSONObject jsonInput = (JSONObject)JSONValue.parse(jsonString);
+            if (jsonInput == null)
+            {
+                cli.alert("Error: Error loading project");
+                return;
+            }
+
+            // If the project was saved in the GUI, ignore view state info
+            if (jsonInput.get("project") != null)
+            {
+				jsonString = (String)((JSONObject)jsonInput.get("project")).toJSONString();
+            }
+        }
+        catch (ClassCastException e)
+        {
+            cli.alert("Error: Error loading project");
+            return;
+        }
+
         modelEditor.loadProject(jsonString);
         checkStatus();
         printStatusMessage();

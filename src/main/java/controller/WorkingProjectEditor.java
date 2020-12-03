@@ -529,4 +529,12 @@ public class WorkingProjectEditor implements ModelEditor{
         }
     }
 
+    /**
+     * Accessor for the most recent command
+     * @return the most recent command
+     */
+    public Command getLastCommand()
+    {
+        return executedCommands.peek();
+    }
 }

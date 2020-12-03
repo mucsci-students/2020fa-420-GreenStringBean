@@ -2,6 +2,7 @@ package view;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -18,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -29,6 +31,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -37,6 +40,11 @@ import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.basic.BasicSliderUI.ActionScroller;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import controller.ClassPanelClick;
 import controller.ClassRightClick;
@@ -54,11 +62,14 @@ public class GUIEditorView implements GUIView
 	private JLayeredPane pWindow;
 	private JFrame win;
 	private JMenu fileM;
+	private JMenu viewM;
 	private JMenu relaM;
 	private JMenu projectM;
 	private RightClickListenerFactory clickFactory;
 	private JFileChooser fileChooser;
 	private Font font;
+	private boolean darkMode;
+	private Color lightModeBg;
 
 	private Map<String, JPanel> classPanels;
 	private Map<Relationship, RelationArrow> relationArrows;
@@ -79,6 +90,7 @@ public class GUIEditorView implements GUIView
 			// Default Java look and feel will be used
 		}
 		font = new Font(Font.MONOSPACED, Font.PLAIN, 15);
+		darkMode = false;
 	}
 
 	/**
@@ -95,11 +107,17 @@ public class GUIEditorView implements GUIView
 		pWindow = new JLayeredPane();
 		pWindow.setLayout(null);
 		pWindow.setVisible(true);
-		win.add(pWindow);
+		pWindow.setOpaque(true);
+		pWindow.setPreferredSize(new Dimension(5000, 5000));
+		JScrollPane scrollPane = new JScrollPane(pWindow);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(25);
+		scrollPane.getHorizontalScrollBar().setUnitIncrement(25);
+		win.add(scrollPane);
 		makeMenu(win);
 		pWindow.add(mb);
 		win.setJMenuBar(mb);
 		setupFileChooser();
+		lightModeBg = pWindow.getBackground();
 	}
 
 	/**
@@ -119,6 +137,7 @@ public class GUIEditorView implements GUIView
 	{
 		mb = new JMenuBar();
 		createFileM(mb);
+		createViewM(mb);
 		createClassM(mb);
 		createRelatM(mb);
 		mb.setVisible(true);
@@ -140,7 +159,7 @@ public class GUIEditorView implements GUIView
 	 */
 	public String promptForString(String prompt, String title) 
 	{
-		return JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE);
+		return JOptionPane.showInputDialog(null, prompt, title, JOptionPane.PLAIN_MESSAGE);
 	}
 
 	/**
@@ -152,7 +171,7 @@ public class GUIEditorView implements GUIView
 	{
 		Object[] possibleValues = { "Public", "Private", "Protected" };
 
-		Object selectedValue = JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
+		Object selectedValue = JOptionPane.showInputDialog(null, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
 				possibleValues, possibleValues[0]);
 
 		return (String) selectedValue;
@@ -167,7 +186,7 @@ public class GUIEditorView implements GUIView
 	{
 		Object[] possibleValues = { "Inheritance", "Aggregation", "Composition", "Realization" };
 
-		Object selectedValue = JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
+		Object selectedValue = JOptionPane.showInputDialog(null, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
 				possibleValues, possibleValues[0]);
 
 		return ((String) selectedValue).substring(0, 1);
@@ -186,7 +205,7 @@ public class GUIEditorView implements GUIView
 		}
 		Object[] possibleValues = classPanels.keySet().toArray();
 
-		Object selectedValue = JOptionPane.showInputDialog(pWindow, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
+		Object selectedValue = JOptionPane.showInputDialog(null, prompt, title, JOptionPane.PLAIN_MESSAGE, null,
 				possibleValues, possibleValues[0]);
 
 		return (String) selectedValue;
@@ -282,7 +301,7 @@ public class GUIEditorView implements GUIView
 		methodPrompt.add(Box.createVerticalStrut(10));
 
 		// Section of dialog for name
-		JLabel nameLabel = new JLabel("Field Name:");
+		JLabel nameLabel = new JLabel("Method Name:");
 		nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		methodPrompt.add(nameLabel);
 		methodPrompt.add(nameField);
@@ -415,7 +434,7 @@ public class GUIEditorView implements GUIView
 	 */
 	public void alert(String message)
     {
-        JOptionPane.showMessageDialog(pWindow, message);
+        JOptionPane.showMessageDialog(null, message);
 	}
 
 	/**
@@ -447,7 +466,7 @@ public class GUIEditorView implements GUIView
 	 */
 	public File getSaveAsFile()
 	{
-		if (fileChooser.showSaveDialog(pWindow) == JFileChooser.APPROVE_OPTION)
+		if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
 		{
 			// If no extension is given, add .json extension
 			String filePath = fileChooser.getSelectedFile().getAbsolutePath();
@@ -466,7 +485,7 @@ public class GUIEditorView implements GUIView
 	 */
 	public File getLoadFile()
 	{
-		if (fileChooser.showOpenDialog(pWindow) == JFileChooser.APPROVE_OPTION)
+		if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
 		{
 			return fileChooser.getSelectedFile();
 		}
@@ -481,28 +500,22 @@ public class GUIEditorView implements GUIView
 	{
 		fileM = new JMenu("File");
 		
-		JMenuItem zi = new JMenuItem("Zoom In");
-		JMenuItem zo = new JMenuItem("Zoom Out");
 		JMenuItem s = new JMenuItem("Save");
 		JMenuItem sa = new JMenuItem("Save As");
 		JMenuItem l = new JMenuItem("Load");
 		JMenuItem ex = new JMenuItem("Exit");
 
-		KeyStroke zoomInKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.CTRL_DOWN_MASK);
-		KeyStroke zoomOutKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke loadKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke saveKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke saveAsKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
 
-		zi.setAccelerator(zoomInKeyStroke);
-		zo.setAccelerator(zoomOutKeyStroke);
 		s.setAccelerator(saveKeyStroke);
 		sa.setAccelerator(saveAsKeyStroke);
 		l.setAccelerator(loadKeyStroke);
 
-		JMenuItem[] arr = {zi, zo, s, sa, l, ex};
-		String[] txt = {"Zoom In", "Zoom Out", "Save edited file", "Save edited file as", "Load selected project", "Exit application"};
-		String[] cmd = {"Zoom In", "Zoom Out", "Save", "Save As", "Load", "Exit"};
+		JMenuItem[] arr = {s, sa, l, ex};
+		String[] txt = {"Save edited file", "Save edited file as", "Load selected project", "Exit application"};
+		String[] cmd = {"Save", "Save As", "Load", "Exit"};
 
 		for(int count = 0; count < arr.length; ++count)
 		{
@@ -523,6 +536,50 @@ public class GUIEditorView implements GUIView
 		{
 			JMenuItem menu = (JMenuItem)i;
 			menu.addActionListener(fileL);
+		}
+	}
+	
+	/**
+	 * Creates a file drop down menu for undo, redo, save, and load buttons.
+	 * @param mb is the menu bar
+	 */
+	private void createViewM(JMenuBar mb)
+	{
+		viewM = new JMenu("View");
+		
+		JMenuItem zi = new JMenuItem("Zoom In");
+		JMenuItem zo = new JMenuItem("Zoom Out");
+		JCheckBoxMenuItem dm = new JCheckBoxMenuItem("Dark Mode");
+
+		KeyStroke zoomInKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke zoomOutKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK);
+
+		zi.setAccelerator(zoomInKeyStroke);
+		zo.setAccelerator(zoomOutKeyStroke);
+
+		JMenuItem[] arr = {zi, zo, dm};
+		String[] txt = {"Zoom In", "Zoom Out", "Dark Mode"};
+		String[] cmd = {"Zoom In", "Zoom Out", "Dark Mode"};
+
+		for(int count = 0; count < arr.length; ++count)
+		{
+			viewM.add(arr[count]);
+			arr[count].setToolTipText(txt[count]);
+			arr[count].setActionCommand(cmd[count]);
+		}		
+		mb.add(viewM);
+	}
+	
+	/**
+	 * Adds action listeners to file clicks
+	 * @param fileL is all the file action listeners
+	 */
+	private void viewListener(ActionListener viewL)
+	{
+		for(Component i: viewM.getMenuComponents())
+		{
+			JMenuItem menu = (JMenuItem)i;
+			menu.addActionListener(viewL);
 		}
 	}
 	
@@ -715,10 +772,11 @@ public class GUIEditorView implements GUIView
 	/**
 	 * Adds all the action listeners to their respective clicks
 	 */
-	public void addListeners(ActionListener fileL, ActionListener classL,
+	public void addListeners(ActionListener fileL, ActionListener viewL, ActionListener classL,
 			ActionListener relatL, RightClickListenerFactory clickFactory) 
 	{
-        fileListener(fileL);
+		fileListener(fileL);
+		viewListener(viewL);
         classListener(classL);
 		relationshipListener(relatL);
 		this.clickFactory = clickFactory;
@@ -866,7 +924,7 @@ public class GUIEditorView implements GUIView
 		JPanel panelFrom = classPanels.get(relat.getClassNameFrom());
 		JPanel panelTo = classPanels.get(relat.getClassNameTo());
 
-		RelationArrow arrow = new RelationArrow(panelFrom, panelTo, relat.getType());
+		RelationArrow arrow = new RelationArrow(panelFrom, panelTo, relat.getType(), darkMode);
 		arrow.setVisible(true);
 		arrow.setOpaque(false);
 		arrow.setLocation(0, 0);
@@ -884,11 +942,19 @@ public class GUIEditorView implements GUIView
      */
     private void updateClassPanel(JPanel panel, ClassObject classObj)
     {
-        panel.removeAll();
-        Border classBd = BorderFactory.createLineBorder(Color.BLACK, 2);
+		panel.removeAll();
+		Color borderColor = darkMode ? Color.WHITE : Color.BLACK;
+        Border classBd = BorderFactory.createLineBorder(borderColor, 2);
         panel.setBorder(classBd);
 
-        panel.setBackground(classObj.isOpen() ? Color.WHITE : Color.GRAY);
+		if (classObj.isOpen())
+		{
+			panel.setBackground(darkMode ? Color.DARK_GRAY : Color.WHITE);
+		}
+		else
+		{
+			panel.setBackground(Color.GRAY);
+		}
 
 		String className = classObj.getName();
 
@@ -896,6 +962,7 @@ public class GUIEditorView implements GUIView
         classTxt.setEditable(false);
         classTxt.setFocusable(false);
 		classTxt.setOpaque(false);
+		classTxt.setForeground(borderColor);
 		classTxt.setFont(font);
 		panel.add(classTxt);
 		createClassRightClick(className, classTxt, panel);
@@ -906,6 +973,7 @@ public class GUIEditorView implements GUIView
             fieldTxt.setEditable(false);
             fieldTxt.setFocusable(false);
             fieldTxt.setOpaque(false);
+			fieldTxt.setForeground(borderColor);
 			fieldTxt.setFont(font);
 			panel.add(fieldTxt);
 			createFieldRightClick(className, fieldName, fieldTxt, panel);
@@ -917,6 +985,7 @@ public class GUIEditorView implements GUIView
             methodTxt.setEditable(false);
             methodTxt.setFocusable(false);
             methodTxt.setOpaque(false);
+			methodTxt.setForeground(borderColor);
 			methodTxt.setFont(font);
 			panel.add(methodTxt);
 			createMethodRightClick(className, methodName, methodTxt, panel);
@@ -960,7 +1029,7 @@ public class GUIEditorView implements GUIView
 
 	/**
 	 * Decreases the size of elements on screen, with a minimum of 6pt font
-	 * @return true if the size was increased, false if not
+	 * @return true if the size was decreased, false if not
 	 */
 	public boolean zoomOut()
 	{
@@ -975,6 +1044,21 @@ public class GUIEditorView implements GUIView
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Switches dark mode on or off
+	 */
+	public void toggleDarkMode()
+	{
+		darkMode = !darkMode;
+		Color bgColor = darkMode ? Color.DARK_GRAY.darker() : lightModeBg;
+		pWindow.setBackground(bgColor);
+		for (RelationArrow arrow : relationArrows.values())
+		{
+			arrow.setDark(darkMode);
+		}
+		refresh();
 	}
 	
 	/**
@@ -1033,6 +1117,68 @@ public class GUIEditorView implements GUIView
 		for (RelationArrow arrow : relationArrows.values())
 		{
 			arrow.setSize(pWindow.getSize());
+		}
+	}
+
+	/**
+	 * Creates a JSON string combining the state of the model with the state of the view
+	 * @param jsonProjectString a JSON string encoding the state of the model
+	 * @return                  a JSON string encoding the state of the view and model
+	 */
+	public String toJSONString(String jsonProjectString)
+	{
+		JSONObject jsonProject = (JSONObject)JSONValue.parse(jsonProjectString);
+		JSONObject jsonView = new JSONObject();
+		jsonView.put("project", jsonProject);
+		jsonView.put("font", font.getSize2D());
+		
+		JSONArray jsonPanelPositions = new JSONArray();
+		for (Map.Entry<String, JPanel> panelEntry : classPanels.entrySet())
+		{
+			JSONObject jsonPanelPos = new JSONObject();
+			jsonPanelPos.put("name", panelEntry.getKey());
+			jsonPanelPos.put("x", panelEntry.getValue().getX());
+			jsonPanelPos.put("y", panelEntry.getValue().getY());
+			jsonPanelPositions.add(jsonPanelPos);
+		}
+		jsonView.put("panels", jsonPanelPositions);
+
+		return jsonView.toJSONString();
+	}
+
+	/**
+	 * Loads a JSON string encoding the state of the view
+	 * @param jsonString a JSON string encoding the state of the view
+	 */
+	public void loadFromJSON(String jsonString)
+	{
+		try
+		{
+			JSONObject jsonView = (JSONObject)JSONValue.parse(jsonString);
+
+			float fontSize = ((Number)jsonView.get("font")).floatValue();
+			if (fontSize >= 6 && fontSize <= 60)
+			{
+				font = font.deriveFont((float)fontSize);
+			}
+
+			JSONArray jsonPanelPositions = (JSONArray)jsonView.get("panels");
+			for (Object jsonPanelPos : jsonPanelPositions)
+			{
+				String name = (String)((JSONObject)jsonPanelPos).get("name");
+				int x = ((Number)((JSONObject)jsonPanelPos).get("x")).intValue();
+				int y = ((Number)((JSONObject)jsonPanelPos).get("y")).intValue();
+
+				if (classPanels.containsKey(name))
+				{
+					classPanels.get(name).setLocation(x, y);
+				}
+			}
+			containAll();
+		}
+		catch (ClassCastException e)
+		{
+			// Project loaded, but state of view failed to load
 		}
 	}
 }
