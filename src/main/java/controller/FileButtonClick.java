@@ -33,21 +33,7 @@ public class FileButtonClick implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		String cmd = e.getActionCommand();
-		if(cmd.equals("Zoom In"))
-		{
-			if (view.zoomIn())
-			{
-				view.onUpdate(controller.getProjectSnapshot(), false);
-			}
-		}
-		else if(cmd.equals("Zoom Out"))
-		{
-			if (view.zoomOut())
-			{
-				view.onUpdate(controller.getProjectSnapshot(), false);
-			}
-		}
-		else if(cmd.equals("Save"))
+		if(cmd.equals("Save"))
 		{
 			File file = view.getSaveFile();
             if(file == null)

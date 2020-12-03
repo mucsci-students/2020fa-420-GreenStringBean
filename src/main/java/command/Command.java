@@ -6,7 +6,8 @@ public abstract class Command {
 	private String statusMsg;
 	protected Model project;
 	private String projectState;
-	
+	private boolean hasOptionalState;
+	private String optionalStateData;
 
 	private static final String[] MESSAGES = 
 	{
@@ -32,6 +33,8 @@ public abstract class Command {
 		status = false;
 		statusMsg = "Not yet executed";
 		this.project = project;
+		hasOptionalState = false;
+		optionalStateData = "";
 	}
 
 	public boolean getStatus()
@@ -69,5 +72,26 @@ public abstract class Command {
 	public void undo()
 	{
 		project.loadFromJSON(projectState);
+	}
+
+	public String getProjectState()
+	{
+		return projectState;
+	}
+
+	public void setOptionalState(String optionalStateData)
+	{
+		this.optionalStateData = optionalStateData;
+		hasOptionalState = true;
+	}
+
+	public boolean hasOptionalState()
+	{
+		return hasOptionalState;
+	}
+
+	public String getOptionalState()
+	{
+		return optionalStateData;
 	}
 }

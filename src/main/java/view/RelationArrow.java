@@ -14,6 +14,7 @@ import model.Relationship.relationshipType;
 
 public class RelationArrow extends JPanel 
 {
+    private static final long serialVersionUID = 5153326128524986518L;
     final static float THICKNESS = 2;
     final static float DASH_ARRAY[] = {10};
     final static BasicStroke SOLID_STROKE = new BasicStroke(THICKNESS);
@@ -30,6 +31,7 @@ public class RelationArrow extends JPanel
     private boolean isHorizontal;
     private boolean isReverse;
     private boolean isLoop;
+    private boolean isDark;
 
     /**
      * Constructor for creating a relationship arrow
@@ -37,11 +39,12 @@ public class RelationArrow extends JPanel
      * @param panelTo   panel to
      * @param type      relationship type
      */
-    public RelationArrow(JPanel panelFrom, JPanel panelTo, relationshipType type)
+    public RelationArrow(JPanel panelFrom, JPanel panelTo, relationshipType type, boolean isDark)
     {
         this.panelFrom = panelFrom;
         this.panelTo = panelTo;
         this.type = type;
+        this.isDark = isDark;
 
         isLoop = (panelFrom == panelTo);
 
@@ -49,6 +52,11 @@ public class RelationArrow extends JPanel
         to = new Point();
 
         calculateEndpoints();
+    }
+
+    public void setDark(boolean isDark)
+    {
+        this.isDark = isDark;
     }
 
     /**
@@ -115,7 +123,7 @@ public class RelationArrow extends JPanel
 
     /**
      * Makes the relationship arrow 
-     * @param g graphic being made
+     * @param g the graphics to draw the arrow
      */
     @Override
     protected void paintComponent(Graphics g)
@@ -124,7 +132,7 @@ public class RelationArrow extends JPanel
         calculateEndpoints();
 
         Graphics2D g2d = (Graphics2D)g;
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(isDark ? Color.WHITE : Color.BLACK);
         if (type == relationshipType.REALIZATION)
         {
             g2d.setStroke(DASHED_STROKE);
@@ -176,8 +184,9 @@ public class RelationArrow extends JPanel
     }
 
     /**
-     * Check if arrow to be made is on the left/above the classFrom panel
-     * @return true if from coords are less than the to coords
+     * Check if the endpoints are in the opposite of the expected positions
+     * (If they are, the cap will not be drawn)
+     * @return true if the arrow is inverse, false otherwise
      */
     private boolean isInverse()
     {
@@ -211,8 +220,8 @@ public class RelationArrow extends JPanel
 
     /**
      * Makes the end shape of a relationship arrow
-     * @param g2d       the arrow being made     
-     * @param isDiamond is the graphic a diamond
+     * @param g2d       the graphics to draw the cap     
+     * @param isDiamond whether the cap is a diamond or triangle
      */
     private void drawCap(Graphics2D g2d, boolean isDiamond)
     {
@@ -263,7 +272,7 @@ public class RelationArrow extends JPanel
         g2d.draw(cap);
         if (type != relationshipType.COMPOSITION)
         {
-            g2d.setColor(Color.WHITE);
+            g2d.setColor(isDark ? Color.DARK_GRAY : Color.WHITE);
         }
         g2d.fill(cap);
     }
@@ -274,7 +283,6 @@ public class RelationArrow extends JPanel
      */
     protected void repaint(Graphics g)
     {
-        //calculateEndpoints();
         paintComponent(g);
     }
 }

@@ -1,7 +1,11 @@
 import org.json.simple.*;
 import org.junit.Test;
+
+import command.Command;
+
 import org.junit.Ignore;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.beans.Visibility;
@@ -74,6 +78,20 @@ public class CLIEditorControllerTest {
         controller.renameClass("Apple", "Orange");
         assertEquals("Class doesn't exist", controller.getProjectSnapshot().hasClass("Apple"), false);
         assertEquals("Class exists", controller.getProjectSnapshot().hasClass("Orange"), true);
+    }
+
+    @Test
+    public void testOpenCloseClass() throws IOException
+    {
+        ModelEditor modelEditor = new WorkingProjectEditor(new WorkingProject());
+        CLIView view = new CLIEditorView();
+        CLIEditorController controller = new CLIEditorController(view, modelEditor);
+        controller.addClass("Apple");
+        assertTrue("Class is open", controller.getProjectSnapshot().getClass("Apple").isOpen());
+        controller.closeClass("Apple");
+        assertFalse("Class is closed", controller.getProjectSnapshot().getClass("Apple").isOpen());
+        controller.openClass("Apple");
+        assertTrue("Class is open", controller.getProjectSnapshot().getClass("Apple").isOpen());
     }
 
     @Test
@@ -291,7 +309,7 @@ public class CLIEditorControllerTest {
         assertEquals("Relationship doesn't exist", controller.getProjectSnapshot().hasRelationship("Apple", "Orange"), false);
     }
 
-    @Ignore
+    @Test
     public void testChangeRelationshipType() throws IOException
     {
         ModelEditor modelEditor = new WorkingProjectEditor(new WorkingProject());
@@ -299,15 +317,10 @@ public class CLIEditorControllerTest {
         CLIEditorController controller = new CLIEditorController(view, modelEditor);
         controller.addRelationship("Apple", "Orange", "A");
         controller.changeRelationshipType("Apple", "Orange", "I");
-        assertEquals("Relationship is of type", controller.getProjectSnapshot().getRelationships().iterator().next().getType(), relationshipType.INHERITANCE);
-    }
-
-    @Ignore
-    public void testToJSONString() throws IOException
-    {
-        ModelEditor modelEditor = new WorkingProjectEditor(new WorkingProject());
-        CLIView view = new CLIEditorView();
-        CLIEditorController controller = new CLIEditorController(view, modelEditor);
+        for (Relationship r : controller.getProjectSnapshot().getRelationships())
+        {
+            assertEquals("Relationship is of type", r.getType(), relationshipType.INHERITANCE);
+        }
     }
 
     @Test
@@ -331,5 +344,170 @@ public class CLIEditorControllerTest {
         controller.undo();
         controller.redo();
         assertEquals("Action redone", controller.getProjectSnapshot().hasClass("Apple"), true);
+    }
+
+    @Test
+    public void testLoadProject() throws IOException
+    {
+        ModelEditor modelEditor = new WorkingProjectEditor(new WorkingProject());
+        CLIView view = new CLIEditorView();
+        CLIEditorController controller = new CLIEditorController(view, modelEditor);
+
+        // Test loading a project saved in CLI
+        controller.loadProject(buildJSONProject().toJSONString());
+        Model snapshotCLI = controller.getProjectSnapshot();
+
+        assertTrue("Loaded correct class", snapshotCLI.hasClass("Apple"));
+        ClassObject loadedClassCLI = snapshotCLI.getClass("Apple");
+        
+        assertTrue("Loaded class has correct field", loadedClassCLI.hasField("weight"));
+        Field loadedFieldCLI = loadedClassCLI.getField("weight");
+        assertEquals("Loaded field has correct data type", "double", loadedFieldCLI.getType());
+        assertEquals("Loaded field has correct visibility", visibility.PRIVATE, loadedFieldCLI.getVisibility());
+
+        assertTrue("Loaded class has correct method", loadedClassCLI.hasMethod("setWeight"));
+        Method loadedMethodCLI = loadedClassCLI.getMethod("setWeight");
+        assertEquals("Loaded method has correct return type", "void", loadedMethodCLI.getType());
+        assertEquals("Loaded method has correct visibility", visibility.PUBLIC, loadedMethodCLI.getVisibility());
+
+        assertTrue("Loaded method has correct parameter", loadedMethodCLI.hasParameter("newWeight"));
+        Parameter loadedParamCLI = loadedMethodCLI.getParameters().get(0);
+        assertEquals("Loaded parameter has correct data type", "double", loadedParamCLI.getType());
+
+        assertEquals("Loaded project has a relationship", 1, snapshotCLI.getRelationships().size());
+        for (Relationship loadedRelCLI : snapshotCLI.getRelationships())
+        {
+            assertEquals("Loaded relationship has correct \"from\" class", "Apple", loadedRelCLI.getClassNameFrom());
+            assertEquals("Loaded relationship has correct \"to\" class", "Apple", loadedRelCLI.getClassNameTo());
+            assertEquals("Loaded relationship has correct type", relationshipType.INHERITANCE, loadedRelCLI.getType());
+        }
+
+        // Test loading a project saved in GUI
+        JSONObject jsonProject = buildJSONProject();
+        JSONObject jsonView = new JSONObject();
+        jsonView.put("project", jsonProject);
+        controller.loadProject(jsonView.toJSONString());
+
+        Model snapshotGUI = controller.getProjectSnapshot();
+        
+        assertTrue("Loaded correct class", snapshotGUI.hasClass("Apple"));
+        ClassObject loadedClassGUI = snapshotGUI.getClass("Apple");
+        
+        assertTrue("Loaded class has correct field", loadedClassGUI.hasField("weight"));
+        Field loadedFieldGUI = loadedClassGUI.getField("weight");
+        assertEquals("Loaded field has correct data type", "double", loadedFieldGUI.getType());
+        assertEquals("Loaded field has correct visibility", visibility.PRIVATE, loadedFieldGUI.getVisibility());
+
+        assertTrue("Loaded class has correct method", loadedClassGUI.hasMethod("setWeight"));
+        Method loadedMethodGUI = loadedClassGUI.getMethod("setWeight");
+        assertEquals("Loaded method has correct return type", "void", loadedMethodGUI.getType());
+        assertEquals("Loaded method has correct visibility", visibility.PUBLIC, loadedMethodGUI.getVisibility());
+
+        assertTrue("Loaded method has correct parameter", loadedMethodGUI.hasParameter("newWeight"));
+        Parameter loadedParamGUI = loadedMethodGUI.getParameters().get(0);
+        assertEquals("Loaded parameter has correct data type", "double", loadedParamGUI.getType());
+
+        assertEquals("Loaded project has a relationship", 1, snapshotGUI.getRelationships().size());
+        for (Relationship loadedRelGUI : snapshotGUI.getRelationships())
+        {
+            assertEquals("Loaded relationship has correct \"from\" class", "Apple", loadedRelGUI.getClassNameFrom());
+            assertEquals("Loaded relationship has correct \"to\" class", "Apple", loadedRelGUI.getClassNameTo());
+            assertEquals("Loaded relationship has correct type", relationshipType.INHERITANCE, loadedRelGUI.getType());
+        }
+
+    }
+
+    @Test
+    public void testLoadInvalid() throws IOException
+    {
+        ModelEditor modelEditor = new WorkingProjectEditor(new WorkingProject());
+        CLIView view = new CLIEditorView();
+        CLIEditorController controller = new CLIEditorController(view, modelEditor);
+
+        controller.loadProject("abc");
+        assertEquals("Nothing was loaded", 0, controller.getProjectSnapshot().getClassNames().size());
+        controller.loadProject("{\"project\":0}");
+        assertEquals("Nothing was loaded", 0, controller.getProjectSnapshot().getClassNames().size());
+    }
+
+    @Test
+    public void testToJSONString() throws IOException
+    {
+        ModelEditor modelEditor = new WorkingProjectEditor(new WorkingProject());
+        CLIView view = new CLIEditorView();
+        CLIEditorController controller = new CLIEditorController(view, modelEditor);
+
+        controller.addClass("Apple");
+        controller.addField("Apple", "weight", "double", "private");
+        controller.addMethod("Apple", "setWeight", "void", "public");
+        controller.addParameter("Apple", "setWeight", "newWeight", "double");
+        controller.addRelationship("Apple", "Apple", "I");
+
+        assertEquals("Correct toJSONString output", buildJSONProject(), (JSONObject)JSONValue.parse(controller.toJSONString()));
+    }
+
+    @Test
+    public void testOptionalState() throws IOException
+    {
+        ModelEditor modelEditor = new WorkingProjectEditor(new WorkingProject());
+        CLIView view = new CLIEditorView();
+        CLIEditorController controller = new CLIEditorController(view, modelEditor);
+
+        controller.addClass("Apple");
+        Command cmd = modelEditor.getLastCommand();
+
+        assertFalse("In CLI, optional state should not be used", cmd.hasOptionalState());
+    }
+
+    /**
+     * Create a valid JSON working project to load
+     * @return a JSONObject encoding a working project
+     */
+    private static JSONObject buildJSONProject()
+    {
+        JSONObject jsonProject = new JSONObject();
+        JSONArray jsonClasses = new JSONArray();
+        JSONArray jsonRelationships = new JSONArray();
+
+        JSONObject jsonClass = new JSONObject();
+        jsonClass.put("name", "Apple");
+        jsonClass.put("isOpen", true);
+
+        JSONArray jsonFields = new JSONArray();
+        JSONObject jsonField = new JSONObject();
+        jsonField.put("name", "weight");
+        jsonField.put("type", "double");
+        jsonField.put("visibility", visibility.PRIVATE.name());
+        jsonFields.add(jsonField);
+
+        JSONArray jsonMethods = new JSONArray();
+        JSONObject jsonMethod = new JSONObject();
+        jsonMethod.put("name", "setWeight");
+        jsonMethod.put("type", "void");
+        jsonMethod.put("visibility", visibility.PUBLIC.name());
+
+        JSONArray jsonParams = new JSONArray();
+        JSONObject jsonParam = new JSONObject();
+        jsonParam.put("name", "newWeight");
+        jsonParam.put("type", "double");
+
+        jsonParams.add(jsonParam);
+        jsonMethod.put("parameters", jsonParams);
+        jsonMethods.add(jsonMethod);
+
+        jsonClass.put("fields", jsonFields);
+        jsonClass.put("methods", jsonMethods);
+        jsonClasses.add(jsonClass);
+
+        JSONObject jsonRelationship = new JSONObject();
+        jsonRelationship.put("from", "Apple");
+        jsonRelationship.put("to", "Apple");
+        jsonRelationship.put("type", relationshipType.INHERITANCE.name());
+        jsonRelationships.add(jsonRelationship);
+
+        jsonProject.put("classes", jsonClasses);
+        jsonProject.put("relationships", jsonRelationships);
+
+        return jsonProject;
     }
 }

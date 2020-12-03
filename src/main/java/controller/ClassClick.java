@@ -6,7 +6,7 @@ import view.GUIView;
 public class ClassClick implements ActionListener
 {
 	private GUIView view;
-	private GUIEditorController controller;
+	private GUIController controller;
 	
 	/**
      * Cronstructor for an action performer with the views input and a helper 
@@ -14,7 +14,7 @@ public class ClassClick implements ActionListener
      * @param v  view of the GUI that takes in user input
      * @param c  controller to help the view actions perform correctly
      */
-	public ClassClick(GUIView v, GUIEditorController c)
+	public ClassClick(GUIView v, GUIController c)
 	{
 		this.view = v;
 		this.controller = c;
