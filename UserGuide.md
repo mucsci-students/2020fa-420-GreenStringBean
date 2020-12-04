@@ -48,41 +48,41 @@ printRelationships	()				--Prints all the existing relationships<br/>
 ## GUI Mode
 Buttons			User Input			Description
 -------			----------			-----------
--File-----
-  undo 			<>				--Undo last edit
-  redo			<>				--Redo last undo
-  save			<if no named file: name file>	--Saves file 
-  save as		<file>				--Saves named file
-  load			<file>				--Loads file
-  exit			<>				--Closes UML
-
--Class-----
-  open class		<class name>			--Opens the class panel for editing 
-  close class		<class name>			--Closes class so no editing can be done
-  create class		<class name>			--Makes a class panel with its name
-  delete class		<class name>			--Deletes class panel
-  rename class		<class name>			--Renames a class
-
--Attribute-----
-  create field		<className, field vis / name / type>	--Adds a field to a class 
-  delete field		<className, fieldName> 			--Deletes field in a class 
-  rename field		<className, FieldName, newFieldName> 	--Renames a field in a class
-  change field type	<className, fieldName, fieldType>	--Changes a field type in class
-  change field vis	<className, fieldName, vis>		--Changes visability of a field
-
-  create method		<className, method vis / name / type>	--Adds a method to a class 
-  delete method		<className, methodName> 		--Deletes method in a class
-  rename method		<className, methodName, newMethodName> 	--Renames a method in a class
-  change method type	<className, methodName, methodType>	--Changes a method type in class
-  change method vis	<className, methodName, vis>		--Changes visability of a method
-
-  create param		<className, methodName, param name / type>		--Adds a parameter to a method in a class
-  delete param		<className, methodName, paramName>			--Deletes parameter in a method  
-  rename param		<className, methodName, paramName, oldParamName>	--Renames a parameter in a method	
-  change param type	<className, methodName, paramName, newParamType>	--Changes the parameter type in a method
-
--Relationship
-  create relationship	<classNameTo, classNameFrom, type>	--Adds a relationship with given type between two classes
-  change type		<classNameTo, classNameFrom, newType>	--Changes the relationship type between two classes	
-  delete relationship 	<classNameTo, classNameFrom>		--Deletes relationshipe between two classes
-  show relationships	<>					--Displays all current relationships between classes
+#### File
+  undo 			<>				--Undo last edit<br/>
+  redo			<>				--Redo last undo<br/>
+  save			<if no named file: name file>	--Saves file <br/>
+  save as		<file>				--Saves named file<br/>
+  load			<file>				--Loads file<br/>
+  exit			<>				--Closes UML<br/>
+<br/>
+#### Class
+  open class		<class name>			--Opens the class panel for editing <br/>
+  close class		<class name>			--Closes class so no editing can be done<br/>
+  create class		<class name>			--Makes a class panel with its name<br/>
+  delete class		<class name>			--Deletes class panel<br/>
+  rename class		<class name>			--Renames a class<br/>
+<br/>
+#### Attribute
+  create field		<className, field vis / name / type>	--Adds a field to a class <br/>
+  delete field		<className, fieldName> 			--Deletes field in a class <br/>
+  rename field		<className, FieldName, newFieldName> 	--Renames a field in a class<br/>
+  change field type	<className, fieldName, fieldType>	--Changes a field type in class<br/>
+  change field vis	<className, fieldName, vis>		--Changes visability of a field<br/>
+<br/>
+  create method		<className, method vis / name / type>	--Adds a method to a class <br/>
+  delete method		<className, methodName> 		--Deletes method in a class<br/>
+  rename method		<className, methodName, newMethodName> 	--Renames a method in a class<br/>
+  change method type	<className, methodName, methodType>	--Changes a method type in class<br/>
+  change method vis	<className, methodName, vis>		--Changes visability of a method<br/>
+<br/>
+  create param		<className, methodName, param name / type>		--Adds a parameter to a method in a class<br/>
+  delete param		<className, methodName, paramName>			--Deletes parameter in a method  <br/>
+  rename param		<className, methodName, paramName, oldParamName>	--Renames a parameter in a method	<br/>
+  change param type	<className, methodName, paramName, newParamType>	--Changes the parameter type in a method<br/>
+<br/>
+#### Relationship
+  create relationship	<classNameTo, classNameFrom, type>	--Adds a relationship with given type between two classes<br/>
+  change type		<classNameTo, classNameFrom, newType>	--Changes the relationship type between two classes	<br/>
+  delete relationship 	<classNameTo, classNameFrom>		--Deletes relationshipe between two classes<br/>
+  show relationships	<>					--Displays all current relationships between classes<br/>
