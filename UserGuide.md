@@ -55,14 +55,14 @@ Buttons			User Input			Description
   save as		<file>				--Saves named file<br/>
   load			<file>				--Loads file<br/>
   exit			<>				--Closes UML<br/>
-<br/>
+
 #### Class
   open class		<class name>			--Opens the class panel for editing <br/>
   close class		<class name>			--Closes class so no editing can be done<br/>
   create class		<class name>			--Makes a class panel with its name<br/>
   delete class		<class name>			--Deletes class panel<br/>
   rename class		<class name>			--Renames a class<br/>
-<br/>
+  
 #### Attribute
   create field		<className, field vis / name / type>	--Adds a field to a class <br/>
   delete field		<className, fieldName> 			--Deletes field in a class <br/>
@@ -80,7 +80,7 @@ Buttons			User Input			Description
   delete param		<className, methodName, paramName>			--Deletes parameter in a method  <br/>
   rename param		<className, methodName, paramName, oldParamName>	--Renames a parameter in a method	<br/>
   change param type	<className, methodName, paramName, newParamType>	--Changes the parameter type in a method<br/>
-<br/>
+  
 #### Relationship
   create relationship	<classNameTo, classNameFrom, type>	--Adds a relationship with given type between two classes<br/>
   change type		<classNameTo, classNameFrom, newType>	--Changes the relationship type between two classes	<br/>
