@@ -46,8 +46,6 @@ printClasses		()				--Prints the names of all the existing classes<br/>
 printRelationships	()				--Prints all the existing relationships<br/>
 <br/>
 ## GUI Mode
-Buttons			User Input			Description
--------			----------			-----------
 #### File
   undo 			<>				--Undo last edit<br/>
   redo			<>				--Redo last undo<br/>
