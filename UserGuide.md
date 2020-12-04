@@ -49,14 +49,14 @@ printRelationships	()				--Prints all the existing relationships<br/>
 ## GUI Mode
 ### Task Bar
 #### File
-Save ^S			(if no named file: name file)	--Saves file <br/>
-Save As	^Shift+S	(file)				--Saves named file<br/>
-Load ^O			(file)				--Loads file<br/>
+Save `^S`			(if no named file: name file)	--Saves file <br/>
+Save As	`^Shift+S`	(file)				--Saves named file<br/>
+Load `^O`			(file)				--Loads file<br/>
 Exit			()				--Closes UML<br/>
 
 #### View
-Zoom In ^= () --Zooms in on project view<br/>
-Zoom Out ^- () --Zooms out on project view<br/>
+Zoom In `^=` () --Zooms in on project view<br/>
+Zoom Out `^-` () --Zooms out on project view<br/>
 Dark Mode () --Turns on dark mode<br/>
 
 #### Project
