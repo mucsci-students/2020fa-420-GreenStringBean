@@ -39,7 +39,7 @@ changeParameterType	(class method param newType)	-- Changes the data type of the
 <br/>
 addRelationship 	(class class type)			--Adds a relationship between two given classes<br/>
 removeRelationship 	(class class)		--Deletes a relationshop between two given classes<br/>
-changeRelationshipType 	(class class newType)			--Changes a relationship between two given classes
+changeRelationshipType 	(class class newType)			--Changes a relationship between two given classes<br/>
 <br/>
 printClass		(class)				--Print all the attributes of the given class<br/>
 printClasses		()				--Prints the names of all the existing classes<br/>
