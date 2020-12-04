@@ -1,4 +1,4 @@
-To build to UML Console Application:
+## To build to UML Console Application:
 
 1. Compile UML-all.jar with the command "gradle build"
 2. To run the program in GUI mode, use "java -jar ./build/libs/UML-all.jar"
@@ -6,46 +6,46 @@ To build to UML Console Application:
 4. Enjoy!
 
 
---------------------CLI Mode--------------------------
-Methods			Arguments			Description
--------			----------			------------
-quit 			<>      			-- Exits the program
-help 			<>      			-- Prints help message
-save 			<filename> 			-- Saves the project into a save file
-load 			<filename> 			-- Loads a project provided by the user
+## CLI Mode
+#### method(arguments) -- description
+quit 			()      			-- Exits the program<br/>
+help 			()      			-- Prints help message<br/>
+save 			(filename) 			-- Saves the project into a save file<br/>
+load 			(filename) 			-- Loads a project provided by the user<br/>
 
-addClass 		<name> 				-- Creates a new UML class with the given name.
-deleteClass 		<class>				-- Deletes the class with the given name.
-renameClass 		<class newName>			-- Renames a given class to the given name.
-open 			<class>				-- Opens the given class to editing.
-close 			<class>				-- Closes the given class to editint.
 
-addField 		<class name type> 		-- Adds a field to the given class
-deleteField		<class field>			-- Deletes the given field from the given class
-renameField		<class field newName> 		-- Renames the given field in the given class to the given name
-changeFieldType		<class field newType>		-- Changes the data type of the given field in the given class
-changeFieldVisibility   <class field newVisibility>     -- Changes the visibility of the given field in the given class
-
-addMethod		<class name type>		-- Adds a function ot the given class
-deleteMethod		<class method>			-- Deletes the given function from the given class
-renameMethod		<class method newName>		-- Renames the given function in the given class to the given name
-changeMethodType	<class method newType>		-- Changes the return type of the given method in the given class
-changeMethodVisibility  <class method newVisibility>    -- Changes the visibility of the given method in the given class
-
-addParameter		<class method name type>	-- Adds a parameter to the given function in the given class
-deleteParameter		<class method param>		-- Deletes a parameter from the given function in the given class
-renameParameter		<class method param newName>	-- Renames a parameter in the given function in the given class
-changeParameterType	<class method param newType>	-- Changes the data type of the given parameter in the given method in the given class
-
-addRelationship 	<classFrom classTo>			--Adds a relationship between two given classes
-deleteRelationship 	<classFrom classTo>			--Deletes a relationshop between two given classes
-
-printClass		<class>				--Print all the attributes of the given class
-printClasses		<>				--Prints the names of all the existing classes
-printFields		<class>				--Prints the names of all the existing fields in the given class
-printMethods		<class>				--Prints the names of all the existing methods in the given class
-printRelationships	<>				--Prints all the existing relationships
-
+addClass 		(name)				-- Creates a new UML class with the given name<br/>
+removeClass 		(class)				-- Deletes the class with the given name<br/>
+renameClass 		(class newName)			-- Renames a given class to the given name<br/>
+open 			(class)				-- Opens the given class to editing<br/>
+close 			(class)				-- Closes the given class to editint<br/>
+<br/>
+addField 		(class visibilty name type)		-- Adds a field to the given class<br/>
+removeField		(class field)			-- Deletes the given field from the given class<br/>
+renameField		(class oldName newName) 		-- Renames the given field in the given class to the given name<br/>
+changeFieldType		(class field newType)		-- Changes the data type of the given field in the given class<br/>
+changeFieldVisibility   (class field newVisibility)     -- Changes the visibility of the given field in the given class<br/>
+<br/>
+addMethod		(class visibilty returnType name)	-- Adds a function to the given class<br/>
+removeMethod		(class method)			-- Deletes the given function from the given class<br/>
+renameMethod		(class oldName newName)		-- Renames the given function in the given class to the given name<br/>
+changeMethodType	(class method newType)		-- Changes the return type of the given method in the given class<br/>
+changeMethodVisibility  (class method newVisibility)    -- Changes the visibility of the given method in the given class<br/>
+<br/>
+addParameter		(class method paramType paramName)	-- Adds a parameter to the given function in the given class<br/>
+removeParameter		(class method param)		-- Deletes a parameter from the given function in the given class<br/>
+renameParameter		(class method param newName)	-- Renames a parameter in the given function in the given class<br/>
+changeParameterType	(class method param newType)	-- Changes the data type of the given parameter in the given method in the given class<br/>
+<br/>
+addRelationship 	(class class type)			--Adds a relationship between two given classes<br/>
+removeRelationship 	(class class)		--Deletes a relationshop between two given classes<br/>
+changeRelationshipType 	(class class newType)			--Changes a relationship between two given classes
+<br/>
+printClass		(class)				--Print all the attributes of the given class<br/>
+printClasses		()				--Prints the names of all the existing classes<br/>
+printRelationships	()				--Prints all the existing relationships<br/>
+<br/>
+## GUI Mode
 -------------------GUI Mode--------------------------
 Buttons			User Input			Description
 -------			----------			-----------
