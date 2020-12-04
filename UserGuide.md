@@ -46,7 +46,6 @@ printClasses		()				--Prints the names of all the existing classes<br/>
 printRelationships	()				--Prints all the existing relationships<br/>
 <br/>
 ## GUI Mode
--------------------GUI Mode--------------------------
 Buttons			User Input			Description
 -------			----------			-----------
 -File-----
