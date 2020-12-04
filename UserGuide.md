@@ -45,19 +45,33 @@ printClass		(class)				--Print all the attributes of the given class<br/>
 printClasses		()				--Prints the names of all the existing classes<br/>
 printRelationships	()				--Prints all the existing relationships<br/>
 <br/>
-## GUI Mode
-#### File
-  undo 			<>				--Undo last edit<br/>
-  redo			<>				--Redo last undo<br/>
-  save			<if no named file: name file>	--Saves file <br/>
-  save as		<file>				--Saves named file<br/>
-  load			<file>				--Loads file<br/>
-  exit			<>				--Closes UML<br/>
 
-#### Class
+## GUI Mode
+### Task Bar
+#### File
+Save ^S			(if no named file: name file)	--Saves file <br/>
+Save As	^Shift+S	(file)				--Saves named file<br/>
+Load ^O			(file)				--Loads file<br/>
+Exit			()				--Closes UML<br/>
+
+#### View
+Zoom In ^= () --Zooms in on project view<br/>
+Zoom Out ^- () --Zooms out on project view<br/>
+Dark Mode () --Turns on dark mode<br/>
+
+#### Project
+Undo 		()				--Undo last edit<br/>
+Redo			()				--Redo last undo<br/>
+Create Class		(class name)			--Makes a class panel with its name<br/>
+
+#### Relationship
+ Create Relationship	(classNameTo, classNameFrom, type)	--Adds a relationship with given type between two classes<br/>
+ Change Type		(classNameTo, classNameFrom, newType)	--Changes the relationship type between two classes	<br/>
+ Delete Relationship 	(classNameTo, classNameFrom)		--Deletes relationshipe between two classes<br/>
+
   open class		<class name>			--Opens the class panel for editing <br/>
   close class		<class name>			--Closes class so no editing can be done<br/>
-  create class		<class name>			--Makes a class panel with its name<br/>
+  
   delete class		<class name>			--Deletes class panel<br/>
   rename class		<class name>			--Renames a class<br/>
   
@@ -78,9 +92,3 @@ printRelationships	()				--Prints all the existing relationships<br/>
   delete param		<className, methodName, paramName>			--Deletes parameter in a method  <br/>
   rename param		<className, methodName, paramName, oldParamName>	--Renames a parameter in a method	<br/>
   change param type	<className, methodName, paramName, newParamType>	--Changes the parameter type in a method<br/>
-  
-#### Relationship
-  create relationship	<classNameTo, classNameFrom, type>	--Adds a relationship with given type between two classes<br/>
-  change type		<classNameTo, classNameFrom, newType>	--Changes the relationship type between two classes	<br/>
-  delete relationship 	<classNameTo, classNameFrom>		--Deletes relationshipe between two classes<br/>
-  show relationships	<>					--Displays all current relationships between classes<br/>
