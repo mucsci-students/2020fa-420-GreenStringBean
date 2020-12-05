@@ -13,7 +13,6 @@ help 			()      			-- Prints help message<br/>
 save 			(filename) 			-- Saves the project into a save file<br/>
 load 			(filename) 			-- Loads a project provided by the user<br/>
 
-
 addClass 		(name)				-- Creates a new UML class with the given name<br/>
 removeClass 		(class)				-- Deletes the class with the given name<br/>
 renameClass 		(class newName)			-- Renames a given class to the given name<br/>
@@ -49,34 +48,50 @@ printRelationships	()				--Prints all the existing relationships<br/>
 ## GUI Mode
 ### Task Bar
 #### File
-Save `^S`			(if no named file: name file)	--Saves file <br/>
+Save `^S`		(if no named file: name file)	--Saves file <br/>
 Save As	`^Shift+S`	(file)				--Saves named file<br/>
-Load `^O`			(file)				--Loads file<br/>
-Exit			()				--Closes UML<br/>
+Load `^O`		(file)				--Loads file<br/>
+Exit  --Closes UML<br/>
 
 #### View
-Zoom In `^=` () --Zooms in on project view<br/>
-Zoom Out `^-` () --Zooms out on project view<br/>
-Dark Mode () --Turns on dark mode<br/>
+Zoom In `^=` --Zooms in on project view<br/>
+Zoom Out `^-` --Zooms out on project view<br/>
+Dark Mode --Turns on dark mode<br/>
 
 #### Project
-Undo 		()				--Undo last edit<br/>
-Redo			()				--Redo last undo<br/>
+Undo 	--Undo last edit<br/>
+Redo		--Redo last undo<br/>
 Create Class		(class name)			--Makes a class panel with its name<br/>
 
 #### Relationship
- Create Relationship	(classNameTo, classNameFrom, type)	--Adds a relationship with given type between two classes<br/>
- Change Type		(classNameTo, classNameFrom, newType)	--Changes the relationship type between two classes	<br/>
- Delete Relationship 	(classNameTo, classNameFrom)		--Deletes relationshipe between two classes<br/>
+Create Relationship	(classNameTo, classNameFrom, type)	--Adds a relationship with given type between two classes<br/>
+Change Type		(classNameTo, classNameFrom, newType)	--Changes the relationship type between two classes	<br/>
+Delete Relationship 	(classNameTo, classNameFrom)		--Deletes relationshipe between two classes<br/>
+ 
+### Right Click Actions
+#### Exisiting Class
+Open Class	--Opens the class panel for editing <br/>
+Close Class	--Closes class so no editing can be done<br/>
+Delete Class	--Deletes class panel<br/>
+Rename Class	(newClassName)	--Renames a class<br/>
+Add Field (visibility, type, name) --Adds a field to a class <br/>
+Add Method		(visibility, type, name, paramaters)	--Adds a method to a class <br/>
 
-  open class		<class name>			--Opens the class panel for editing <br/>
-  close class		<class name>			--Closes class so no editing can be done<br/>
-  
-  delete class		<class name>			--Deletes class panel<br/>
-  rename class		<class name>			--Renames a class<br/>
-  
+#### Existing Field
+Remove Field --Removes an existing field<br/>
+Rename Field		(newFieldName) 	--Renames a field in a class<br/>
+Change Field Type	(newFieldType>	--Changes a field type in class<br/>
+Change Field Visibility	(newVisibility) --Changes visability of a field<br/>
+
+#### Existing Method
+Remove Method --Removes an existing method<br/>
+Rename Method --Renames an exisiting method<br/>
+Change Method Type (newMethodType) --Changes an existing method type<br/>
+Change Method Visibilty (newMethodVisibilty) --Changes an existing method visibility<br/>
+Edit Parameters (paramType, name) --Edit the parameters of an existing method<br/>
+Add --Adds a parameter
+
 #### Attribute
-  create field		<className, field vis / name / type>	--Adds a field to a class <br/>
   delete field		<className, fieldName> 			--Deletes field in a class <br/>
   rename field		<className, FieldName, newFieldName> 	--Renames a field in a class<br/>
   change field type	<className, fieldName, fieldType>	--Changes a field type in class<br/>
