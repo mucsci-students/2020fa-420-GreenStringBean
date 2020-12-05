@@ -89,21 +89,5 @@ Rename Method --Renames an exisiting method<br/>
 Change Method Type (newMethodType) --Changes an existing method type<br/>
 Change Method Visibilty (newMethodVisibilty) --Changes an existing method visibility<br/>
 Edit Parameters (paramType, name) --Edit the parameters of an existing method<br/>
-> Add --Adds a parameter
-
-#### Attribute
-  delete field		<className, fieldName> 			--Deletes field in a class <br/>
-  rename field		<className, FieldName, newFieldName> 	--Renames a field in a class<br/>
-  change field type	<className, fieldName, fieldType>	--Changes a field type in class<br/>
-  change field vis	<className, fieldName, vis>		--Changes visability of a field<br/>
-<br/>
-  create method		<className, method vis / name / type>	--Adds a method to a class <br/>
-  delete method		<className, methodName> 		--Deletes method in a class<br/>
-  rename method		<className, methodName, newMethodName> 	--Renames a method in a class<br/>
-  change method type	<className, methodName, methodType>	--Changes a method type in class<br/>
-  change method vis	<className, methodName, vis>		--Changes visability of a method<br/>
-<br/>
-  create param		<className, methodName, param name / type>		--Adds a parameter to a method in a class<br/>
-  delete param		<className, methodName, paramName>			--Deletes parameter in a method  <br/>
-  rename param		<className, methodName, paramName, oldParamName>	--Renames a parameter in a method	<br/>
-  change param type	<className, methodName, paramName, newParamType>	--Changes the parameter type in a method<br/>
+- Add --Adds a parameter<br/>
+- Remove --Removes a parameter<br/>
