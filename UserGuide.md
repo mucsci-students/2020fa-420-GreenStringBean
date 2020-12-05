@@ -89,7 +89,7 @@ Rename Method --Renames an exisiting method<br/>
 Change Method Type (newMethodType) --Changes an existing method type<br/>
 Change Method Visibilty (newMethodVisibilty) --Changes an existing method visibility<br/>
 Edit Parameters (paramType, name) --Edit the parameters of an existing method<br/>
-Add --Adds a parameter
+> Add --Adds a parameter
 
 #### Attribute
   delete field		<className, fieldName> 			--Deletes field in a class <br/>
