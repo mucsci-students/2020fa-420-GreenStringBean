@@ -4,6 +4,8 @@
 
 [![codecov](https://codecov.io/gh/mucsci-students/2020fa-420-GreenStringBean/branch/develop/graph/badge.svg?token=K370G4Q7ZI)](https://codecov.io/gh/mucsci-students/2020fa-420-GreenStringBean)
 
+![Java CI with Gradle](https://github.com/mucsci-students/2020fa-420-GreenStringBean/workflows/Java%20CI%20with%20Gradle/badge.svg?branch=develop)
+
 # UML Editor 
 The Unified Modeling Language (UML) is a general-purpose, developmental, modeling language in the field of software engineering that is intended to provide a standard way to visualize the design of a system. This editor allows the user to create a basic UML.
 
