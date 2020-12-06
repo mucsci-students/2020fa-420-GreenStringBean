@@ -4,10 +4,14 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.border.LineBorder;
+
 import javax.swing.JLayeredPane;
 import view.GUIView;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
@@ -62,7 +66,7 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
      */
     @Override
     public void mousePressed(MouseEvent e) {
-        if(e.isPopupTrigger())
+        if(e.isPopupTrigger() && menu != null)
         {
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
@@ -71,7 +75,7 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
             dragX = e.getX();
             dragY = e.getY();
 
-            if (e.getComponent() instanceof JTextArea)
+            if (e.getComponent() instanceof JTextArea || e.getComponent() instanceof JSeparator)
             {
                 Point childPos = e.getComponent().getLocation();
                 dragX += childPos.x;
@@ -88,7 +92,7 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
      */
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(e.isPopupTrigger())
+        if(e.isPopupTrigger() && menu != null)
         {
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
@@ -97,13 +101,20 @@ public class ClassPanelClick implements MouseListener, MouseMotionListener
     @Override
     public void mouseEntered(MouseEvent e) {
         // TODO Auto-generated method stub
-
+        if(e.getComponent() instanceof JTextArea)
+        {
+            Color borderColor =  ((LineBorder)panel.getBorder()).getLineColor();
+            e.getComponent().setForeground(borderColor.equals(Color.BLACK) ? Color.RED : Color.CYAN);
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         // TODO Auto-generated method stub
-
+        if(e.getComponent() instanceof JTextArea)
+        {
+            e.getComponent().setForeground(((LineBorder)panel.getBorder()).getLineColor());
+        }
     }
 
 }

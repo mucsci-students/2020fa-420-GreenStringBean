@@ -1,5 +1,8 @@
 package controller;
+
 import java.awt.event.*;
+import java.util.Map;
+
 import view.*;
 
 public class RelationshipClick implements ActionListener
@@ -27,40 +30,34 @@ public class RelationshipClick implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		String cmd = e.getActionCommand();
-
-		String classNameFrom = view.promptForClassName("\"From\" class:", cmd);
-		if (classNameFrom == null)
-		{
-			return;
-		}
-		String classNameTo = view.promptForClassName("\"To\" class:", cmd);
-		if (classNameTo == null)
-		{
-			return;
-		}
 		
         if (cmd.equals("Create Relationship"))
         {
-			String typeName = view.promptForRelType("Relationship type:", cmd);
-			if (typeName == null)
+			Map<String, String> relationshipData = view.promptForNewRelationship(cmd);
+			if (relationshipData == null)
 			{
 				return;
 			}
-        	controller.addRelationship(classNameFrom, classNameTo, typeName);
+        	controller.addRelationship(relationshipData.get("From"), relationshipData.get("To"), relationshipData.get("Type").substring(0, 1));
         }
 		
         else if (cmd.equals("Change Relationship Type")) 
         {
-			String newTypeName = view.promptForRelType("New relationship type:", cmd);
-			if (newTypeName == null)
+			Map<String, String> relationshipData = view.promptToModifyRelationship(cmd, true);
+			if (relationshipData == null)
 			{
 				return;
 			}
-			controller.changeRelationshipType(classNameFrom, classNameTo, newTypeName);
+			controller.changeRelationshipType(relationshipData.get("From"), relationshipData.get("To"), relationshipData.get("Type").substring(0, 1));
 		}
 		else if (cmd.equals("Remove Relationship"))
 		{
-			controller.removeRelationship(classNameFrom, classNameTo);
+			Map<String, String> relationshipData = view.promptToModifyRelationship(cmd, false);
+			if (relationshipData == null)
+			{
+				return;
+			}
+			controller.removeRelationship(relationshipData.get("From"), relationshipData.get("To"));
 		}
 	}
 }
