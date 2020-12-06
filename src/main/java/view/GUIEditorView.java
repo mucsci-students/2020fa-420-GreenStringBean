@@ -33,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -1079,6 +1080,8 @@ public class GUIEditorView implements GUIView
 		}
 
 		String className = classObj.getName();
+		JSeparator line = new JSeparator();
+		JSeparator lineTwo = new JSeparator();
 
 		JTextArea classTxt = new JTextArea(className);
         classTxt.setEditable(false);
@@ -1087,6 +1090,13 @@ public class GUIEditorView implements GUIView
 		classTxt.setForeground(borderColor);
 		classTxt.setFont(font);
 		panel.add(classTxt);
+
+		if(!classObj.getFieldNames().isEmpty() || !classObj.getMethodNames().isEmpty())
+		{
+			addDragListener(line, new ClassPanelClick(this, panel, null));
+			panel.add(line);
+		}
+
 		createClassRightClick(className, classTxt, panel);
 		
         for (String fieldName : classObj.getFieldNames())
@@ -1099,8 +1109,14 @@ public class GUIEditorView implements GUIView
 			fieldTxt.setFont(font);
 			panel.add(fieldTxt);
 			createFieldRightClick(className, fieldName, fieldTxt, panel);
-        }
-        
+		}
+
+		if(!classObj.getFieldNames().isEmpty() && !classObj.getMethodNames().isEmpty())
+		{
+			addDragListener(lineTwo, new ClassPanelClick(this, panel, null));
+			panel.add(lineTwo);
+		}
+
         for (String methodName : classObj.getMethodNames())
         {
             JTextArea methodTxt = new JTextArea(classObj.getMethod(methodName).toString());
