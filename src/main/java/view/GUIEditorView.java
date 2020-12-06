@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -425,6 +426,127 @@ public class GUIEditorView implements GUIView
 			return paramListData;
 		}
  
+		return null;
+	}
+
+	/**
+	 * Displays a dialog box to fill in all the information for a new relationship
+	 * @param title the window title of the dialog box
+	 * @return a map of the relationship's properties to their values, or null if canceled
+	 */
+	public Map<String, String> promptForNewRelationship(String title)
+	{
+		if (classPanels.keySet().isEmpty())
+		{
+			alert("No classes exist");
+			return null;
+		}
+		// Create input fields
+		String[] possibleClassValues = new String[classPanels.size()];
+		classPanels.keySet().toArray(possibleClassValues);
+		JComboBox<String> fromField = new JComboBox<>(possibleClassValues);
+		fromField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JComboBox<String> toField = new JComboBox<>(possibleClassValues);
+		toField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		String[] possibleTypeValues = { "Inheritance", "Aggregation", "Composition", "Realization" };
+		JComboBox<String> typeField = new JComboBox<>(possibleTypeValues);
+		typeField.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JPanel relationshipPrompt = new JPanel();
+		relationshipPrompt.setLayout(new BoxLayout(relationshipPrompt, BoxLayout.Y_AXIS));
+
+		// Section of dialog for "from" class
+		JLabel fromLabel = new JLabel("\"From\" Class:");
+		fromLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		relationshipPrompt.add(fromLabel);
+		relationshipPrompt.add(fromField);
+		relationshipPrompt.add(Box.createVerticalStrut(10));
+
+		// Section of dialog for "to" class
+		JLabel toLabel = new JLabel("\"To\" Class:");
+		toLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		relationshipPrompt.add(toLabel);
+		relationshipPrompt.add(toField);
+		relationshipPrompt.add(Box.createVerticalStrut(10));
+
+		// Section of dialog for type
+		JLabel typeLabel = new JLabel("Relationship Type:");
+		typeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		relationshipPrompt.add(typeLabel);
+		relationshipPrompt.add(typeField);
+
+		// Display dialog to user
+		int option = JOptionPane.showConfirmDialog(null, relationshipPrompt, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (option == JOptionPane.OK_OPTION)
+		{
+			// Store input in a map and return it to the controller
+			Map<String, String> relationshipData = new HashMap<>();
+			relationshipData.put("From", (String)fromField.getSelectedItem());
+			relationshipData.put("To", (String)toField.getSelectedItem());
+			relationshipData.put("Type", (String)typeField.getSelectedItem());
+			return relationshipData;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Displays a dialog box to select a relationship, and optionally to change its type
+	 * @param title         the window title of the dialog box
+	 * @param promptForType if true, prompt for a new relationship type
+	 * @return a map of the selected relationship's from and to classes
+	 */
+	public Map<String, String> promptToModifyRelationship(String title, boolean promptForType)
+	{
+		// Create input fields
+		Relationship[] relationships = new Relationship[relationArrows.size()];
+		relationArrows.keySet().toArray(relationships);
+		String[] relationshipStrings = new String[relationships.length];
+		for (int i = 0; i < relationships.length; ++i)
+		{
+			relationshipStrings[i] = relationships[i].toString();
+		}
+		JComboBox<String> relationshipField = new JComboBox<>(relationshipStrings);
+		relationshipField.setAlignmentX(Component.LEFT_ALIGNMENT);
+		String[] possibleTypeValues = { "Inheritance", "Aggregation", "Composition", "Realization" };
+		JComboBox<String> typeField = new JComboBox<>(possibleTypeValues);
+		typeField.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JPanel relationshipPrompt = new JPanel();
+		relationshipPrompt.setLayout(new BoxLayout(relationshipPrompt, BoxLayout.Y_AXIS));
+
+		// Section of dialog to choose relationship
+		JLabel relationshipLabel = new JLabel("Choose Relationship:");
+		relationshipLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		relationshipPrompt.add(relationshipLabel);
+		relationshipPrompt.add(relationshipField);
+
+		// Optionally add section to choose new type
+		if (promptForType)
+		{
+			JLabel typeLabel = new JLabel("New Relationship Type:");
+			typeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+			relationshipPrompt.add(Box.createVerticalStrut(10));
+			relationshipPrompt.add(typeLabel);
+			relationshipPrompt.add(typeField);
+		}
+
+		// Display dialog to user
+		int option = JOptionPane.showConfirmDialog(null, relationshipPrompt, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (option == JOptionPane.OK_OPTION)
+		{
+			// Store input in a map and return it to the controller
+			Map<String, String> relationshipData = new HashMap<>();
+			Relationship selectedRelationship = relationships[relationshipField.getSelectedIndex()];
+			relationshipData.put("From", selectedRelationship.getClassNameFrom());
+			relationshipData.put("To", selectedRelationship.getClassNameTo());
+			if (promptForType)
+			{
+				relationshipData.put("Type", (String)typeField.getSelectedItem());
+			}
+			return relationshipData;
+		}
+
 		return null;
 	}
 

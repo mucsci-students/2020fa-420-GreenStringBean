@@ -73,6 +73,21 @@ public interface GUIView extends View
 	 */
  	public Map<String, List<String>> promptForNewParamList(String title, List<String> oldParamNames, List<String> oldParamTypes);
 
+	 /**
+	  * Displays a dialog box to fill in all the information for a new relationship
+	  * @param title the window title of the dialog box
+	  * @return a map of the relationship's properties to their values, or null if canceled
+	  */
+	 public Map<String, String> promptForNewRelationship(String title);
+
+	 /**
+	  * Displays a dialog box to select a relationship, and optionally to change its type
+	  * @param title         the window title of the dialog box
+	  * @param promptForType if true, prompt for a new relationship type
+	  * @return a map of the selected relationship's from and to classes
+	  */
+	 public Map<String, String> promptToModifyRelationship(String title, boolean promptForType);
+
 	/**
 	 * Returns the current file to save to if there is one, or displays a dialog box for the user to choose a file to save to
 	 * @return the file to save to, or null if canceled
