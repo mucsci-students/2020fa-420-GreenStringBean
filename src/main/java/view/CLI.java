@@ -566,11 +566,11 @@ public class CLI {
 
      private void beanItUp()
      {
-        view.alert("                            .                                         ");
-        view.alert("                           *#                                        ");
-        view.alert("                           /(#*                                      ");
-        view.alert("                           (((##                                     ");
-        view.alert("                           /((((##                                    ");
+        view.alert("                           .                                           ");
+        view.alert("                           *#                                          ");
+        view.alert("                           /(#*                                        ");
+        view.alert("                           (((##                                       ");
+        view.alert("                           /((((##                                     ");
         view.alert("                           ,#(((((#*                                   ");
         view.alert("                           /#((//(##                                   ");
         view.alert("                           ##((///(#.                                  ");
