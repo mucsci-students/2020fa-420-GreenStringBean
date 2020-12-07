@@ -54,6 +54,15 @@ public class WorkingProject implements Model{
     }
 
     /**
+     * Clears the current project
+     */
+    public void clearProject()
+    {
+        classes.clear();
+        relationships.clear();
+    }
+
+    /**
      * Adds a new class to the project.
      * @param className the name to be used by the new class
      * @return          0 if successful, error code otherwise

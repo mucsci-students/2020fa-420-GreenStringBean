@@ -5,6 +5,11 @@ import java.util.List;
 public interface GUIController extends Controller 
 {
     /**
+     * Clears the current project
+     */
+    void clearProject();
+
+    /**
      * Adds a new method with parameters to a class.
      * @param className  the name of the class to add a method to
      * @param methodName the name to be used by the new method

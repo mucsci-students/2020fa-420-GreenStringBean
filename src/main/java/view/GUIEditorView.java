@@ -616,29 +616,34 @@ public class GUIEditorView implements GUIView
 	}
 	
 	/**
-	 * Creates a file drop down menu for undo, redo, save, and load buttons.
+	 * Creates a file drop down menu for new, save, save as, load, and exit buttons.
 	 * @param mb is the menu bar
 	 */
 	private void createFileM(JMenuBar mb)
 	{
 		fileM = new JMenu("File");
 		
+		JMenuItem n = new JMenuItem("New");
 		JMenuItem s = new JMenuItem("Save");
 		JMenuItem sa = new JMenuItem("Save As");
 		JMenuItem l = new JMenuItem("Load");
 		JMenuItem ex = new JMenuItem("Exit");
 
+		KeyStroke newKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke loadKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke saveKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke saveAsKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+		KeyStroke exitKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK);
 
+		n.setAccelerator(newKeyStroke);
 		s.setAccelerator(saveKeyStroke);
 		sa.setAccelerator(saveAsKeyStroke);
 		l.setAccelerator(loadKeyStroke);
+		ex.setAccelerator(exitKeyStroke);
 
-		JMenuItem[] arr = {s, sa, l, ex};
-		String[] txt = {"Save edited file", "Save edited file as", "Load selected project", "Exit application"};
-		String[] cmd = {"Save", "Save As", "Load", "Exit"};
+		JMenuItem[] arr = {n, s, sa, l, ex};
+		String[] txt = {"Start a new project", "Save edited file", "Save edited file as", "Load selected project", "Exit application"};
+		String[] cmd = {"New", "Save", "Save As", "Load", "Exit"};
 
 		for(int count = 0; count < arr.length; ++count)
 		{
