@@ -13,6 +13,12 @@ import java.util.Set;
 import java.util.Iterator;
 import java.io.BufferedReader;
 import controller.CLIController;
+import view.GUIView;
+import view.GUIEditorView;
+import controller.GUIController;
+import controller.GUIEditorController;
+import controller.GUIStartScreen;
+import controller.WorkingProjectEditor;
 
 /**
  * The Console allows a user to interface with a UML model
@@ -415,7 +421,15 @@ public class CLI {
                 case "printRelationships" :
                     printRelationships();
                     break;
+
+                case "clear" :
+                    
                 
+                case "launchGUI" :
+                    launchGUI();
+                    break;
+                    
+                //Bean It Up!
                 case "beanItUp" :
                     beanItUp();
                     break;
@@ -560,17 +574,29 @@ public class CLI {
         view.alert(" \\___/(__\\_)(____)(____)\\_)__)(____/ (__) (__\\_)(__)\\_)__) \\___/(____/(____)\\_/\\_/\\_)__)");
     }
 
+    private void launchGUI()
+    {
+        ProcessBuilder processbuilder = new ProcessBuilder("java", "-jar", "./build/libs/UML-all.jar");
+        try {
+            processbuilder.start();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+    }
+
     /**
      * Bean it up!
      */
 
      private void beanItUp()
      {
-        view.alert("                           .                                           ");
-        view.alert("                           *#                                          ");
-        view.alert("                           /(#*                                        ");
-        view.alert("                           (((##                                       ");
-        view.alert("                           /((((##                                     ");
+        view.alert("                            .                                         ");
+        view.alert("                           *#                                        ");
+        view.alert("                           /(#*                                      ");
+        view.alert("                           (((##                                     ");
+        view.alert("                           /((((##                                    ");
         view.alert("                           ,#(((((#*                                   ");
         view.alert("                           /#((//(##                                   ");
         view.alert("                           ##((///(#.                                  ");
