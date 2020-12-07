@@ -780,25 +780,25 @@ public class GUIEditorView implements GUIView
 	/**
 	 * Creates a right click pop up menu for a class
 	 * @param className name of the class
+	 * @param isOpen    whether the class is open or not
 	 * @param txt       text area that was clicked on
 	 * @param panel     class panel that was clicked
 	 */
-	private void createClassRightClick(String className, JTextArea txt, JPanel panel)
+	private void createClassRightClick(String className, boolean isOpen, JTextArea txt, JPanel panel)
 	{
 		JPopupMenu classM = new JPopupMenu();
 		ClassRightClick click = clickFactory.getClassRightClick(className);
 
-		JMenuItem oClass = new JMenuItem("Open Class");
-		JMenuItem cClass = new JMenuItem("Close Class");
+		JCheckBoxMenuItem oClass = new JCheckBoxMenuItem("Editable", isOpen);
 		JMenuItem dClass = new JMenuItem("Delete Class");
 		JMenuItem rClass = new JMenuItem("Rename Class");
 
 		JMenuItem aField = new JMenuItem("Add Field");
 		JMenuItem aMeth = new JMenuItem("Add Method");
 
-		JMenuItem[] arr = {oClass, cClass, dClass, rClass, aField, aMeth};
-		String[] text = {"Open Class","Close Class", "Delete Class", "Rename Class", "Add Field", "Add Method"};
-		String[] cmd = {"Open", "Close", "Remove Class", "Rename Class", "Add Field", "Add Method"};
+		JMenuItem[] arr = {oClass, dClass, rClass, aField, aMeth};
+		String[] text = {"Toggle Open/Closed", "Delete Class", "Rename Class", "Add Field", "Add Method"};
+		String[] cmd = {"Toggle Open", "Remove Class", "Rename Class", "Add Field", "Add Method"};
 
 		for(int i = 0; i < arr.length; ++i)
 		{
@@ -1097,7 +1097,7 @@ public class GUIEditorView implements GUIView
 			panel.add(line);
 		}
 
-		createClassRightClick(className, classTxt, panel);
+		createClassRightClick(className, classObj.isOpen(), classTxt, panel);
 		
         for (String fieldName : classObj.getFieldNames())
         {
