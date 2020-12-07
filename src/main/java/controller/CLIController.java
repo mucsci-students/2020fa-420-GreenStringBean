@@ -3,6 +3,11 @@ package controller;
 public interface CLIController extends Controller
 {
     /**
+     * Clears the current project
+     */
+    void clearProject();
+
+    /**
      * Add a new method to a class
      * @param className the name of the class to add a method to
      * @param methodName the name of the method to be added

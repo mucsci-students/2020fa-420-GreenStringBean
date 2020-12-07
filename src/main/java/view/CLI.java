@@ -13,12 +13,6 @@ import java.util.Set;
 import java.util.Iterator;
 import java.io.BufferedReader;
 import controller.CLIController;
-import view.GUIView;
-import view.GUIEditorView;
-import controller.GUIController;
-import controller.GUIEditorController;
-import controller.GUIStartScreen;
-import controller.WorkingProjectEditor;
 
 /**
  * The Console allows a user to interface with a UML model
@@ -32,6 +26,7 @@ public class CLI {
     BufferedReader brProject;
     private CLIController controller;
     private CLIView view;
+    private String prompt = "gsb> ";
 
     //Methods
 
@@ -48,16 +43,6 @@ public class CLI {
         }
         this.controller = controller;
         this.view = view;
-
-        //Print a fun intro message
-        printStartMessage();
-
-        //Print a short instructional message to help the user get started
-        view.alert("\nPress 'tab' to open a list of commands. Enjoy!\n");
-
-        //Begin prompting input
-        console();
-        System.exit(0);
     }
     /**
      * Repeatedly prompt the user for input until the program is exited via 'quit'.
@@ -65,9 +50,16 @@ public class CLI {
      * If an invalid command is given, then an error message is given.
      */
     public void console() {
+
+        //Print a fun intro message
+        printStartMessage();
+
+        //Print a short instructional message to help the user get started
+        view.alert("\nPress 'tab' to open a list of commands. Enjoy!\n");
+
         //Continue to prompt user for input
         while (true) {
-            String command = view.readLine("gsb> ");
+            String command = view.readLine(prompt);
             ArrayList<String> commands = parseLine(command);
             if (commands == null)
                 continue;
@@ -78,24 +70,7 @@ public class CLI {
                 //Exit the program
                 case "quit":
                     view.alert("Do you want to save before you go? (Y/N)");
-                    String YN = view.readLine("gsb> ");
-
-                    if (YN.equals("y".toUpperCase()) || YN.equals("y"))
-                    {
-                        view.alert("What do you want to name the project?");
-                        String name = view.readLine("gsb> ");
-                        if (parseLine(name) != null)
-                            saveFile (parseLine(name).get(0));
-                        else 
-                            view.alert("No name entered. Resuming...");
-                    }
-                    else if (YN.equals("n".toUpperCase()) || YN.equals("n"))
-                    {
-                        return;
-                    }
-                    else
-                        view.alert("Y/N not entered. Resuming...");
-
+                    quitHandler(view.readLine(prompt));
                     break;
 
                 //Save the working project into a named file
@@ -422,11 +397,14 @@ public class CLI {
                     printRelationships();
                     break;
 
-                case "clear" :
-                    
+                case "clearModel" :
+                    view.alert("Are you sure you want to clear the project? All unsaved data will be lost. (Y/N)");
+                    clearHandler(view.readLine(prompt));
+                    break;
                 
                 case "launchGUI" :
-                    launchGUI();
+                    view.alert("Launching the GUI will erase any unsaved changes to the project. Proceed? (Y/N)");
+                    launchGUIHander(view.readLine(prompt));
                     break;
                     
                 //Bean It Up!
@@ -555,11 +533,14 @@ public class CLI {
      */
     private void printClass(String className)
     {
-        ClassObject c = controller.getProjectSnapshot().getClass(className);
-        view.alert("Fields");
-        c.printFields();
-        view.alert("Methods");
-        c.printMethods();
+        if (controller.getProjectSnapshot().hasClass(className))
+        {
+            ClassObject c = controller.getProjectSnapshot().getClass(className);
+            view.alert("Fields");
+            c.printFields();
+            view.alert("Methods");
+            c.printMethods();
+        }
     }
 
     /**
@@ -574,6 +555,9 @@ public class CLI {
         view.alert(" \\___/(__\\_)(____)(____)\\_)__)(____/ (__) (__\\_)(__)\\_)__) \\___/(____/(____)\\_/\\_/\\_)__)");
     }
 
+    /**
+     * Launch the GUI
+     */
     private void launchGUI()
     {
         ProcessBuilder processbuilder = new ProcessBuilder("java", "-jar", "./build/libs/UML-all.jar");
@@ -582,8 +566,55 @@ public class CLI {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }   
+    }
+
+    /**
+     * Handles when the user quits
+     * @param input A string expected to be y/n
+     */
+    private void quitHandler(String input)
+    {
+        if (input.equals("Y") || input.equals("y"))
+        {
+            saveFile(view.readLine(prompt));
+            System.exit(0);
         }
-        
+        else if (input.equals("N") || input.equals("n"))
+            return;
+        else
+            view.alert("Inappropriate input. Resuming...");
+    }
+
+    /**
+     * Handles when the user clears
+     * @param input A string expected to be y/n
+     */
+    private void clearHandler(String input)
+    {
+        if (input.equals("Y") || input.equals("y"))
+            controller.clearProject();
+        else if (input.equals("N") || input.equals("n"))
+            return;
+        else
+            view.alert("Inappropriate input. Resuming...");
+    }
+
+    /**
+     * Handles when the user launches the GUI
+     * @param input A string expected to be y/n
+     */
+    private void launchGUIHander(String input)
+    {
+        if (input.equals("Y") || input.equals("y"))
+        {
+            launchGUI();
+            System.exit(0);
+        }
+        else if (input.equals("N") || input.equals("n"))
+            return;
+        else
+            view.alert("Inappropriate input. Resuming...");
     }
 
     /**
@@ -592,11 +623,11 @@ public class CLI {
 
      private void beanItUp()
      {
-        view.alert("                            .                                         ");
-        view.alert("                           *#                                        ");
-        view.alert("                           /(#*                                      ");
-        view.alert("                           (((##                                     ");
-        view.alert("                           /((((##                                    ");
+        view.alert("                           .                                           ");
+        view.alert("                           *#                                          ");
+        view.alert("                           /(#*                                        ");
+        view.alert("                           (((##                                       ");
+        view.alert("                           /((((##                                     ");
         view.alert("                           ,#(((((#*                                   ");
         view.alert("                           /#((//(##                                   ");
         view.alert("                           ##((///(#.                                  ");

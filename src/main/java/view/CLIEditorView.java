@@ -99,6 +99,7 @@ public class CLIEditorView implements CLIView {
      * Update the state of the lineReader and its Completer whenever a class is changed
      * TODO: 
      */
+    /*
     public void updateReaderAndCompleter(ClassObject classObject)
     {
         completer.updateCompleter(classObject);
@@ -110,6 +111,6 @@ public class CLIEditorView implements CLIView {
             .history(history)
             .build();
     }
-
+    */
 
 }

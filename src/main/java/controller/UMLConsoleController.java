@@ -28,7 +28,7 @@ public class UMLConsoleController {
 				//Start in console
 				CLIEditorView view = new CLIEditorView();
 				CLIEditorController controller = new CLIEditorController(view, editor);
-				new CLI(view, controller);
+				new CLI(view, controller).console();
 			}
 			else 
 			{

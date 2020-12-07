@@ -397,6 +397,15 @@ public class CLIEditorController implements CLIController
     {
         cli.alert(getLastCommandStatusMessage());
     }
+
+    /**
+     * Clears the current project
+     */
+    public void clearProject()
+    {
+        modelEditor.clearProject();
+        cli.updateReaderAndCompleter(getProjectSnapshot());
+    }
     
     /**
 	 * Checks if the WPEditor modification was legal or not
@@ -409,4 +418,6 @@ public class CLIEditorController implements CLIController
             cli.alert("Error: " + modelEditor.getLastCommandStatusMessage());
         }
     }
+
+    
 }
