@@ -98,6 +98,21 @@ public class WorkingProjectEditor implements ModelEditor{
     }
 
     /**
+     * Clears the current project
+     */
+    public void clearProject()
+    {              
+        for (String className : project.getClassNames())
+        {
+            ClassObject classObj = project.getClass(className);
+            observers.forEach(o -> classObj.detach(o));
+        }
+
+        Command cmd = new ClearProjectCommand(project);
+        executeProjectCommand(cmd);
+    }
+
+    /**
      * Adds a new class to the project. Notifies observers with the project.
      * @param className the name to be used by the new class
      */
@@ -444,7 +459,7 @@ public class WorkingProjectEditor implements ModelEditor{
         executeCommand(cmd);
         if(cmd.getStatus())
         {
-            notifyAllObservers(cmd instanceof LoadProjectCommand);
+            notifyAllObservers(cmd instanceof LoadProjectCommand || cmd instanceof ClearProjectCommand);
         }
     }
 
@@ -489,7 +504,7 @@ public class WorkingProjectEditor implements ModelEditor{
                 observers.forEach(o -> classObj.attach(o));
             }
 
-            notifyAllObservers(cmd instanceof LoadProjectCommand);
+            notifyAllObservers(cmd instanceof LoadProjectCommand || cmd instanceof ClearProjectCommand);
         }
     }
 
@@ -525,7 +540,7 @@ public class WorkingProjectEditor implements ModelEditor{
                 observers.forEach(o -> classObj.attach(o));
             }
             
-            notifyAllObservers(cmd instanceof LoadProjectCommand);
+            notifyAllObservers(cmd instanceof LoadProjectCommand || cmd instanceof ClearProjectCommand);
         }
     }
 

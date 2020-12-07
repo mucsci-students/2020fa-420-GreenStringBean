@@ -40,6 +40,11 @@ public interface ModelEditor
     Model getProjectSnapshot();
 
     /**
+     * Clears the current project
+     */
+    void clearProject();
+
+    /**
      * Adds a new class to the project. Notifies observers with the project.
      * @param className the name to be used by the new class
      */

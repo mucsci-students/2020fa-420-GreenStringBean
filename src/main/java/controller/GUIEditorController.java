@@ -273,6 +273,16 @@ public class GUIEditorController implements GUIController
 	
 	/**********************************OTHERS********************************************/
 	/**
+	 * Clears the current project
+	 */
+	public void clearProject()
+	{
+		storeViewState();
+		project.clearProject();
+		checkStatus();
+	}
+
+	/**
 	 * Loads a project from a JSON string. If the project was saved in the GUI, also loads state of the view.
 	 * @param jsonString is the WPEditor loaded string
 	 */

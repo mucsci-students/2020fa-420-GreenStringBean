@@ -178,5 +178,10 @@ public class UnknownErrorModel implements Model {
     public WorkingProject copy() {
         return null;
     }
+
+    @Override
+    public void clearProject() {
+
+    }
     
 }

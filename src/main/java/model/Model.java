@@ -27,6 +27,11 @@ import java.util.Set;
 public interface Model
 {
     /**
+     * Clears the current project
+     */
+    void clearProject();
+
+    /**
      * Adds a new class to the project.
      * @param className the name to be used by the new class
      * @return          0 if successful, error code otherwise
