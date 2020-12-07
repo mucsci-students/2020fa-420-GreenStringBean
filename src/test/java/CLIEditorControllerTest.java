@@ -329,6 +329,7 @@ public class CLIEditorControllerTest {
         ModelEditor modelEditor = new WorkingProjectEditor(new WorkingProject());
         CLIView view = new CLIEditorView();
         CLIEditorController controller = new CLIEditorController(view, modelEditor);
+        controller.addClass("Orange");
         controller.addClass("Apple");
         controller.undo();
         assertEquals("Action undone", controller.getProjectSnapshot().hasClass("Apple"), false);
@@ -340,6 +341,7 @@ public class CLIEditorControllerTest {
         ModelEditor modelEditor = new WorkingProjectEditor(new WorkingProject());
         CLIView view = new CLIEditorView();
         CLIEditorController controller = new CLIEditorController(view, modelEditor);
+        controller.addClass("Orange");
         controller.addClass("Apple");
         controller.undo();
         controller.redo();
@@ -414,7 +416,6 @@ public class CLIEditorControllerTest {
             assertEquals("Loaded relationship has correct \"to\" class", "Apple", loadedRelGUI.getClassNameTo());
             assertEquals("Loaded relationship has correct type", relationshipType.INHERITANCE, loadedRelGUI.getType());
         }
-
     }
 
     @Test
