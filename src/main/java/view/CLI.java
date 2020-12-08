@@ -26,6 +26,7 @@ public class CLI {
     BufferedReader brProject;
     private CLIController controller;
     private CLIView view;
+    private String prompt = "gsb> ";
 
     //Methods
 
@@ -42,12 +43,6 @@ public class CLI {
         }
         this.controller = controller;
         this.view = view;
-
-        //Initialize the Completer that will be use for tab-completion
-        
-        //Begin prompting input
-        console();
-        System.exit(0);
     }
     /**
      * Repeatedly prompt the user for input until the program is exited via 'quit'.
@@ -55,9 +50,16 @@ public class CLI {
      * If an invalid command is given, then an error message is given.
      */
     public void console() {
+
+        //Print a fun intro message
+        view.printLogo();
+
+        //Print a short instructional message to help the user get started
+        view.alert("\nPress 'tab' to open a list of commands. Enjoy!\n");
+
         //Continue to prompt user for input
         while (true) {
-            String command = view.readLine("gsb> ");
+            String command = view.readLine(prompt);
             ArrayList<String> commands = parseLine(command);
             if (commands == null)
                 continue;
@@ -67,25 +69,8 @@ public class CLI {
 
                 //Exit the program
                 case "quit":
-                    view.alert("Do you want to save before you go? (Y/N)");
-                    String YN = view.readLine("gsb> ");
-
-                    if (YN.equals("y".toUpperCase()) || YN.equals("y"))
-                    {
-                        view.alert("What do you want to name the project?");
-                        String name = view.readLine("gsb> ");
-                        if (parseLine(name) != null)
-                            saveFile (parseLine(name).get(0));
-                        else 
-                            view.alert("No name entered. Resuming...");
-                    }
-                    else if (YN.equals("n".toUpperCase()) || YN.equals("n"))
-                    {
-                        return;
-                    }
-                    else
-                        view.alert("Y/N not entered. Resuming...");
-
+                    view.alert("Do you want to save before you go? (Y/N/Neither to resume)");
+                    quitHandler(view.readLine(prompt));
                     break;
 
                 //Save the working project into a named file
@@ -411,6 +396,21 @@ public class CLI {
                 case "printRelationships" :
                     printRelationships();
                     break;
+
+                case "clearModel" :
+                    view.alert("Are you sure you want to clear the project? All unsaved data will be lost. (Y/N)");
+                    clearHandler(view.readLine(prompt));
+                    break;
+                
+                case "launchGUI" :
+                    view.alert("Launching the GUI will erase any unsaved changes to the project. Proceed? (Y/N/Neither to resume)");
+                    launchGUIHander(view.readLine(prompt));
+                    break;
+                    
+                //Bean It Up!
+                case "beanItUp" :
+                    view.beanItUp();
+                    break;
                 
                 //If the input did not match any known command, then print an error message
                 default :
@@ -533,10 +533,77 @@ public class CLI {
      */
     private void printClass(String className)
     {
-        ClassObject c = controller.getProjectSnapshot().getClass(className);
-        view.alert("Fields");
-        c.printFields();
-        view.alert("Methods");
-        c.printMethods();
+        if (controller.getProjectSnapshot().hasClass(className))
+        {
+            ClassObject c = controller.getProjectSnapshot().getClass(className);
+            view.alert("Fields");
+            c.printFields();
+            view.alert("Methods");
+            c.printMethods();
+        }
     }
+
+    /**
+     * Launch the GUI
+     */
+    private void launchGUI()
+    {
+        ProcessBuilder processbuilder = new ProcessBuilder("java", "-jar", "./build/libs/UML-all.jar");
+        try {
+            processbuilder.start();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }   
+    }
+
+    /**
+     * Handles when the user quits
+     * @param input A string expected to be y/n
+     */
+    private void quitHandler(String input)
+    {
+        if (input.equals("Y") || input.equals("y"))
+        {
+            saveFile(view.readLine(prompt));
+            System.exit(0);
+        }
+        else if (input.equals("N") || input.equals("n"))
+            System.exit(0);
+        else
+            view.alert("Inappropriate input. Resuming...");
+    }
+
+    /**
+     * Handles when the user clears
+     * @param input A string expected to be y/n
+     */
+    private void clearHandler(String input)
+    {
+        if (input.equals("Y") || input.equals("y"))
+            controller.clearProject();
+        else if (input.equals("N") || input.equals("n"))
+            return;
+        else
+            view.alert("Inappropriate input. Resuming...");
+    }
+
+    /**
+     * Handles when the user launches the GUI
+     * @param input A string expected to be y/n
+     */
+    private void launchGUIHander(String input)
+    {
+        if (input.equals("Y") || input.equals("y"))
+        {
+            launchGUI();
+            System.exit(0);
+        }
+        else if (input.equals("N") || input.equals("n"))
+            return;
+        else
+            view.alert("Inappropriate input. Resuming...");
+    }
+
+    
 }

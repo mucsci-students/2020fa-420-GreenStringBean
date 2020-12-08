@@ -99,6 +99,7 @@ public class CLIEditorView implements CLIView {
      * Update the state of the lineReader and its Completer whenever a class is changed
      * TODO: 
      */
+    /*
     public void updateReaderAndCompleter(ClassObject classObject)
     {
         completer.updateCompleter(classObject);
@@ -110,6 +111,71 @@ public class CLIEditorView implements CLIView {
             .history(history)
             .build();
     }
+    */
 
+    /**
+     * Print the logo
+     * Note: System.out is used instead of alert because it is easier to test
+     */
+    public void printLogo()
+    {
+        String logo = "";
+        logo += "  ___  ____  ____  ____  __ _  ____  ____  ____  __  __ _   ___  ____  ____   __   __ _          \n";
+        logo += " / __)(  _ \\(  __)(  __)(  ( \\/ ___)(_  _)(  _ \\(  )(  ( \\ / __)(  _ \\(  __) / _\\ (  ( \\  \n";
+        logo += "( (_ \\ )   / ) _)  ) _) /    /\\___ \\  )(   )   / )( /    /( (_ \\ ) _ ( ) _) /    \\/    /    \n";
+        logo += " \\___/(__\\_)(____)(____)\\_)__)(____/ (__) (__\\_)(__)\\_)__) \\___/(____/(____)\\_/\\_/\\_)__)\n";
+        System.out.print(logo);
+    }
 
+    /**
+     * Bean it up!
+     */
+
+    public void beanItUp()
+    {
+       String bean = "";
+       bean += "                           .                                           \n";
+       bean += "                           *#                                          \n";
+       bean += "                           /(#*                                        \n";
+       bean += "                           (((##                                       \n";
+       bean += "                           /((((##                                     \n";
+       bean += "                           ,#(((((#*                                   \n";
+       bean += "                           /#((//(##                                   \n";
+       bean += "                           ##((///(#.                                  \n";
+       bean += "                           %#(////(#,                                  \n";
+       bean += "                           %#(////(#(                                  \n";
+       bean += "                          .%#(////(#,                                  \n";
+       bean += "                           %#(////(%,                                  \n";
+       bean += "                          *%((////(%                                   \n";
+       bean += "                          ##((////(%                                   \n";
+       bean += "                          %#(/////##                                   \n";
+       bean += "                         .%#(#///##(                                   \n";
+       bean += "                         *%(((/(/(%*                                   \n";
+       bean += "                         /#((&*@*#%                                    \n";
+       bean += "   .,*.*.         ...,*//%#**(**(*/                                    \n";
+       bean += " ,,*(..*   ,., */,..    ,%#(/(@@##/(((.       ,..                      \n";
+       bean += " .*,.      ,.           /%((//(((#    ,.,,,.  ,. /*.                   \n";
+       bean += "  *.. .,,.              %#(////(%,      .,*      .,                    \n";
+       bean += "  .*,                  .%#(////(%           .,*. ,                     \n";
+       bean += "                       (%((///(#/                                      \n";
+       bean += "                       %#((/(((%.                                      \n";
+       bean += "                      .%#(((((%(                                       \n";
+       bean += "                      (%#((((#%.                                       \n";
+       bean += "                      %#######(            .,***.                      \n";
+       bean += "                     .%######%.         *#( . .////                    \n";
+       bean += "                     .%%#%%%%(   ,    ,,(#/ ./*////.                   \n";
+       bean += "                      %%%%%%(*,*,,*//*((#,.///////                     \n";
+       bean += "                     ,&%%%,     .*/#(###,.(/(///,                      \n";
+       bean += "                         ,*      .#####,.(((((/                        \n";
+       bean += "                          *         (#,,(((((.                         \n";
+       bean += "                        ..*           ,(((#.                           \n";
+       bean += "                      ,(,*###(.                                        \n";
+       bean += "                     ,/((*****/*,.                                     \n";
+       bean += "                    ,#*###,***//*.                                     \n";
+       bean += "                    */#####,*,,*(.                                     \n";
+       bean += "                     .**#######%###                                    \n";
+       bean += "                      * ,..        *                                   \n";
+       bean += "                         *,.. ...*                                     \n";
+       System.out.print(bean);
+    }
 }

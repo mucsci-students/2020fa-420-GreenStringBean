@@ -110,9 +110,11 @@ public class CommandCompleter
             renameClassCompleter(), new AggregateCompleter(renameFieldComp), new AggregateCompleter(renameMethComp), 
             new AggregateCompleter(renameParamComp), new AggregateCompleter(changeFieldTypeComp), new AggregateCompleter(changeFieldVisComp), 
             new AggregateCompleter(changeMethTypeComp), new AggregateCompleter(changeMethVisComp), new AggregateCompleter(changeParamTypeComp), 
-            changeRelationshipTypeCompleter(), printClassCompleter(), printClassesCompleter(), printRelationshipsCompleter());
+            changeRelationshipTypeCompleter(), printClassCompleter(), printClassesCompleter(), printRelationshipsCompleter(), launchGUICompleter(),
+            clearModelCompleter());
     }
 
+    /*
     public void updateCompleter(ClassObject UMLClass)
     {
         ArrayList<Completer> remParamComp = new ArrayList<Completer>();
@@ -129,9 +131,9 @@ public class CommandCompleter
         completer = new AggregateCompleter(completer, addParameterCompleter(UMLClass), removeFieldCompleter(UMLClass), removeMethodCompleter(UMLClass), 
             renameFieldCompleter(UMLClass),  renameMethodCompleter(UMLClass), changeFieldVisibilityCompleter(UMLClass), changeMethodVisibilityCompleter(UMLClass),
             changeFieldTypeCompleter(UMLClass), changeMethodTypeCompleter(UMLClass), new AggregateCompleter(remParamComp), new AggregateCompleter(renameParamComp),
-            new AggregateCompleter(changeParamTypeComp));
+            new AggregateCompleter(changeParamTypeComp), launchGUICompleter(), clearModelCompleter());
     }
-
+    */
 
     /**
      * @return A new Completer for the quit command
@@ -362,5 +364,21 @@ public class CommandCompleter
     private ArgumentCompleter printRelationshipsCompleter()
     {
         return new ArgumentCompleter(new StringsCompleter("printRelationships"), new NullCompleter());
+    }
+
+    /**
+     * @return A new Completer for the launchGUI command
+     */
+    private ArgumentCompleter launchGUICompleter()
+    {
+        return new ArgumentCompleter(new StringsCompleter("launchGUI"), new NullCompleter());
+    }
+
+    /**
+     * @return A new Completer for the clearModel command
+     */
+    private ArgumentCompleter clearModelCompleter()
+    {
+        return new ArgumentCompleter(new StringsCompleter("clearModel"), new NullCompleter());
     }
 }
