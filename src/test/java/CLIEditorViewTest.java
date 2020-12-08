@@ -27,57 +27,57 @@ public class CLIEditorViewTest {
         System.setOut(originalOutput);
     }
 
-    @Ignore
+    @Test
     public void beanItUpTest() throws IOException
     {
         view.beanItUp();
         String expected = "";
-        expected += "                           .                                            \n";
-        expected += "                           *#                                           \n";
-        expected += "                           /(#*                                         \n";
-        expected += "                           (((##                                        \n";
-        expected += "                           /((((##                                      \n";
-        expected += "                           ,#(((((#*                                    \n";
-        expected += "                           /#((//(##                                    \n";
-        expected += "                           ##((///(#.                                   \n";
-        expected += "                           %#(////(#,                                   \n";
-        expected += "                           %#(////(#(                                   \n";
-        expected += "                          .%#(////(#,                                   \n";
-        expected += "                           %#(////(%,                                   \n";
-        expected += "                          *%((////(%                                    \n";
-        expected += "                          ##((////(%                                    \n";
-        expected += "                          %#(/////##                                    \n";
-        expected += "                         .%#(#///##(                                    \n";
-        expected += "                         *%(((/(/(%*                                    \n";
-        expected += "                         /#((&*@*#%                                     \n";
-        expected += "   .,*.*.         ...,*//%#**(**(*/                                     \n";
-        expected += " ,,*(..*   ,., */,..    ,%#(/(@@##/(((.       ,..                       \n";
-        expected += " .*,.      ,.           /%((//(((#    ,.,,,.  ,. /*.                    \n";
-        expected += "  *.. .,,.              %#(////(%,      .,*      .,                     \n";
-        expected += "  .*,                  .%#(////(%           .,*. ,                      \n";
-        expected += "                       (%((///(#/                                       \n";
-        expected += "                       %#((/(((%.                                       \n";
-        expected += "                      .%#(((((%(                                        \n";
-        expected += "                      (%#((((#%.                                        \n";
-        expected += "                      %#######(            .,***.                       \n";
-        expected += "                     .%######%.         *#( . .////                     \n";
-        expected += "                     .%%#%%%%(   ,    ,,(#/ ./*////.                    \n";
-        expected += "                      %%%%%%(*,*,,*//*((#,.///////                      \n";
-        expected += "                     ,&%%%,     .*/#(###,.(/(///,                       \n";
-        expected += "                         ,*      .#####,.(((((/                         \n";
-        expected += "                          *         (#,,(((((.                          \n";
-        expected += "                        ..*           ,(((#.                            \n";
-        expected += "                      ,(,*###(.                                         \n";
-        expected += "                     ,/((*****/*,.                                      \n";
-        expected += "                    ,#*###,***//*.                                      \n";
-        expected += "                    */#####,*,,*(.                                      \n";
-        expected += "                     .**#######%###                                     \n";
-        expected += "                      * ,..        *                                    \n";
-        expected += "                         *,.. ...*                                      \n";
-        assertEquals(output.toString(), expected);
+        expected += "                           .                                           \n";
+        expected += "                           *#                                          \n";
+        expected += "                           /(#*                                        \n";
+        expected += "                           (((##                                       \n";
+        expected += "                           /((((##                                     \n";
+        expected += "                           ,#(((((#*                                   \n";
+        expected += "                           /#((//(##                                   \n";
+        expected += "                           ##((///(#.                                  \n";
+        expected += "                           %#(////(#,                                  \n";
+        expected += "                           %#(////(#(                                  \n";
+        expected += "                          .%#(////(#,                                  \n";
+        expected += "                           %#(////(%,                                  \n";
+        expected += "                          *%((////(%                                   \n";
+        expected += "                          ##((////(%                                   \n";
+        expected += "                          %#(/////##                                   \n";
+        expected += "                         .%#(#///##(                                   \n";
+        expected += "                         *%(((/(/(%*                                   \n";
+        expected += "                         /#((&*@*#%                                    \n";
+        expected += "   .,*.*.         ...,*//%#**(**(*/                                    \n";
+        expected += " ,,*(..*   ,., */,..    ,%#(/(@@##/(((.       ,..                      \n";
+        expected += " .*,.      ,.           /%((//(((#    ,.,,,.  ,. /*.                   \n";
+        expected += "  *.. .,,.              %#(////(%,      .,*      .,                    \n";
+        expected += "  .*,                  .%#(////(%           .,*. ,                     \n";
+        expected += "                       (%((///(#/                                      \n";
+        expected += "                       %#((/(((%.                                      \n";
+        expected += "                      .%#(((((%(                                       \n";
+        expected += "                      (%#((((#%.                                       \n";
+        expected += "                      %#######(            .,***.                      \n";
+        expected += "                     .%######%.         *#( . .////                    \n";
+        expected += "                     .%%#%%%%(   ,    ,,(#/ ./*////.                   \n";
+        expected += "                      %%%%%%(*,*,,*//*((#,.///////                     \n";
+        expected += "                     ,&%%%,     .*/#(###,.(/(///,                      \n";
+        expected += "                         ,*      .#####,.(((((/                        \n";
+        expected += "                          *         (#,,(((((.                         \n";
+        expected += "                        ..*           ,(((#.                           \n";
+        expected += "                      ,(,*###(.                                        \n";
+        expected += "                     ,/((*****/*,.                                     \n";
+        expected += "                    ,#*###,***//*.                                     \n";
+        expected += "                    */#####,*,,*(.                                     \n";
+        expected += "                     .**#######%###                                    \n";
+        expected += "                      * ,..        *                                   \n";
+        expected += "                         *,.. ...*                                     \n";
+        assertEquals(expected, output.toString());
     }
 
-    @Ignore
+    @Test
     public void printLogoTest() throws IOException
     {
         view.printLogo();
@@ -86,6 +86,7 @@ public class CLIEditorViewTest {
         expected += " / __)(  _ \\(  __)(  __)(  ( \\/ ___)(_  _)(  _ \\(  )(  ( \\ / __)(  _ \\(  __) / _\\ (  ( \\  \n";
         expected += "( (_ \\ )   / ) _)  ) _) /    /\\___ \\  )(   )   / )( /    /( (_ \\ ) _ ( ) _) /    \\/    /    \n";
         expected += " \\___/(__\\_)(____)(____)\\_)__)(____/ (__) (__\\_)(__)\\_)__) \\___/(____/(____)\\_/\\_/\\_)__)\n";
+        //System.out.print(expected);
         assertEquals(output.toString(), expected);
     }
 
