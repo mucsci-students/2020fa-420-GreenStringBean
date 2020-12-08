@@ -20,5 +20,15 @@ public interface CLIView extends View
      * Update the state of the lineReader and its Completer whenever the model is changed
      */
     void updateReaderAndCompleter(Model model);
+
+    /**
+     * Print the logo
+     */
+    void printLogo();
+    
+    /**
+     * Bean it up!
+     */
+    void beanItUp();
             
 }

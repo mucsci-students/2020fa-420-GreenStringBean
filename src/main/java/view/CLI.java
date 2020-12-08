@@ -52,7 +52,7 @@ public class CLI {
     public void console() {
 
         //Print a fun intro message
-        printStartMessage();
+        view.printLogo();
 
         //Print a short instructional message to help the user get started
         view.alert("\nPress 'tab' to open a list of commands. Enjoy!\n");
@@ -69,7 +69,7 @@ public class CLI {
 
                 //Exit the program
                 case "quit":
-                    view.alert("Do you want to save before you go? (Y/N)");
+                    view.alert("Do you want to save before you go? (Y/N/Neither to resume)");
                     quitHandler(view.readLine(prompt));
                     break;
 
@@ -403,13 +403,13 @@ public class CLI {
                     break;
                 
                 case "launchGUI" :
-                    view.alert("Launching the GUI will erase any unsaved changes to the project. Proceed? (Y/N)");
+                    view.alert("Launching the GUI will erase any unsaved changes to the project. Proceed? (Y/N/Neither to resume)");
                     launchGUIHander(view.readLine(prompt));
                     break;
                     
                 //Bean It Up!
                 case "beanItUp" :
-                    beanItUp();
+                    view.beanItUp();
                     break;
                 
                 //If the input did not match any known command, then print an error message
@@ -544,18 +544,6 @@ public class CLI {
     }
 
     /**
-     * Prints an ASCII art start message upon initialization
-     */
-
-    private void printStartMessage()
-    {
-        view.alert("  ___  ____  ____  ____  __ _  ____  ____  ____  __  __ _   ___  ____  ____   __   __ _ ");
-        view.alert(" / __)(  _ \\(  __)(  __)(  ( \\/ ___)(_  _)(  _ \\(  )(  ( \\ / __)(  _ \\(  __) / _\\ (  ( \\ ");
-        view.alert("( (_ \\ )   / ) _)  ) _) /    /\\___ \\  )(   )   / )( /    /( (_ \\ ) _ ( ) _) /    \\/    / ");
-        view.alert(" \\___/(__\\_)(____)(____)\\_)__)(____/ (__) (__\\_)(__)\\_)__) \\___/(____/(____)\\_/\\_/\\_)__)");
-    }
-
-    /**
      * Launch the GUI
      */
     private void launchGUI()
@@ -581,7 +569,7 @@ public class CLI {
             System.exit(0);
         }
         else if (input.equals("N") || input.equals("n"))
-            return;
+            System.exit(0);
         else
             view.alert("Inappropriate input. Resuming...");
     }
@@ -617,53 +605,5 @@ public class CLI {
             view.alert("Inappropriate input. Resuming...");
     }
 
-    /**
-     * Bean it up!
-     */
-
-     private void beanItUp()
-     {
-        view.alert("                           .                                           ");
-        view.alert("                           *#                                          ");
-        view.alert("                           /(#*                                        ");
-        view.alert("                           (((##                                       ");
-        view.alert("                           /((((##                                     ");
-        view.alert("                           ,#(((((#*                                   ");
-        view.alert("                           /#((//(##                                   ");
-        view.alert("                           ##((///(#.                                  ");
-        view.alert("                           %#(////(#,                                  ");
-        view.alert("                           %#(////(#(                                  ");
-        view.alert("                          .%#(////(#,                                  ");
-        view.alert("                           %#(////(%,                                  ");
-        view.alert("                          *%((////(%                                   ");
-        view.alert("                          ##((////(%                                   ");
-        view.alert("                          %#(/////##                                   ");
-        view.alert("                         .%#(#///##(                                   ");
-        view.alert("                         *%(((/(/(%*                                   ");
-        view.alert("                         /#((&*@*#%                                    ");
-        view.alert("   .,*.*.         ...,*//%#**(**(*/                                    ");
-        view.alert(" ,,*(..*   ,., */,..    ,%#(/(@@##/(((.       ,..                      ");
-        view.alert(" .*,.      ,.           /%((//(((#    ,.,,,.  ,. /*.                   ");
-        view.alert("  *.. .,,.              %#(////(%,      .,*      .,                    ");
-        view.alert("  .*,                  .%#(////(%           .,*. ,                     ");
-        view.alert("                       (%((///(#/                                      ");
-        view.alert("                       %#((/(((%.                                      ");
-        view.alert("                      .%#(((((%(                                       ");
-        view.alert("                      (%#((((#%.                                       ");
-        view.alert("                      %#######(            .,***.                      ");
-        view.alert("                     .%######%.         *#( . .////                    ");
-        view.alert("                     .%%#%%%%(   ,    ,,(#/ ./*////.                   ");
-        view.alert("                      %%%%%%(*,*,,*//*((#,.///////                     ");
-        view.alert("                     ,&%%%,     .*/#(###,.(/(///,                      ");
-        view.alert("                         ,*      .#####,.(((((/                        ");
-        view.alert("                          *         (#,,(((((.                         ");
-        view.alert("                        ..*           ,(((#.                           ");
-        view.alert("                      ,(,*###(.                                        ");
-        view.alert("                     ,/((*****/*,.                                     ");
-        view.alert("                    ,#*###,***//*.                                     ");
-        view.alert("                    */#####,*,,*(.                                     ");
-        view.alert("                     .**#######%###                                    ");
-        view.alert("                      * ,..        *                                   ");
-        view.alert("                         *,.. ...*                                     ");
-     }
+    
 }
