@@ -32,7 +32,11 @@ public class FileButtonClick implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		String cmd = e.getActionCommand();
+        String cmd = e.getActionCommand();
+        if (cmd.equals("New"))
+        {
+            controller.clearProject();
+        }
 		if(cmd.equals("Save"))
 		{
 			File file = view.getSaveFile();

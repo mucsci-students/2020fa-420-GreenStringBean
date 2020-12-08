@@ -616,29 +616,34 @@ public class GUIEditorView implements GUIView
 	}
 	
 	/**
-	 * Creates a file drop down menu for undo, redo, save, and load buttons.
+	 * Creates a file drop down menu for new, save, save as, load, and exit buttons.
 	 * @param mb is the menu bar
 	 */
 	private void createFileM(JMenuBar mb)
 	{
 		fileM = new JMenu("File");
 		
+		JMenuItem n = new JMenuItem("New");
 		JMenuItem s = new JMenuItem("Save");
 		JMenuItem sa = new JMenuItem("Save As");
 		JMenuItem l = new JMenuItem("Load");
 		JMenuItem ex = new JMenuItem("Exit");
 
+		KeyStroke newKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke loadKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke saveKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
 		KeyStroke saveAsKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+		KeyStroke exitKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK);
 
+		n.setAccelerator(newKeyStroke);
 		s.setAccelerator(saveKeyStroke);
 		sa.setAccelerator(saveAsKeyStroke);
 		l.setAccelerator(loadKeyStroke);
+		ex.setAccelerator(exitKeyStroke);
 
-		JMenuItem[] arr = {s, sa, l, ex};
-		String[] txt = {"Save edited file", "Save edited file as", "Load selected project", "Exit application"};
-		String[] cmd = {"Save", "Save As", "Load", "Exit"};
+		JMenuItem[] arr = {n, s, sa, l, ex};
+		String[] txt = {"Start a new project", "Save edited file", "Save edited file as", "Load selected project", "Exit application"};
+		String[] cmd = {"New", "Save", "Save As", "Load", "Exit"};
 
 		for(int count = 0; count < arr.length; ++count)
 		{
@@ -780,25 +785,25 @@ public class GUIEditorView implements GUIView
 	/**
 	 * Creates a right click pop up menu for a class
 	 * @param className name of the class
+	 * @param isOpen    whether the class is open or not
 	 * @param txt       text area that was clicked on
 	 * @param panel     class panel that was clicked
 	 */
-	private void createClassRightClick(String className, JTextArea txt, JPanel panel)
+	private void createClassRightClick(String className, boolean isOpen, JTextArea txt, JPanel panel)
 	{
 		JPopupMenu classM = new JPopupMenu();
 		ClassRightClick click = clickFactory.getClassRightClick(className);
 
-		JMenuItem oClass = new JMenuItem("Open Class");
-		JMenuItem cClass = new JMenuItem("Close Class");
+		JCheckBoxMenuItem oClass = new JCheckBoxMenuItem("Editable", isOpen);
 		JMenuItem dClass = new JMenuItem("Delete Class");
 		JMenuItem rClass = new JMenuItem("Rename Class");
 
 		JMenuItem aField = new JMenuItem("Add Field");
 		JMenuItem aMeth = new JMenuItem("Add Method");
 
-		JMenuItem[] arr = {oClass, cClass, dClass, rClass, aField, aMeth};
-		String[] text = {"Open Class","Close Class", "Delete Class", "Rename Class", "Add Field", "Add Method"};
-		String[] cmd = {"Open", "Close", "Remove Class", "Rename Class", "Add Field", "Add Method"};
+		JMenuItem[] arr = {oClass, dClass, rClass, aField, aMeth};
+		String[] text = {"Toggle Open/Closed", "Delete Class", "Rename Class", "Add Field", "Add Method"};
+		String[] cmd = {"Toggle Open", "Remove Class", "Rename Class", "Add Field", "Add Method"};
 
 		for(int i = 0; i < arr.length; ++i)
 		{
@@ -1097,7 +1102,7 @@ public class GUIEditorView implements GUIView
 			panel.add(line);
 		}
 
-		createClassRightClick(className, classTxt, panel);
+		createClassRightClick(className, classObj.isOpen(), classTxt, panel);
 		
         for (String fieldName : classObj.getFieldNames())
         {

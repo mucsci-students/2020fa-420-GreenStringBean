@@ -34,14 +34,16 @@ public class ClassRightClick implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{	
 		String cmd = e.getActionCommand();
-		if(cmd.equals("Open"))
+		if(cmd.equals("Toggle Open"))
 		{
-			controller.openClass(className);
-		}
-		if(cmd.equals("Close"))
-		{
-
-			controller.closeClass(className);
+			if (controller.getProjectSnapshot().hasClass(className) && controller.getProjectSnapshot().getClass(className).isOpen())
+			{
+				controller.closeClass(className);
+			}
+			else
+			{
+				controller.openClass(className);
+			}
 		}
 		else if(cmd.equals("Remove Class"))
 		{
